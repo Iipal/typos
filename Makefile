@@ -12,6 +12,7 @@ $(NAME): $(OBJS) $(ASMS)
  ifneq (,$(OBJS))
 	@$(CC) $(addprefix -D,$(DEFINES)) \
 		$(IFLAGS) \
+		$(LFLAGS) \
 		$(OBJS) \
 		$(CFLAGS) \
 		$(CFLAGS_OPTIONAL) \

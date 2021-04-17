@@ -31,6 +31,8 @@ $(error "Some of the configs/base.mk:$$HEADER_DEPS additional library headers de
 IFLAGS += $(addprefix -I,$(shell find $(foreach d,$(HEADER_DEPS),$(abspath $d)) -type d))
 endif
 
+LFLAGS += -lncurses
+
 # All submodules or additional libs must to be placed in to 'libs' folder
 #  and has it's own folder and Makefile with the same rules as this.
 ifneq (,$(wildcard ./libs))

@@ -20,6 +20,9 @@ STATUS_END:
  ifneq (,$(DEFINES))
 	@$(ECHO) "| compiler custom defines : $(foreach dfns,$(DEFINES),$(CLR_INVERT)$(dfns)$(CLR_WHITE) )"
  endif
+ ifneq (,$(LFLAGS))
+	@$(ECHO) "| linked                  : $(LFLAGS)"
+ endif
  ifneq (,$(CFLAGS))
 	@$(ECHO) "| compiler          flags : $(CFLAGS)"
  endif
