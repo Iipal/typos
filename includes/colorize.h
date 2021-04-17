@@ -55,8 +55,8 @@ static inline int __attribute__((format(printf, 2, 3)))
 g_colorize_printw(enum e_colorize color, const char *fmt, ...) {
   va_list va;
   int out = 0;
-  va_start(va, fmt);
 
+  va_start(va, fmt);
   g_colorize_pairs[g_colorize_pairs_mapper[color]]->color_on();
   out = vw_printw(stdscr, fmt, va);
   g_colorize_pairs[g_colorize_pairs_mapper[color]]->color_off();

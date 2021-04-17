@@ -21,14 +21,15 @@ int main(void) {
 
   g_colorize_printw(TYPOS_COLOR_DEFAULT, "default\n\n");
   g_colorize_printw(TYPOS_COLOR_OK, "correct\n\n");
-  g_colorize_printw(TYPOS_COLOR_ERROR, "invalid\n");
+  g_colorize_printw(TYPOS_COLOR_WARN, "warning\n\n");
+  g_colorize_printw(TYPOS_COLOR_ERROR, "error\n");
 
   curs_set(0);
 
   const char *text = "testing colorize output by chars";
   for (size_t i = 0; strlen(text) > i; i++) {
     const enum e_colorize color = i % (TYPOS_COLORS_END + 1);
-    g_colorize_mvaddch(color, 1, i, text[i]);
+    g_colorize_mvaddch(color, 9, i, text[i]);
   }
 
   curs_set(1);
