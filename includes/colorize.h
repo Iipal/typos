@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 enum e_colorize {
-  TYPOS_COLORS_START = 0,
+  TYPOS_COLORS_START = 0u,
   TYPOS_COLOR_DEFAULT = TYPOS_COLORS_START,
   TYPOS_COLOR_OK,
   TYPOS_COLOR_WARN,
@@ -71,14 +71,14 @@ static enum e_colorize g_colorize_pairs_mapper[] = {
     [TYPOS_COLOR_ERROR] = TYPOS_COLOR_DEFAULT,
     [TYPOS_COLOR_INFO] = TYPOS_COLOR_DEFAULT};
 
-static inline void g_colorsize_update_pair(enum e_colorize color, int fg,
-                                           int bg) {
+static inline void colorsize_update_pair(enum e_colorize color, int fg,
+                                         int bg) {
   init_pair(color, fg, bg);
   g_colorize_pairs_mapper[color] = color;
 }
 
 static inline int __attribute__((format(printf, 2, 3)))
-g_colorize_printw(enum e_colorize color, const char *fmt, ...) {
+colorize_printw(enum e_colorize color, const char *fmt, ...) {
   va_list va;
   int out = 0;
 
@@ -93,21 +93,21 @@ g_colorize_printw(enum e_colorize color, const char *fmt, ...) {
 
 static int __g_colorize_temp_out = 0;
 
-#undef g_colorize_mvprintw
-#define g_colorize_mvprintw(color, y, x, fmt, ...)                             \
+#undef colorize_mvprintw
+#define colorize_mvprintw(color, y, x, fmt, ...)                               \
   {                                                                            \
     g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_on();            \
     mvprintw((y), (x), fmt, __VA_ARGS__);                                      \
     g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_off();           \
   }
-#undef g_colorize_mvprintwe
-#define g_colorize_mvprintwe(color, y, x, fmt)                                 \
+#undef colorize_mvprintwe
+#define colorize_mvprintwe(color, y, x, fmt)                                   \
   (g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_on(),             \
    __g_colorize_temp_out = mvprintw((y), (x), fmt),                            \
    g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_off(),            \
    __g_colorize_temp_out)
 
-static inline int g_colorize_mvaddch(int color, int y, int x, const chtype ch) {
+static inline int colorize_mvaddch(int color, int y, int x, const chtype ch) {
   int out = 0;
 
   g_colorize_pairs[g_colorize_pairs_mapper[color]]->color_on();
