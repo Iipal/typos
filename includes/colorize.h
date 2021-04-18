@@ -95,15 +95,14 @@ static int __g_colorize_temp_out = 0;
 
 #undef colorize_mvprintw
 #define colorize_mvprintw(color, y, x, fmt, ...)                               \
-  {                                                                            \
-    g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_on();            \
-    mvprintw((y), (x), fmt, __VA_ARGS__);                                      \
-    g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_off();           \
-  }
+  (g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_on(),             \
+   (__g_colorize_temp_out = mvprintw((y), (x), fmt, __VA_ARGS__)),             \
+   g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_off(),            \
+   __g_colorize_temp_out)
 #undef colorize_mvprintwe
 #define colorize_mvprintwe(color, y, x, fmt)                                   \
   (g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_on(),             \
-   __g_colorize_temp_out = mvprintw((y), (x), fmt),                            \
+   (__g_colorize_temp_out = mvprintw((y), (x), fmt)),                          \
    g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_off(),            \
    __g_colorize_temp_out)
 
