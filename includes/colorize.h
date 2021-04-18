@@ -12,12 +12,13 @@ enum e_colorize {
   TYPOS_COLOR_ERROR,
   TYPOS_COLOR_INFO,
   TYPOS_COLORS_END = TYPOS_COLOR_ERROR
-};
+} __attribute__((__packed__));
 
 struct s_colorize_pair {
   int (*color_on)(void);
   int (*color_off)(void);
-};
+} __attribute__((aligned(__BIGGEST_ALIGNMENT__)));
+
 static int g_colorize_default_on(void) { return 0; }
 static int g_colorize_ok_on(void) {
   attrset(COLOR_PAIR(TYPOS_COLOR_OK));

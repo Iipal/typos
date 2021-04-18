@@ -2,106 +2,185 @@
 #define TYPING_SERVICE_H
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
-const char *__test_strings[] = {
-    "text",   "test",   "spring", "lmao", "vm", "syka", "vim",  "emacs", "ls",
-    "design", "chunks", "alias",  "cd",   "mv", ":3",   "damn", "text",  "test",
-};
-const size_t __test_strings_length =
-    sizeof(__test_strings) / sizeof(*__test_strings);
+#undef TYPING_KEY_DEL
+#define TYPING_KEY_DEL 0x7F
+#undef TYPING_KEY_ESC
+#define TYPING_KEY_ESC 0x1B
 
 typedef struct s_typing_word {
   char *string;
+  enum e_colorize *at_pos_colors;
   size_t pos;
   size_t length;
   enum e_colorize string_color;
-  enum e_colorize *at_pos_colors;
-} typing_word_t;
-typedef typing_word_t **typing_t;
+} __attribute__((aligned(__BIGGEST_ALIGNMENT__))) typing_word_t;
 
-static typing_t g_typing_text = NULL;
-static size_t g_typing_text_length = 0;
-static size_t g_typing_iterator_at_word = 0;
+typedef struct s_typing_text {
+  typing_word_t **words;
+  size_t length;
+  size_t current_word_pos;
+} __attribute__((aligned(__BIGGEST_ALIGNMENT__))) typing_text_t;
 
-static inline typing_t typing_init_text() {
-  g_typing_text_length = __test_strings_length;
-  assert((g_typing_text =
-              calloc(g_typing_text_length + 1, sizeof(*g_typing_text))));
-  for (size_t i = 0; g_typing_text_length > i; ++i) {
-    const size_t word_length = strlen(__test_strings[i]);
+static inline typing_text_t *typing_text_init(const char **strings,
+                                              const size_t strings_length) {
+  typing_text_t *text = NULL;
+
+  assert((text = calloc(sizeof(*text), 1)));
+  text->length = strings_length;
+
+  assert((text->words = calloc(text->length + 1, sizeof(*text->words))));
+  for (size_t i = 0; text->length > i; ++i) {
     char *word = NULL;
+    assert((word = strdup(strings[i])));
+
+    const size_t word_length = strlen(strings[i]);
     enum e_colorize *colors = NULL;
-    assert((word = strdup(__test_strings[i])));
     assert((colors = calloc(sizeof(enum e_colorize), word_length)));
-    assert((g_typing_text[i] = calloc(sizeof(typing_word_t), 1)));
-    memcpy(g_typing_text[i],
-           &(typing_word_t){word, 0, strlen(word), TYPOS_COLOR_DEFAULT, colors},
+
+    assert((text->words[i] = calloc(sizeof(typing_word_t), 1)));
+    memcpy(text->words[i],
+           &(typing_word_t){word, colors, 0, strlen(word), TYPOS_COLOR_DEFAULT},
            sizeof(typing_word_t));
   }
-  return g_typing_text;
+
+  return text;
 }
 
-static inline void typing_iterate() {
+static inline void typing_text_free(typing_text_t *text) {
+  if (!text) {
+    return;
+  }
+
+  if (text->words) {
+    for (size_t i = 0; text->length > i; ++i) {
+      free(text->words[i]->string);
+      free(text->words[i]->at_pos_colors);
+      free(text->words[i]);
+    }
+    free(text->words);
+  }
+  free(text);
+}
+
+static inline bool typing_test_is_word_ok(const typing_word_t *restrict word) {
+  bool is_ok = true;
+
+  for (size_t i = 0; word->length > i; ++i) {
+    if (word->at_pos_colors[i] == TYPOS_COLOR_ERROR) {
+      is_ok = false;
+      break;
+    }
+  }
+
+  return is_ok;
+}
+
+static inline void typing_text_iterate(typing_text_t *text) {
   const bool is_accessible_at_word =
-      !!g_typing_text && !!g_typing_text[g_typing_iterator_at_word];
+      !!text && !!text->words && !!text->words[text->current_word_pos];
   typing_word_t *word = NULL;
   bool is_accessible_at_char = false;
 
   if (is_accessible_at_word) {
-    word = g_typing_text[g_typing_iterator_at_word];
+    word = text->words[text->current_word_pos];
     is_accessible_at_char = !!word->string[word->pos];
   }
 
   if (is_accessible_at_word && !is_accessible_at_char) {
-    if (g_typing_iterator_at_word != g_typing_text_length) {
-      ++g_typing_iterator_at_word;
+    if (text->current_word_pos != text->length) {
+      ++text->current_word_pos;
     }
+
+    bool is_word_ok = typing_test_is_word_ok(word);
+    word->string_color = is_word_ok ? TYPOS_COLOR_OK : TYPOS_COLOR_ERROR;
+
   } else if (word) {
     ++word->pos;
   }
 
-  if (!is_accessible_at_word && !word) {
-    g_typing_iterator_at_word = 0;
-    for (size_t i = 0; g_typing_text_length > i; ++i) {
-      typing_word_t *word = g_typing_text[i];
+  if (!word) {
+    text->current_word_pos = 0;
+    for (size_t i = 0; text->length > i; ++i) {
+      typing_word_t *word = text->words[i];
       word->pos = 0;
       bzero(word->at_pos_colors, sizeof(*word->at_pos_colors) * word->length);
     }
   }
 }
-static inline void typing_backspace() {
-  typing_word_t *word = g_typing_text[g_typing_iterator_at_word];
 
-  if (!word->pos && g_typing_iterator_at_word) {
-    --g_typing_iterator_at_word;
+static inline void typing_text_backspace(typing_text_t *text) {
+  typing_word_t *word = text->words[text->current_word_pos];
+
+  if (!word->pos && text->current_word_pos) {
+    --text->current_word_pos;
   } else {
     if (word->pos) {
       --word->pos;
     }
     word->at_pos_colors[word->pos] = TYPOS_COLOR_DEFAULT;
+
+    bool is_word_ok = typing_test_is_word_ok(word);
+    if (is_word_ok && word->pos) {
+      word->string_color = TYPOS_COLOR_OK;
+    } else {
+      word->string_color = TYPOS_COLOR_DEFAULT;
+    }
   }
 }
 
-static inline typing_t typing_get_text() { return g_typing_text; }
-
-static inline typing_word_t *typing_get_current_word() {
-  return typing_get_text()[g_typing_iterator_at_word];
-}
-static inline char *typing_get_current_string() {
-  return typing_get_current_word()->string;
-}
-static inline char typing_get_current_char() {
-  typing_word_t *word = typing_get_current_word();
-  return word->string[word->pos];
+static inline typing_word_t **
+typing_get_words(const typing_text_t *restrict text) {
+  return text ? text->words : NULL;
 }
 
-static inline size_t typing_get_current_at_word() {
-  return g_typing_iterator_at_word;
+static inline typing_word_t *
+typing_get_current_word(const typing_text_t *restrict text) {
+  typing_word_t **words = typing_get_words(text);
+
+  return words ? words[text->current_word_pos] : NULL;
 }
-static inline size_t typing_get_current_ch_pos() {
-  return typing_get_current_word()->pos;
+static inline char *
+typing_get_current_string(const typing_text_t *restrict text) {
+  typing_word_t *word = typing_get_current_word(text);
+
+  return word ? word->string : NULL;
+}
+static inline char typing_get_current_char(const typing_text_t *restrict text) {
+  typing_word_t *word = typing_get_current_word(text);
+
+  return (word && word->string) ? word->string[word->pos] : 0;
+}
+
+static inline size_t
+typing_get_current_word_pos(const typing_text_t *restrict text) {
+  return text ? text->current_word_pos : 0;
+}
+static inline size_t
+typing_get_current_ch_pos(const typing_text_t *restrict text) {
+  typing_word_t *word = typing_get_current_word(text);
+
+  return word ? word->pos : 0;
+}
+
+static inline int typing_get_input(void) {
+  int ch = 0;
+
+  curs_set(1);
+
+  while ((ch = getch())) {
+    if (isprint(ch) || ch == TYPING_KEY_DEL || ch == TYPING_KEY_ESC) {
+      break;
+    }
+    napms(100);
+  }
+
+  curs_set(0);
+
+  return ch;
 }
 
 #endif /* TYPING_SERVICE_H */
