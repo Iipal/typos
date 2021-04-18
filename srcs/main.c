@@ -61,8 +61,24 @@ int main(void) {
         string_color = TYPOS_COLOR_INFO;
       }
 
-      colorize_mvprintw(string_color, text_line, start_print_pos, "%s ",
-                        current_string);
+      if (current_word_pos == i) {
+        for (size_t i = 0; current_word->length >= i; ++i) {
+          typos_color_t current_ch_color = TYPOS_COLOR_DEFAULT;
+          if (current_ch_pos == i) {
+            current_ch_color =
+                !current_str[i] ? TYPOS_COLOR_INFO_INVERT : TYPOS_COLOR_INFO;
+          } else if (current_ch_pos > i) {
+            current_ch_color = current_word->at_pos_colors[i];
+          }
+
+          colorize_mvaddch(current_ch_color, text_line, start_print_pos + i,
+                           current_str[i] ? current_str[i] : ' ');
+        }
+      } else {
+        colorize_mvprintw(string_color, text_line, start_print_pos, "%s ",
+                          current_string);
+      }
+
       start_print_pos += word->length + 1;
     }
 
