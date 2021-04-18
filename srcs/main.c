@@ -28,14 +28,11 @@ int main(void) {
 
   typing_t test_text = typing_init_text();
 
-  for (size_t i = 0, start_print_pos = 0; test_text[i]; i++) {
+  for (size_t i = 0; test_text[i]; i++) {
     const char *current_string = test_text[i]->string;
-    start_print_pos += (strlen(current_string) + 1) * i;
-    colorize_mvprintw(TYPOS_COLOR_DEFAULT, 0, start_print_pos, "%s ",
-                      current_string);
+    colorize_printw(TYPOS_COLOR_DEFAULT, "%s ", current_string);
     if (!test_text[i + 1]) {
-      start_print_pos += (strlen(current_string) + 1) * i;
-      colorize_mvaddch(TYPOS_COLOR_DEFAULT, 0, start_print_pos, '\n');
+      colorize_printw(TYPOS_COLOR_DEFAULT, "\n");
     }
   }
 
@@ -44,12 +41,15 @@ int main(void) {
 
   for (;;) {
     typing_word_t *current_word = typing_get_current_word();
-    const char *current_str = typing_get_current_string();
-    const char current_ch = typing_get_current_char();
-    const size_t current_ch_pos = typing_get_current_ch_pos();
+    const char *current_str = current_word ? typing_get_current_string() : NULL;
+    const char current_ch = current_word ? typing_get_current_char() : 0;
+    const size_t current_ch_pos =
+        current_word ? typing_get_current_ch_pos() : 0;
 
-    if (!current_ch) {
-      colorize_mvprintwe(TYPOS_COLOR_DEFAULT, input_line, 0, "delimiter");
+    if (!current_word) {
+      colorize_mvprintwe(TYPOS_COLOR_INFO, input_line, 0, "end of words");
+    } else if (!current_ch) {
+      colorize_mvprintwe(TYPOS_COLOR_INFO, input_line, 0, "spacebar");
     } else {
       for (size_t i = 0; current_word->length > i; ++i) {
         colorize_mvaddch(current_word->at_pos_colors[i], input_line, i,
@@ -57,20 +57,20 @@ int main(void) {
       }
 
       colorize_mvprintw(TYPOS_COLOR_DEFAULT, input_line, current_word->length,
-                        "%10c", ' ');
+                        "%12c", ' ');
     }
 
     input = getch();
     is_input_ok = false;
 
+    if (input) {
+      colorize_mvprintw(TYPOS_COLOR_INFO, input_line, 20,
+                        " | last input: %d:'%c'\n", input, input);
+    }
+
     if (input == 127) {
       typing_backspace();
       continue;
-    }
-
-    if (input) {
-      colorize_mvprintw(TYPOS_COLOR_INFO, input_line, strlen(current_str) + 10,
-                        " | input: %c\n", input);
     }
 
     if (current_ch) {

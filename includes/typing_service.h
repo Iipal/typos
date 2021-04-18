@@ -26,7 +26,7 @@ static size_t g_typing_text_length = 0;
 static size_t g_typing_iterator_at_word = 0;
 
 static inline typing_t typing_init_text() {
-  g_typing_text_length = __test_strings_length + 1;
+  g_typing_text_length = __test_strings_length;
   assert((g_typing_text =
               calloc(g_typing_text_length + 1, sizeof(*g_typing_text))));
   for (size_t i = 0; g_typing_text_length > i; ++i) {
@@ -46,26 +46,29 @@ static inline typing_t typing_init_text() {
 static inline void typing_iterate() {
   const bool is_accessible_at_word =
       !!g_typing_text && !!g_typing_text[g_typing_iterator_at_word];
-  typing_word_t *word =
-      is_accessible_at_word ? g_typing_text[g_typing_iterator_at_word] : NULL;
-  bool is_accessible_at_string = false;
-  if (!!word) {
-    is_accessible_at_string = !!word->string[word->pos];
+  typing_word_t *word = NULL;
+  bool is_accessible_at_char = false;
+
+  if (is_accessible_at_word) {
+    word = g_typing_text[g_typing_iterator_at_word];
+    is_accessible_at_char = !!word->string[word->pos];
   }
 
-  if (is_accessible_at_word && !is_accessible_at_string) {
-    if ((g_typing_iterator_at_word + 1) != g_typing_text_length) {
+  if (is_accessible_at_word && !is_accessible_at_char) {
+    if (g_typing_iterator_at_word != g_typing_text_length) {
       ++g_typing_iterator_at_word;
-    } else {
-      g_typing_iterator_at_word = 0;
     }
-  }
-  if (word) {
+  } else if (word) {
     ++word->pos;
   }
 
   if (!is_accessible_at_word && !word) {
     g_typing_iterator_at_word = 0;
+    for (size_t i = 0; g_typing_text_length > i; ++i) {
+      typing_word_t *word = g_typing_text[i];
+      word->pos = 0;
+      bzero(word->at_pos_colors, sizeof(*word->at_pos_colors) * word->length);
+    }
   }
 }
 static inline void typing_backspace() {
@@ -73,9 +76,11 @@ static inline void typing_backspace() {
 
   if (!word->pos && g_typing_iterator_at_word) {
     --g_typing_iterator_at_word;
-    --g_typing_text[g_typing_iterator_at_word]->pos;
   } else {
-    word->at_pos_colors[--word->pos] = TYPOS_COLOR_DEFAULT;
+    if (word->pos) {
+      --word->pos;
+    }
+    word->at_pos_colors[word->pos] = TYPOS_COLOR_DEFAULT;
   }
 }
 
