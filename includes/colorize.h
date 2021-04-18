@@ -14,20 +14,34 @@ enum e_colorize {
 };
 
 struct s_colorize_pair {
-  void (*color_on)(void);
-  void (*color_off)(void);
+  int (*color_on)(void);
+  int (*color_off)(void);
 };
-static void g_colorize_default_on(void) {}
-static void g_colorize_ok_on(void) { attrset(COLOR_PAIR(TYPOS_COLOR_OK)); }
-static void g_colorize_warn_on(void) { attrset(COLOR_PAIR(TYPOS_COLOR_WARN)); }
-static void g_colorize_error_on(void) {
-  attrset(COLOR_PAIR(TYPOS_COLOR_ERROR));
+static int g_colorize_default_on(void) { return 0; }
+static int g_colorize_ok_on(void) {
+  attrset(COLOR_PAIR(TYPOS_COLOR_OK));
+  return 0;
 }
-static void g_colorize_default_off(void) {}
-static void g_colorize_ok_off(void) { attroff(COLOR_PAIR(TYPOS_COLOR_OK)); }
-static void g_colorize_warn_off(void) { attroff(COLOR_PAIR(TYPOS_COLOR_WARN)); }
-static void g_colorize_error_off(void) {
+static int g_colorize_warn_on(void) {
+  attrset(COLOR_PAIR(TYPOS_COLOR_WARN));
+  return 0;
+}
+static int g_colorize_error_on(void) {
+  attrset(COLOR_PAIR(TYPOS_COLOR_ERROR));
+  return 0;
+}
+static int g_colorize_default_off(void) { return 0; }
+static int g_colorize_ok_off(void) {
+  attroff(COLOR_PAIR(TYPOS_COLOR_OK));
+  return 0;
+}
+static int g_colorize_warn_off(void) {
+  attroff(COLOR_PAIR(TYPOS_COLOR_WARN));
+  return 0;
+}
+static int g_colorize_error_off(void) {
   attroff(COLOR_PAIR(TYPOS_COLOR_ERROR));
+  return 0;
 }
 
 static const struct s_colorize_pair *g_colorize_pairs[] = {
@@ -64,6 +78,21 @@ g_colorize_printw(enum e_colorize color, const char *fmt, ...) {
 
   return out;
 }
+
+static int __g_colorize_temp_out = 0;
+
+#undef g_colorize_mvprintw
+#define g_colorize_mvprintw(color, y, x, fmt, ...)                             \
+  (g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_on(),             \
+   __g_colorize_temp_out = mvprintw((y), (x), fmt, __VA_LIST__),               \
+   g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_off(),            \
+   __g_colorize_temp_out)
+#undef g_colorize_mvprintwe
+#define g_colorize_mvprintwe(color, y, x, fmt)                                 \
+  (g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_on(),             \
+   __g_colorize_temp_out = mvprintw((y), (x), fmt),                            \
+   g_colorize_pairs[g_colorize_pairs_mapper[(color)]]->color_off(),            \
+   __g_colorize_temp_out)
 
 static inline int g_colorize_mvaddch(int color, int y, int x, const chtype ch) {
   int out = 0;
