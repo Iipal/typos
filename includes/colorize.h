@@ -10,6 +10,7 @@ enum e_colorize {
   TYPOS_COLOR_OK,
   TYPOS_COLOR_WARN,
   TYPOS_COLOR_ERROR,
+  TYPOS_COLOR_INFO,
   TYPOS_COLORS_END = TYPOS_COLOR_ERROR
 };
 
@@ -30,6 +31,10 @@ static int g_colorize_error_on(void) {
   attrset(COLOR_PAIR(TYPOS_COLOR_ERROR));
   return 0;
 }
+static int g_colorize_info_on(void) {
+  attrset(COLOR_PAIR(TYPOS_COLOR_INFO));
+  return 0;
+}
 static int g_colorize_default_off(void) { return 0; }
 static int g_colorize_ok_off(void) {
   attroff(COLOR_PAIR(TYPOS_COLOR_OK));
@@ -43,6 +48,10 @@ static int g_colorize_error_off(void) {
   attroff(COLOR_PAIR(TYPOS_COLOR_ERROR));
   return 0;
 }
+static int g_colorize_info_off(void) {
+  attroff(COLOR_PAIR(TYPOS_COLOR_INFO));
+  return 0;
+}
 
 static const struct s_colorize_pair *g_colorize_pairs[] = {
     [TYPOS_COLOR_DEFAULT] = &(struct s_colorize_pair){g_colorize_default_on,
@@ -52,12 +61,15 @@ static const struct s_colorize_pair *g_colorize_pairs[] = {
     [TYPOS_COLOR_WARN] =
         &(struct s_colorize_pair){g_colorize_warn_on, g_colorize_warn_off},
     [TYPOS_COLOR_ERROR] =
-        &(struct s_colorize_pair){g_colorize_error_on, g_colorize_error_off}};
+        &(struct s_colorize_pair){g_colorize_error_on, g_colorize_error_off},
+    [TYPOS_COLOR_INFO] =
+        &(struct s_colorize_pair){g_colorize_info_on, g_colorize_info_off}};
 static enum e_colorize g_colorize_pairs_mapper[] = {
     [TYPOS_COLOR_DEFAULT] = TYPOS_COLOR_DEFAULT,
     [TYPOS_COLOR_OK] = TYPOS_COLOR_DEFAULT,
     [TYPOS_COLOR_WARN] = TYPOS_COLOR_DEFAULT,
-    [TYPOS_COLOR_ERROR] = TYPOS_COLOR_DEFAULT};
+    [TYPOS_COLOR_ERROR] = TYPOS_COLOR_DEFAULT,
+    [TYPOS_COLOR_INFO] = TYPOS_COLOR_DEFAULT};
 
 static inline void g_colorsize_update_pair(enum e_colorize color, int fg,
                                            int bg) {
