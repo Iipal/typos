@@ -14,6 +14,8 @@ void colouring() {
       colorsize_update_pair(TYPOS_COLOR_WARN, COLOR_YELLOW, COLOR_BLACK);
       colorsize_update_pair(TYPOS_COLOR_ERROR, COLOR_RED, COLOR_BLACK);
       colorsize_update_pair(TYPOS_COLOR_INFO, COLOR_MAGENTA, COLOR_BLACK);
+      colorsize_update_pair(TYPOS_COLOR_INFO_INVERT, COLOR_WHITE,
+                            COLOR_MAGENTA);
     } else {
       addstr("Cannot start colours\n");
     }
@@ -51,7 +53,7 @@ int main(void) {
     for (size_t i = 0, start_print_pos = 0; test_words[i]; i++) {
       const typing_word_t *word = test_words[i];
       const char *current_string = word->string;
-      enum e_colorize string_color = TYPOS_COLOR_DEFAULT;
+      typos_color_t string_color = TYPOS_COLOR_DEFAULT;
 
       if (current_word_pos > i) {
         string_color = word->string_color;

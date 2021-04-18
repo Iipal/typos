@@ -13,10 +13,10 @@
 
 typedef struct s_typing_word {
   char *string;
-  enum e_colorize *at_pos_colors;
+  typos_color_t *at_pos_colors;
   size_t pos;
   size_t length;
-  enum e_colorize string_color;
+  typos_color_t string_color;
 } __attribute__((aligned(__BIGGEST_ALIGNMENT__))) typing_word_t;
 
 typedef struct s_typing_text {
@@ -38,8 +38,8 @@ static inline typing_text_t *typing_text_init(const char **strings,
     assert((word = strdup(strings[i])));
 
     const size_t word_length = strlen(strings[i]);
-    enum e_colorize *colors = NULL;
-    assert((colors = calloc(sizeof(enum e_colorize), word_length)));
+    typos_color_t *colors = NULL;
+    assert((colors = calloc(sizeof(typos_color_t), word_length)));
 
     assert((text->words[i] = calloc(sizeof(typing_word_t), 1)));
     memcpy(text->words[i],
