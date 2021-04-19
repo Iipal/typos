@@ -6,12 +6,17 @@ const char *__test_strings[] = {
 const size_t __test_strings_length =
     sizeof(__test_strings) / sizeof(*__test_strings);
 
-inline void finish(WINDOW *win) {
-  delwin(win);
+inline void finish(int sig) {
+  (void)sig;
+  delwin(stdscr);
   endwin();
+  exit(EXIT_SUCCESS);
 }
 
 int main(void) {
+  signal(SIGINT, finish);
+  signal(SIGKILL, finish);
+
   WINDOW *win = NULL;
   assert((win = initscr()));
 
@@ -33,9 +38,9 @@ int main(void) {
     typing_word_t *current_word = typing_get_current_word(test_text);
     const char current_ch = typing_get_current_char(test_text);
 
-    output_text(test_text);
-    output_text_delimiter();
-    output_current_word(current_word, input);
+    print_text(test_text);
+    print_text_delimiter();
+    print_current_word(current_word, input);
 
     input = typing_get_input();
     is_input_ok = false;
@@ -49,22 +54,20 @@ int main(void) {
       is_input_ok = typing_validate_input(current_word, input);
 
 #ifdef TYPOS_DEBUG
-      output_input_status(current_word ? current_word->string[current_word->pos]
-                                       : 0,
-                          is_input_ok);
+      print_input_status(current_word ? current_word->string[current_word->pos]
+                                      : 0,
+                         is_input_ok);
 #endif
     }
 
     if (current_ch || (!current_ch && is_input_ok)) {
       typing_text_iterate(test_text);
     }
-
-    refresh();
   }
 
   typing_text_free(test_text);
 
   curs_set(1);
 
-  finish(win);
+  finish(0);
 }

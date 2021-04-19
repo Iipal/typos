@@ -45,7 +45,7 @@ inline bool typing_test_is_word_ok(const typing_word_t *restrict word) {
   bool is_ok = true;
 
   for (size_t i = 0; word->length > i; ++i) {
-    if (word->at_pos_colors[i] == TYPOS_COLOR_ERROR) {
+    if (word->at_pos_colors[i] != TYPOS_COLOR_OK) {
       is_ok = false;
       break;
     }
@@ -68,7 +68,7 @@ inline void typing_text_iterate(typing_text_t *text) {
   if (is_accessible_at_word && !is_accessible_at_char) {
     if (text->current_word_pos != text->length) {
       ++text->current_word_pos;
-      output_clean_prev_word();
+      print_clean_prev_word();
     }
 
     bool is_word_ok = typing_test_is_word_ok(word);
@@ -79,7 +79,7 @@ inline void typing_text_iterate(typing_text_t *text) {
   }
 
   if (!word) {
-    output_clean_prev_word();
+    print_clean_prev_word();
     text->current_word_pos = 0;
     for (size_t i = 0; text->length > i; ++i) {
       typing_word_t *word = text->words[i];
@@ -92,8 +92,9 @@ inline void typing_text_iterate(typing_text_t *text) {
 inline void typing_text_backspace(typing_text_t *text) {
   typing_word_t *word = text->words[text->current_word_pos];
 
-  if (!word->pos && text->current_word_pos) {
+  if (!word || (!word->pos && text->current_word_pos)) {
     --text->current_word_pos;
+    print_clean_prev_word();
   } else {
     if (word->pos) {
       --word->pos;
@@ -170,7 +171,7 @@ inline bool typing_validate_input(const typing_word_t *restrict word,
     if (is_input_ok) {
       word->at_pos_colors[current_ch_pos] = TYPOS_COLOR_OK;
     } else {
-      word->at_pos_colors[current_ch_pos] = TYPOS_COLOR_ERROR;
+      word->at_pos_colors[current_ch_pos] = TYPOS_COLOR_WARN;
     }
   } else if (!current_ch && input != ' ') {
     is_input_ok = false;

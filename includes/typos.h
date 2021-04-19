@@ -4,12 +4,12 @@
 #define _GNU_SOURCE
 
 #include "colorize.h"
-#include "output.h"
-#include "typing_service.h"
+#include "print.h"
+#include "typing.h"
 
 #include <signal.h>
 #include <stdio.h>
 
-extern void finish(WINDOW *win);
+extern void finish(int);
 
 #endif /* TYPOS_H */

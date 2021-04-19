@@ -37,15 +37,15 @@ inline void colorize_init() {
       colorsize_update_pair(TYPOS_COLOR_OK, COLOR_GREEN, COLOR_BLACK);
       colorsize_update_pair(TYPOS_COLOR_WARN, COLOR_YELLOW, COLOR_BLACK);
       colorsize_update_pair(TYPOS_COLOR_ERROR, COLOR_RED, COLOR_BLACK);
-      colorsize_update_pair(TYPOS_COLOR_INFO, COLOR_MAGENTA, COLOR_BLACK);
+      colorsize_update_pair(TYPOS_COLOR_INFO, COLOR_CYAN, COLOR_BLACK);
       colorsize_update_pair(TYPOS_COLOR_INFO_INVERT, COLOR_WHITE,
                             COLOR_MAGENTA);
     } else {
-      finish(stdscr);
+      finish(0);
       printf("Cannot start colours\n");
     }
   } else {
-    finish(stdscr);
+    finish(0);
     printf("Cannot start colours\n");
   }
 }
