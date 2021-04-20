@@ -38,7 +38,7 @@ inline void finish(int sig) {
   exit(EXIT_SUCCESS);
 }
 
-static inline int wait_for_input(void) {
+static inline int welcome_screen(void) {
   const char *msg = "PRESS ANY KEY TO START";
   const int x = (stdscr->_maxx / 2) - (strlen(msg) / 2);
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 
   int input = 0;
   bool is_input_ok = true;
-  bool stop = wait_for_input() == TYPING_KEY_ESC;
+  bool stop = welcome_screen() == TYPING_KEY_ESC;
 
   while (!stop) {
     box(win, 0, 0);
