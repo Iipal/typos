@@ -16,6 +16,7 @@ extern int print_line_timer_get_y(void);
 extern int print_line_timer_get_x(void);
 extern int print_line_info_get_y(void);
 extern int print_line_info_get_x(void);
+extern int print_line_get_center_x(size_t text_len);
 
 extern void print_text(const typing_text_t *restrict text);
 extern void print_text_delimiter(void);

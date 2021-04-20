@@ -26,7 +26,7 @@ inline int print_line_input_get_y(void) {
   return print_line_text_y + print_line_input_shift_y;
 }
 inline int print_line_input_update_x(size_t word_len) {
-  return print_line_input_x = stdscr->_maxx / 2 - (word_len / 2);
+  return print_line_get_center_x(word_len);
 }
 inline int print_line_input_get_x(void) { return print_line_input_x; }
 
@@ -39,6 +39,10 @@ inline int print_line_info_get_y(void) {
   return print_line_input_get_y() + print_line_info_shift_y;
 }
 inline int print_line_info_get_x(void) { return print_line_info_x; }
+
+inline int print_line_get_center_x(size_t text_len) {
+  return (stdscr->_maxx / 2) - (text_len / 2);
+}
 
 inline void print_text(const typing_text_t *restrict text) {
   typing_word_t **words = typing_get_words(text);
@@ -116,7 +120,7 @@ inline void print_timer(int seconds) {
 inline void print_current_word(const typing_word_t *restrict word,
                                int input_ch) {
   const int y = print_line_input_get_y();
-  const int x = print_line_input_get_x();
+  const int x = print_line_input_update_x(word ? word->length : 12);
 
   if (!word) {
     colorize_mvprintwe(TYPOS_COLOR_INFO, y, x, "end of words");
