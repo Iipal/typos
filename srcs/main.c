@@ -8,12 +8,16 @@ const size_t __test_strings_length =
 
 inline void finish(int sig) {
   (void)sig;
+  if (stdscr) {
   delwin(stdscr);
+  }
   endwin();
   exit(EXIT_SUCCESS);
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+  flags_parse(argc, argv);
+
   signal(SIGINT, finish);
   signal(SIGKILL, finish);
 
