@@ -43,7 +43,7 @@ static inline int wait_for_input(void) {
   const int x = (stdscr->_maxx / 2) - (strlen(msg) / 2);
 
   box(stdscr, 0, 0);
-  colorize_mvprintwe(TYPOS_COLOR_OK, 1, x, msg);
+  colorize_mvprintwe(COLORIZE_OK, 1, x, msg);
 
   int input = typing_get_input();
 

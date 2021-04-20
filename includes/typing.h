@@ -17,10 +17,10 @@
 
 typedef struct s_typing_word {
   char *string;
-  typos_color_t *at_pos_colors;
+  color_t *at_pos_colors;
   size_t pos;
   size_t length;
-  typos_color_t string_color;
+  color_t string_color;
 } __attribute__((aligned(__BIGGEST_ALIGNMENT__))) typing_word_t;
 
 typedef struct s_typing_text {

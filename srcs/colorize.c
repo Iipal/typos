@@ -1,45 +1,43 @@
 #include "typos.h"
 
-static int __colorize_default_on(typos_color_t c) {
+static int __colorize_default_on(color_t c) {
   (void)c;
   return 0;
 }
-static int __colorize_initted_on(typos_color_t c) {
+static int __colorize_initted_on(color_t c) {
   attrset(COLOR_PAIR(c));
   return c;
 }
-static int __colorize_default_off(typos_color_t c) {
+static int __colorize_default_off(color_t c) {
   (void)c;
   return 0;
 }
-static int __colorize_initted_off(typos_color_t c) {
+static int __colorize_initted_off(color_t c) {
   attroff(COLOR_PAIR(c));
   return c;
 }
 
 const struct s_colorize_pair *g_colorize_pairs[] = {
-    [TYPOS_COLOR_DEFAULT] = &(struct s_colorize_pair){__colorize_default_on,
-                                                      __colorize_default_off},
-    [TYPOS_COLOR_ENABLED] = &(struct s_colorize_pair){__colorize_initted_on,
-                                                      __colorize_initted_off}};
-typos_color_t g_colorize_pairs_mapper[] = {
-    [TYPOS_COLOR_DEFAULT] = TYPOS_COLOR_DEFAULT,
-    [TYPOS_COLOR_OK] = TYPOS_COLOR_DEFAULT,
-    [TYPOS_COLOR_WARN] = TYPOS_COLOR_DEFAULT,
-    [TYPOS_COLOR_ERROR] = TYPOS_COLOR_DEFAULT,
-    [TYPOS_COLOR_INFO] = TYPOS_COLOR_DEFAULT,
-    [TYPOS_COLOR_INFO_INVERT] = TYPOS_COLOR_DEFAULT};
+    [COLORIZE_DEFAULT] = &(struct s_colorize_pair){__colorize_default_on,
+                                                   __colorize_default_off},
+    [COLORIZE_ENABLED] = &(struct s_colorize_pair){__colorize_initted_on,
+                                                   __colorize_initted_off}};
+color_t g_colorize_pairs_mapper[] = {[COLORIZE_DEFAULT] = COLORIZE_DEFAULT,
+                                     [COLORIZE_OK] = COLORIZE_DEFAULT,
+                                     [COLORIZE_WARN] = COLORIZE_DEFAULT,
+                                     [COLORIZE_ERROR] = COLORIZE_DEFAULT,
+                                     [COLORIZE_INFO] = COLORIZE_DEFAULT,
+                                     [COLORIZE_INFO_INVERT] = COLORIZE_DEFAULT};
 
 inline void colorize_init() {
   if (has_colors()) {
     if (start_color() == OK) {
-      colorsize_update_pair(TYPOS_COLOR_DEFAULT, COLOR_WHITE, COLOR_BLACK);
-      colorsize_update_pair(TYPOS_COLOR_OK, COLOR_GREEN, COLOR_BLACK);
-      colorsize_update_pair(TYPOS_COLOR_WARN, COLOR_YELLOW, COLOR_BLACK);
-      colorsize_update_pair(TYPOS_COLOR_ERROR, COLOR_RED, COLOR_BLACK);
-      colorsize_update_pair(TYPOS_COLOR_INFO, COLOR_CYAN, COLOR_BLACK);
-      colorsize_update_pair(TYPOS_COLOR_INFO_INVERT, COLOR_WHITE,
-                            COLOR_MAGENTA);
+      colorsize_update_pair(COLORIZE_DEFAULT, COLOR_WHITE, COLOR_BLACK);
+      colorsize_update_pair(COLORIZE_OK, COLOR_GREEN, COLOR_BLACK);
+      colorsize_update_pair(COLORIZE_WARN, COLOR_YELLOW, COLOR_BLACK);
+      colorsize_update_pair(COLORIZE_ERROR, COLOR_RED, COLOR_BLACK);
+      colorsize_update_pair(COLORIZE_INFO, COLOR_CYAN, COLOR_BLACK);
+      colorsize_update_pair(COLORIZE_INFO_INVERT, COLOR_WHITE, COLOR_MAGENTA);
     } else {
       finish(0);
       printf("Cannot start colours\n");
@@ -50,13 +48,13 @@ inline void colorize_init() {
   }
 }
 
-inline void colorsize_update_pair(typos_color_t color, int fg, int bg) {
+inline void colorsize_update_pair(color_t color, int fg, int bg) {
   init_pair(color, fg, bg);
-  g_colorize_pairs_mapper[color] = TYPOS_COLOR_ENABLED;
+  g_colorize_pairs_mapper[color] = COLORIZE_ENABLED;
 }
 
 inline int __attribute__((format(printf, 2, 3)))
-colorize_printw(typos_color_t color, const char *fmt, ...) {
+colorize_printw(color_t color, const char *fmt, ...) {
   va_list va;
   int out = 0;
 

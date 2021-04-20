@@ -56,11 +56,11 @@ inline void print_text(const typing_text_t *restrict text) {
     const typing_word_t *word = words[i];
     const char *current_string = word->string;
 
-    typos_color_t string_color = TYPOS_COLOR_DEFAULT;
+    color_t string_color = COLORIZE_DEFAULT;
     if (current_word_pos > i) {
       string_color = word->string_color;
     } else if (current_word_pos == i) {
-      string_color = TYPOS_COLOR_INFO;
+      string_color = COLORIZE_INFO;
     }
 
     if (start_print_pos_x + word->length > max_x) {
@@ -73,10 +73,10 @@ inline void print_text(const typing_text_t *restrict text) {
 
     if (current_word_pos == i) {
       for (size_t i = 0; word->length >= i; ++i) {
-        typos_color_t current_ch_color = TYPOS_COLOR_DEFAULT;
+        color_t current_ch_color = COLORIZE_DEFAULT;
         if (current_ch_pos == i) {
           current_ch_color =
-              !current_string[i] ? TYPOS_COLOR_INFO_INVERT : TYPOS_COLOR_INFO;
+              !current_string[i] ? COLORIZE_INFO_INVERT : COLORIZE_INFO;
         } else if (current_ch_pos > i) {
           current_ch_color = word->at_pos_colors[i];
         }
@@ -114,7 +114,7 @@ inline void print_timer(int seconds) {
   int y = print_line_timer_get_y();
   int x = print_line_timer_get_x();
 
-  colorize_mvprintw(TYPOS_COLOR_INFO, y, x, "%02d:%02d", min, sec);
+  colorize_mvprintw(COLORIZE_INFO, y, x, "%02d:%02d", min, sec);
   curs_set(0);
 }
 
@@ -124,20 +124,20 @@ inline void print_current_word(const typing_word_t *restrict word,
   const int x = print_line_input_update_x(word ? word->length : 12);
 
   if (!word) {
-    colorize_mvprintwe(TYPOS_COLOR_INFO, y, x, "end of words");
+    colorize_mvprintwe(COLORIZE_INFO, y, x, "end of words");
   } else {
     for (size_t i = 0; word->length > i; ++i) {
       colorize_mvaddch(word->at_pos_colors[i], y, x + i, word->string[i]);
     }
 
-    colorize_mvprintw(TYPOS_COLOR_DEFAULT, y, x + word->length, "%12c", ' ');
+    colorize_mvprintw(COLORIZE_DEFAULT, y, x + word->length, "%12c", ' ');
   }
 
   mvhline(y + 1, x, ACS_BSBS, word ? word->length + 1 : 0);
 
   (void)input_ch;
 #ifdef TYPOS_DEBUG
-  colorize_mvprintw(TYPOS_COLOR_INFO, y, x + (word ? word->length : 12),
+  colorize_mvprintw(COLORIZE_INFO, y, x + (word ? word->length : 12),
                     " | last input: %3d:'%2c'", input_ch,
                     input_ch ? input_ch : ' ');
 #endif
@@ -152,13 +152,13 @@ inline void print_input_status(const char current_ch, const bool is_input_ok) {
 
   if (current_ch) {
     if (is_input_ok) {
-      colorize_mvprintwe(TYPOS_COLOR_OK, y, x, "correct char\n");
+      colorize_mvprintwe(COLORIZE_OK, y, x, "correct char\n");
     } else {
-      colorize_mvprintwe(TYPOS_COLOR_ERROR, y, x, "invalid char\n");
+      colorize_mvprintwe(COLORIZE_ERROR, y, x, "invalid char\n");
     }
   } else if (is_input_ok) {
-    colorize_mvprintwe(TYPOS_COLOR_OK, y, x, "ok, next word\n");
+    colorize_mvprintwe(COLORIZE_OK, y, x, "ok, next word\n");
   } else {
-    colorize_mvprintwe(TYPOS_COLOR_WARN, y, x, "WTF\n");
+    colorize_mvprintwe(COLORIZE_WARN, y, x, "WTF\n");
   }
 }

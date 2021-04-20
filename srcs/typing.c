@@ -13,12 +13,12 @@ inline typing_text_t *typing_text_init(const char **strings,
     assert((word = strdup(strings[i])));
 
     const size_t word_length = strlen(strings[i]);
-    typos_color_t *colors = NULL;
-    assert((colors = calloc(sizeof(typos_color_t), word_length)));
+    color_t *colors = NULL;
+    assert((colors = calloc(sizeof(color_t), word_length)));
 
     assert((text->words[i] = calloc(sizeof(typing_word_t), 1)));
     memcpy(text->words[i],
-           &(typing_word_t){word, colors, 0, strlen(word), TYPOS_COLOR_DEFAULT},
+           &(typing_word_t){word, colors, 0, strlen(word), COLORIZE_DEFAULT},
            sizeof(typing_word_t));
   }
 
@@ -45,7 +45,7 @@ inline bool typing_test_is_word_ok(const typing_word_t *restrict word) {
   bool is_ok = true;
 
   for (size_t i = 0; word->length > i; ++i) {
-    if (word->at_pos_colors[i] != TYPOS_COLOR_OK) {
+    if (word->at_pos_colors[i] != COLORIZE_OK) {
       is_ok = false;
       break;
     }
@@ -72,7 +72,7 @@ inline void typing_text_iterate(typing_text_t *text) {
     }
 
     bool is_word_ok = typing_test_is_word_ok(word);
-    word->string_color = is_word_ok ? TYPOS_COLOR_OK : TYPOS_COLOR_ERROR;
+    word->string_color = is_word_ok ? COLORIZE_OK : COLORIZE_ERROR;
 
   } else if (word) {
     ++word->pos;
@@ -99,13 +99,13 @@ inline void typing_text_backspace(typing_text_t *text) {
     if (word->pos) {
       --word->pos;
     }
-    word->at_pos_colors[word->pos] = TYPOS_COLOR_DEFAULT;
+    word->at_pos_colors[word->pos] = COLORIZE_DEFAULT;
 
     bool is_word_ok = typing_test_is_word_ok(word);
     if (is_word_ok && word->pos) {
-      word->string_color = TYPOS_COLOR_OK;
+      word->string_color = COLORIZE_OK;
     } else {
-      word->string_color = TYPOS_COLOR_DEFAULT;
+      word->string_color = COLORIZE_DEFAULT;
     }
   }
 }
@@ -170,9 +170,9 @@ inline bool typing_validate_input(const typing_word_t *restrict word,
   if (current_ch) {
     is_input_ok = (current_ch == input);
     if (is_input_ok) {
-      word->at_pos_colors[current_ch_pos] = TYPOS_COLOR_OK;
+      word->at_pos_colors[current_ch_pos] = COLORIZE_OK;
     } else {
-      word->at_pos_colors[current_ch_pos] = TYPOS_COLOR_WARN;
+      word->at_pos_colors[current_ch_pos] = COLORIZE_WARN;
     }
   } else if (!current_ch &&
              (input != TYPING_KEY_SPACE_BAR && input != TYPING_KEY_NEW_LINE)) {
