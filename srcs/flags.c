@@ -12,9 +12,9 @@
 #define FLAG_N_MIN 10
 #define FLAG_N_MAX 100
 
-#define FLAG_T_DEFAULT 60
-#define FLAG_T_MIN 10
-#define FLAG_T_MAX 240
+#define FLAG_T_DEFAULT TIMER_SECONDS_DEFAULT
+#define FLAG_T_MIN TIMER_SECONDS_MIN
+#define FLAG_T_MAX TIMER_SECONDS_MAX
 
 #define FLAG_N_DESC                                                            \
   "Number of maximum random words to type.\n"                                  \
