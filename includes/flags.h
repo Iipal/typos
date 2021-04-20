@@ -5,8 +5,8 @@
 #include <stdbool.h>
 
 struct s_flags {
-  uint8_t max_words;
-  uint8_t max_time;
+  uint32_t max_words;
+  uint32_t max_time;
 };
 
 extern struct s_flags g_flags;

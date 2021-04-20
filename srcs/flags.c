@@ -46,13 +46,13 @@ static inline ssize_t flag_positive_integer_arg_parse(const char *arg,
                                                       char flag, int min,
                                                       int max, int def) {
   size_t i = 0;
-  while (arg[i])
+  while (arg[i] && isdigit(arg[i]))
     ++i;
   bool is_ok = !arg[i];
 
   ssize_t value = -1;
   if (is_ok) {
-    int value = atoi(arg);
+    value = atoi(arg);
     is_ok = !(min > value || max < value);
   }
 
