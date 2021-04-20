@@ -146,7 +146,8 @@ inline int typing_get_input(void) {
   curs_set(1);
 
   while ((ch = getch())) {
-    if (isprint(ch) || ch == TYPING_KEY_DEL || ch == TYPING_KEY_ESC) {
+    if (isprint(ch) || TYPING_KEY_DEL == ch || TYPING_KEY_ESC == ch ||
+        TYPING_KEY_NEW_LINE == ch) {
       break;
     }
     napms(50);
@@ -173,7 +174,8 @@ inline bool typing_validate_input(const typing_word_t *restrict word,
     } else {
       word->at_pos_colors[current_ch_pos] = TYPOS_COLOR_WARN;
     }
-  } else if (!current_ch && input != ' ') {
+  } else if (!current_ch &&
+             (input != TYPING_KEY_SPACE_BAR && input != TYPING_KEY_NEW_LINE)) {
     is_input_ok = false;
   }
 

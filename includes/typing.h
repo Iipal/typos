@@ -10,6 +10,10 @@
 #define TYPING_KEY_DEL 0x7F
 #undef TYPING_KEY_ESC
 #define TYPING_KEY_ESC 0x1B
+#undef TYPING_KEY_NEW_LINE
+#define TYPING_KEY_NEW_LINE 0x0A
+#undef TYPING_KEY_SPACE_BAR
+#define TYPING_KEY_SPACE_BAR 0x20
 
 typedef struct s_typing_word {
   char *string;
