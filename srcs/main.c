@@ -15,6 +15,20 @@ inline void finish(int sig) {
   exit(EXIT_SUCCESS);
 }
 
+static inline int wait_for_input(void) {
+  const char *msg = "PRESS ANY KEY TO START";
+  const int x = (stdscr->_maxx / 2) - (strlen(msg) / 2);
+
+  box(stdscr, 0, 0);
+  colorize_mvprintwe(TYPOS_COLOR_OK, 1, x, msg);
+
+  int input = typing_get_input();
+
+  timer_init(g_flags.max_time);
+
+  return input;
+}
+
 int main(int argc, char *argv[]) {
   flags_parse(argc, argv);
 
@@ -26,15 +40,14 @@ int main(int argc, char *argv[]) {
 
   colorize_init();
 
-  curs_set(0);
   noecho();
-
-  int input = 0;
-  bool is_input_ok = true;
-  bool stop = false;
 
   typing_text_t *test_text =
       typing_text_init(__test_strings, __test_strings_length);
+
+  int input = 0;
+  bool is_input_ok = true;
+  bool stop = wait_for_input() == TYPING_KEY_ESC;
 
   while (!stop) {
     box(win, 0, 0);
@@ -70,8 +83,6 @@ int main(int argc, char *argv[]) {
   }
 
   typing_text_free(test_text);
-
-  curs_set(1);
 
   finish(0);
 }
