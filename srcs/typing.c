@@ -68,7 +68,7 @@ inline void typing_text_iterate(typing_text_t *text) {
   if (is_accessible_at_word && !is_accessible_at_char) {
     if (text->current_word_pos != text->length) {
       ++text->current_word_pos;
-      print_clean_prev_word();
+      print_clean_prev_word(word);
     }
 
     bool is_word_ok = typing_test_is_word_ok(word);
@@ -79,7 +79,7 @@ inline void typing_text_iterate(typing_text_t *text) {
   }
 
   if (!word) {
-    print_clean_prev_word();
+    print_clean_prev_word(NULL);
     text->current_word_pos = 0;
     for (size_t i = 0; text->length > i; ++i) {
       typing_word_t *word = text->words[i];
@@ -94,7 +94,7 @@ inline void typing_text_backspace(typing_text_t *text) {
 
   if (!word || (!word->pos && text->current_word_pos)) {
     --text->current_word_pos;
-    print_clean_prev_word();
+    print_clean_prev_word(word);
   } else {
     if (word->pos) {
       --word->pos;

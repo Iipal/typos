@@ -98,12 +98,13 @@ inline void print_text_delimiter(void) {
   mvhline(y, 1, ACS_BSBS, stdscr->_maxx - 1);
 }
 
-inline void print_clean_prev_word(void) {
+inline void print_clean_prev_word(const typing_word_t *restrict word) {
   const int y = print_line_input_get_y();
+  const int x = print_line_get_center_x(word->length);
 
-  move(y, 0);
+  move(y, x);
   clrtoeol();
-  move(y + 1, 1);
+  move(y + 1, x);
   clrtoeol();
 }
 

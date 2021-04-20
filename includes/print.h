@@ -20,6 +20,7 @@ extern int print_line_get_center_x(size_t text_len);
 
 extern void print_text(const typing_text_t *restrict text);
 extern void print_text_delimiter(void);
+extern void print_clean_prev_word(const typing_word_t *restrict word);
 extern void print_timer(int seconds);
 extern void print_current_word(const typing_word_t *restrict word,
                                int input_ch);
