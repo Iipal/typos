@@ -1,15 +1,38 @@
 #include "typos.h"
 
 const char *__test_strings[] = {
-    "text", "test", "spring", "lmao", "vm", "syka", "vim", "emacs", "ls",
-};
+    "trapshooters",   "welled",        "interrelated",  "pipped",
+    "overdyes",       "prorogations",  "rigidifying",   "new",
+    "ductility",      "grazing",       "unifaces",      "capacitating",
+    "orby",           "kernel",        "bumkins",       "moonflowers",
+    "chrysoprases",   "explicable",    "nasalised",     "getaways",
+    "antimusical",    "vivifies",      "oomiacks",      "kerrias",
+    "coulisses",      "cullender",     "playas",        "magnate",
+    "sexologic",      "amnic",         "androgynies",   "ruffly",
+    "canthal",        "unhairers",     "isotonic",      "aerobats",
+    "nonmechanistic", "curabilities",  "needs",         "gemminess",
+    "reallots",       "urinate",       "counterplay",   "ravine",
+    "animadverts",    "antineutrino",  "disrelishing",  "endopeptidases",
+    "confidantes",    "cabbalas",      "deliciousness", "recomputes",
+    "laughingly",     "sips",          "fud",           "sufficers",
+    "synoptical",     "superior",      "rurban",        "microclines",
+    "billet",         "windingly",     "squealers",     "foilsman",
+    "gynophobes",     "ptosis",        "backer",        "simioid",
+    "perusing",       "ruing",         "neurotoxin",    "phosphene",
+    "reschooled",     "lien",          "masting",       "doily",
+    "phonemicists",   "unutilized",    "updry",         "unafraid",
+    "smugnesses",     "preinterviews", "purfler",       "beglamor",
+    "affluently",     "anamneses",     "chaired",       "hardheaded",
+    "graybeards",     "drainages",     "stratus",       "emblemizing",
+    "bilboes",        "trudgeon",      "flipflopping",  "hands",
+    "renails",        "hookup",        "scavenger",     "drawing"};
 const size_t __test_strings_length =
     sizeof(__test_strings) / sizeof(*__test_strings);
 
 inline void finish(int sig) {
   (void)sig;
   if (stdscr) {
-  delwin(stdscr);
+    delwin(stdscr);
   }
   endwin();
   exit(EXIT_SUCCESS);
