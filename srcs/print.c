@@ -3,8 +3,12 @@
 const int print_line_text_y_default = 1;
 int print_line_text_y = print_line_text_y_default;
 int print_line_text_x = 1;
-int print_line_input_shift_y = 2;
-int print_line_input_x = 1;
+
+const int print_line_input_shift_y = 2;
+const int print_line_timer_shift_y = print_line_input_shift_y;
+const int print_line_timer_x = 5;
+const int print_line_input_x = print_line_timer_x + 1;
+
 int print_line_info_shift_y = 2;
 int print_line_info_x = 1;
 
@@ -25,6 +29,11 @@ inline int print_line_input_update_x(size_t word_len) {
   return print_line_input_x = stdscr->_maxx / 2 - (word_len / 2);
 }
 inline int print_line_input_get_x(void) { return print_line_input_x; }
+
+inline int print_line_timer_get_y(void) {
+  return print_line_text_y + print_line_timer_shift_y;
+}
+inline int print_line_timer_get_x(void) { return print_line_timer_x; }
 
 inline int print_line_info_get_y(void) {
   return print_line_input_get_y() + print_line_info_shift_y;
@@ -94,9 +103,18 @@ inline void print_clean_prev_word(void) {
   clrtoeol();
 }
 
+inline void print_timer(int seconds) {
+  int min = seconds / 60;
+  int sec = seconds % 60;
+  int y = print_line_timer_get_y();
+  int x = print_line_timer_get_x();
+
+  colorize_mvprintw(TYPOS_COLOR_INFO, y, x, "%02d:%02d", min, sec);
+  curs_set(0);
+}
+
 inline void print_current_word(const typing_word_t *restrict word,
                                int input_ch) {
-  print_line_input_update_x(word ? word->length : 12);
   const int y = print_line_input_get_y();
   const int x = print_line_input_get_x();
 
@@ -120,6 +138,7 @@ inline void print_current_word(const typing_word_t *restrict word,
 #endif
 
   move(y, x + (word ? word->pos : 0));
+  curs_set(1);
 }
 
 inline void print_input_status(const char current_ch, const bool is_input_ok) {
