@@ -69,6 +69,8 @@ inline void typing_text_iterate(typing_text_t *text) {
     if (text->current_word_pos != text->length) {
       ++text->current_word_pos;
       print_clean_prev_word(word);
+      stats_inc_cpm();
+      stats_inc_wpm();
     }
 
     bool is_word_ok = typing_test_is_word_ok(word);
@@ -76,6 +78,7 @@ inline void typing_text_iterate(typing_text_t *text) {
 
   } else if (word) {
     ++word->pos;
+    stats_inc_cpm();
   }
 
   if (!word) {
@@ -94,10 +97,15 @@ inline void typing_text_backspace(typing_text_t *text) {
 
   if (!word || (!word->pos && text->current_word_pos)) {
     --text->current_word_pos;
+    stats_dec_wpm();
     print_clean_prev_word(word);
   } else {
     if (word->pos) {
       --word->pos;
+      stats_dec_cpm();
+    }
+    if (word->at_pos_colors[word->pos] != COLORIZE_OK) {
+      stats_dec_typos();
     }
     word->at_pos_colors[word->pos] = COLORIZE_DEFAULT;
 
@@ -177,6 +185,10 @@ inline bool typing_validate_input(const typing_word_t *restrict word,
   } else if (!current_ch &&
              (input != TYPING_KEY_SPACE_BAR && input != TYPING_KEY_NEW_LINE)) {
     is_input_ok = false;
+  }
+
+  if (!is_input_ok) {
+    stats_inc_typos();
   }
 
   return is_input_ok;
