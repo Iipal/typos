@@ -11,6 +11,7 @@
 #include "colorize.h"
 #include "flags.h"
 #include "print.h"
+#include "stats.h"
 #include "timer.h"
 #include "typing.h"
 
