@@ -100,7 +100,7 @@ inline void print_text_delimiter(void) {
 
 inline void print_clean_prev_word(const typing_word_t *restrict word) {
   const int y = print_line_input_get_y();
-  const int x = print_line_get_center_x(word->length);
+  const int x = print_line_get_center_x(word ? word->length : 10);
 
   move(y, x);
   clrtoeol();
