@@ -32,23 +32,23 @@ color_t g_colorize_pairs_mapper[] = {[COLORIZE_DEFAULT] = COLORIZE_DEFAULT,
 inline void colorize_init() {
   if (has_colors()) {
     if (start_color() == OK) {
-      colorsize_update_pair(COLORIZE_DEFAULT, COLOR_WHITE, COLOR_BLACK);
-      colorsize_update_pair(COLORIZE_OK, COLOR_GREEN, COLOR_BLACK);
-      colorsize_update_pair(COLORIZE_WARN, COLOR_YELLOW, COLOR_BLACK);
-      colorsize_update_pair(COLORIZE_ERROR, COLOR_RED, COLOR_BLACK);
-      colorsize_update_pair(COLORIZE_INFO, COLOR_CYAN, COLOR_BLACK);
-      colorsize_update_pair(COLORIZE_INFO_INVERT, COLOR_WHITE, COLOR_MAGENTA);
+      colorize_update_pair(COLORIZE_DEFAULT, COLOR_WHITE, COLOR_BLACK);
+      colorize_update_pair(COLORIZE_OK, COLOR_GREEN, COLOR_BLACK);
+      colorize_update_pair(COLORIZE_WARN, COLOR_YELLOW, COLOR_BLACK);
+      colorize_update_pair(COLORIZE_ERROR, COLOR_RED, COLOR_BLACK);
+      colorize_update_pair(COLORIZE_INFO, COLOR_CYAN, COLOR_BLACK);
+      colorize_update_pair(COLORIZE_INFO_INVERT, COLOR_WHITE, COLOR_MAGENTA);
     } else {
-      finish(0);
       printf("Cannot start colours\n");
+      finish(0);
     }
   } else {
+    printf("Your terminal doesn't support colors\n");
     finish(0);
-    printf("Cannot start colours\n");
   }
 }
 
-inline void colorsize_update_pair(color_t color, int fg, int bg) {
+inline void colorize_update_pair(color_t color, int fg, int bg) {
   init_pair(color, fg, bg);
   g_colorize_pairs_mapper[color] = COLORIZE_ENABLED;
 }

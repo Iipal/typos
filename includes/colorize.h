@@ -39,7 +39,7 @@ static int __g_colorize_temp_out = 0;
    __g_colorize_temp_out)
 
 extern void colorize_init(void);
-extern void colorsize_update_pair(color_t color, int fg, int bg);
+extern void colorize_update_pair(color_t color, int fg, int bg);
 
 extern int __attribute__((format(printf, 2, 3)))
 colorize_printw(color_t color, const char *fmt, ...);
