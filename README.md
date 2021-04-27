@@ -18,6 +18,12 @@ Or even try different compiler:
 sudo apt-get install clang
 ```
 
+# Building:
+Just make it working:
+```bash
+make
+```
+
 # Using the typos:
 After successful installation you can run it like this:
 ```bash
