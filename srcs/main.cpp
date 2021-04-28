@@ -1,6 +1,6 @@
-#include "typos.h"
+#include "typos.hpp"
 
-const char *__test_strings[] = {
+const std::string __test_strings[] = {
     "trapshooters",   "welled",        "interrelated",  "pipped",
     "overdyes",       "prorogations",  "rigidifying",   "new",
     "ductility",      "grazing",       "unifaces",      "capacitating",
@@ -29,7 +29,7 @@ const char *__test_strings[] = {
 const size_t __test_strings_length =
     sizeof(__test_strings) / sizeof(*__test_strings);
 
-inline void finish(int sig) {
+inline void _Noreturn finish(int sig) {
   (void)sig;
   if (stdscr) {
     delwin(stdscr);
@@ -39,73 +39,67 @@ inline void finish(int sig) {
 }
 
 static inline int welcome_screen(void) {
-  const char *msg = "PRESS ANY KEY TO START";
-  const int x = (stdscr->_maxx / 2) - (strlen(msg) / 2);
+  const std::string msg = "PRESS ANY KEY TO START";
+  const int x = Print::get_center_x(msg.length());
 
   box(stdscr, 0, 0);
-  colorize_mvprintwe(COLORIZE_OK, 1, x, msg);
+  Colorize::cmvprintw(COLORIZE_OK, 1, x, msg.c_str());
 
-  int input = typing_get_input();
+  int input = Typing::get_input();
 
-  timer_init(g_flags.max_time);
+  Timer::init(Timer::SECONDS_DEFAULT);
 
   return input;
 }
 
 int main(int argc, char *argv[]) {
-  flags_parse(argc, argv);
-
+  (void)argc;
+  (void)argv;
   signal(SIGINT, finish);
   signal(SIGKILL, finish);
+  signal(SIGCHLD, finish);
 
   WINDOW *win = NULL;
   assert((win = initscr()));
 
-  colorize_init();
+  Colorize::init_colors();
 
   noecho();
 
-  typing_text_t *test_text =
-      typing_text_init(__test_strings, __test_strings_length);
-
   int input = 0;
   bool is_input_ok = true;
-  bool stop = welcome_screen() == TYPING_KEY_ESC;
+  bool stop = welcome_screen() == Typing::KEY_ESC;
+
+  Typing test_typing = Typing(__test_strings, __test_strings_length);
+  g_Typing = &test_typing;
 
   while (!stop) {
     box(win, 0, 0);
+    const TypingWord *current_word = test_typing.get_word();
+    const char current_ch = current_word->get_char();
 
-    typing_word_t *current_word = typing_get_current_word(test_text);
-    const char current_ch = typing_get_current_char(test_text);
+    Print::render_all(test_typing, input);
 
-    print_text(test_text);
-    print_text_delimiter();
-    print_current_word(current_word, input);
-
-    input = typing_get_input();
+    input = Typing::get_input();
     is_input_ok = false;
 
-    if (input == TYPING_KEY_DEL) {
-      typing_text_backspace(test_text);
+    if (input == Typing::KEY_DEL) {
+      test_typing.backspace();
       continue;
-    } else if (input == TYPING_KEY_ESC) {
+    } else if (input == Typing::KEY_ESC) {
       stop = true;
     } else {
-      is_input_ok = typing_validate_input(current_word, input);
+      is_input_ok = test_typing.validate_input(input);
 
 #ifdef TYPOS_DEBUG
-      print_input_status(current_word ? current_word->string[current_word->pos]
-                                      : 0,
-                         is_input_ok);
+      Print::status(current_ch, is_input_ok);
 #endif
     }
 
-    if (current_ch || (!current_ch && is_input_ok)) {
-      typing_text_iterate(test_text);
+    if (!stop && (current_ch || (!current_ch && is_input_ok))) {
+      test_typing.iterate();
     }
   }
-
-  typing_text_free(test_text);
 
   finish(0);
 }
