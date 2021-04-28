@@ -47,14 +47,14 @@ static inline int welcome_screen(void) {
 
   int input = Typing::get_input();
 
-  Timer::init(Timer::SECONDS_DEFAULT);
+  Timer::init(Flags::max_time);
 
   return input;
 }
 
 int main(int argc, char *argv[]) {
-  (void)argc;
-  (void)argv;
+  Flags::parse(argc, argv);
+
   signal(SIGINT, finish);
   signal(SIGKILL, finish);
   signal(SIGCHLD, finish);

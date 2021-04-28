@@ -12,5 +12,6 @@
 #include "Print.hpp"
 #include "Timer.hpp"
 #include "Stats.hpp"
+#include "Flags.hpp"
 
 extern void _Noreturn finish(int);

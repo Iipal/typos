@@ -10,7 +10,6 @@ void Timer::init(int seconds) {
     Timer::_remaining_seconds = seconds;
   }
   Timer::_elapsed_seconds = 0;
-  Timer::_remaining_seconds = 2;
 
   struct sigaction act;
   act.sa_handler = Timer::timer_handler;
@@ -66,7 +65,7 @@ void Timer::break_the_words(void) {
     box(stdscr, 0, 0);
     Print::render_all(*g_Typing);
 
-    Timer::init(Timer::SECONDS_DEFAULT);
+    Timer::init(Flags::max_time);
   } else {
     finish(0);
   }
