@@ -53,17 +53,16 @@ static inline int welcome_screen(void) {
 }
 
 int main(int argc, char *argv[]) {
-  Flags::parse(argc, argv);
-
   signal(SIGINT, finish);
   signal(SIGKILL, finish);
 
+  Flags::parse(argc, argv);
+
   WINDOW *win = NULL;
   assert((win = initscr()));
+  noecho();
 
   Colorize::init_colors();
-
-  noecho();
 
   int input = 0;
   bool is_input_ok = true;
@@ -80,28 +79,29 @@ int main(int argc, char *argv[]) {
     const TypingWord *current_word = test_typing.get_word();
     const char current_ch = current_word->get_char();
 
-    Print::text(test_typing, test_typing.get_current_word_pos() + 1);
-    Print::input_word(current_word, input);
+    // because of indexing is starting from 0 - +2 means for printing the
+    // current word AND for clearing the NEXT word if it's was typed before;
+    Print::text(test_typing, test_typing.get_current_word_pos() + 2);
+    Print::input_word(current_word);
 
     input = Typing::get_input();
-    is_input_ok = false;
+    is_input_ok = true;
 
-    if (input == Typing::KEY_DEL) {
+    if (Typing::KEY_ESC == input) {
+      break;
+    } else if (input == Typing::KEY_DEL) {
       test_typing.backspace();
-      continue;
-    } else if (input == Typing::KEY_ESC) {
-      stop = true;
     } else {
       is_input_ok = test_typing.validate_input(input);
 
-#ifdef TYPOS_DEBUG
-      Print::status(current_ch, is_input_ok);
-#endif
+      if (current_ch || (!current_ch && is_input_ok)) {
+        test_typing.iterate();
+      }
     }
 
-    if (!stop && (current_ch || (!current_ch && is_input_ok))) {
-      test_typing.iterate();
-    }
+#ifdef TYPOS_DEBUG
+    Print::input_status(test_typing, is_input_ok, input);
+#endif
   }
 
   finish(0);

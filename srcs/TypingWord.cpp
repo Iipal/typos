@@ -18,7 +18,8 @@ TypingWord::~TypingWord() {
 
 bool TypingWord::is_ok(void) {
   for (size_t i = 0; this->length > i; ++i) {
-    if (this->at_pos_colors[i] != COLORIZE_OK) {
+    color_t at_color = this->at_pos_colors[i];
+    if (COLORIZE_WARN == at_color || COLORIZE_ERROR == at_color) {
       return false;
     }
   }
@@ -37,7 +38,10 @@ const char &TypingWord::get_char(size_t pos) const { return this->string[pos]; }
 
 const size_t &TypingWord::get_current_pos(void) const { return this->pos; }
 void TypingWord::inc_current_pos(void) { ++this->pos; }
-void TypingWord::dec_current_pos(void) { --this->pos; }
+void TypingWord::dec_current_pos(void) {
+  if (0 != this->pos)
+    --this->pos;
+}
 void TypingWord::set_pos(size_t pos) { this->pos = pos; }
 
 const color_t &TypingWord::get_color(void) const { return this->string_color; }

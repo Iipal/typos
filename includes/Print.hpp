@@ -4,23 +4,19 @@
 class Print {
 public:
   static void render_all(const Typing &text);
-  static void render_all(const Typing &text, int input);
 
   static void text(const Typing &text);
   static void text(const Typing &text, size_t n_words);
   static void text_delimiter(void);
 
   static void timer(int seconds);
-  static void input_word(const TypingWord *const word, int input);
+  static void input_word(const TypingWord *const word);
 
   static void stats(const TypingStatsData &data);
 
-#ifdef TYPOS_DEBUG
-  static void status(const char ch, const bool is_ok);
-#endif
-
   static void clean_prev_word(const TypingWord *const word);
   static void clean_line(int y);
+  static void clean_line(int y, int x);
 
   static int get_text_x(void);
   static int get_text_y(void);
@@ -36,12 +32,16 @@ public:
 
   static int get_stats_y(void);
 
-#ifdef TYPOS_DEBUG
-  static int get_info_y(void);
-  static int get_info_x(void);
-#endif
-
   static int get_center_x(size_t text_len);
+
+#ifdef TYPOS_DEBUG
+  static void input_status(const Typing &text, const bool is_ok,
+                           const int input);
+  static void typing_status(const Typing &text);
+
+  static int get_input_status_y(void);
+  static int get_input_status_x(void);
+#endif
 
 private:
   Print();
@@ -57,7 +57,7 @@ private:
   static const int _stats_shift_y = 3;
 
 #ifdef TYPOS_DEBUG
-  static const int _info_shift_y = 2;
-  static const int _info_x = 1;
+  static const int _input_status_shift_y = 2;
+  static const int _input_status_x = 1;
 #endif
 };

@@ -30,6 +30,10 @@ public:
   static int cmvprintw(color_t color, int y, int x, const char *fmt, ...);
   static int cmvaddch(color_t color, int y, int x, const chtype ch);
 
+#ifdef TYPOS_DEBUG
+  static const char *clrtostr(color_t color);
+#endif
+
 private:
   Colorize();
 

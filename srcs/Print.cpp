@@ -4,11 +4,10 @@
 int Print::_text_y = Print::_text_y_default;
 int Print::_text_x = 1;
 
-void Print::render_all(const Typing &text) { Print::render_all(text, 0); }
-void Print::render_all(const Typing &text, int input) {
+void Print::render_all(const Typing &text) {
   Print::text(text);
   Print::text_delimiter();
-  Print::input_word(text.get_word(), input);
+  Print::input_word(text.get_word());
 }
 
 void Print::text(const Typing &text) { Print::text(text, text.get_length()); }
@@ -74,19 +73,19 @@ void Print::text_delimiter(void) {
   mvhline(y, 1, ACS_BSBS, stdscr->_maxx - 1);
 }
 
-void Print::clean_line(int y) {
-  move(y, 1);
+void Print::clean_line(int y) { Print::clean_line(y, 1); }
+void Print::clean_line(int y, int x) {
+  move(y, x);
   clrtoeol();
+  mvhline(y, stdscr->_maxx, ACS_SBSB, 1);
 }
 
 void Print::clean_prev_word(const TypingWord *const word) {
   const int y = Print::get_input_y();
   const int x = Print::get_center_x(word ? word->get_length() : 30);
 
-  move(y, x);
-  clrtoeol();
-  move(y + 1, x);
-  clrtoeol();
+  Print::clean_line(y, x);
+  Print::clean_line(y + 1, x); // clearing the word underline
 }
 
 void Print::timer(int seconds) {
@@ -99,7 +98,7 @@ void Print::timer(int seconds) {
   curs_set(0);
 }
 
-void Print::input_word(const TypingWord *const word, int input) {
+void Print::input_word(const TypingWord *const word) {
   const size_t word_length = word ? word->get_length() : 12;
   const int y = Print::get_input_y();
   const int x = Print::get_center_x(word_length);
@@ -113,12 +112,6 @@ void Print::input_word(const TypingWord *const word, int input) {
   }
 
   mvhline(y + 1, x, ACS_BSBS, word ? word_length + 1 : 0);
-
-  (void)input;
-#ifdef TYPOS_DEBUG
-  Colorize::cmvprintw(COLORIZE_INFO, y, x + (word ? word_length : 12),
-                      " | last input: %3d:'%2c'", input, input ? input : ' ');
-#endif
 
   move(y, x + (word ? word->get_current_pos() : 0));
   curs_set(1);
@@ -143,26 +136,6 @@ void Print::stats(const TypingStatsData &data) {
                       msg2);
 }
 
-#ifdef TYPOS_DEBUG
-void Print::status(const char current_ch, const bool is_ok) {
-  const int y = Print::get_info_y();
-  const int x = Print::get_info_x();
-
-  if (current_ch) {
-    if (is_ok) {
-      Colorize::cmvprintw(COLORIZE_OK, y, x, "correct char\n");
-    } else {
-      Colorize::cmvprintw(COLORIZE_ERROR, y, x, "invalid char\n");
-    }
-  } else if (is_ok) {
-    Colorize::cmvprintw(COLORIZE_OK, y, x, "ok, next word\n");
-  } else {
-    Colorize::cmvprintw(COLORIZE_WARN, y, x, "WTF\n");
-  }
-}
-
-#endif
-
 int Print::get_text_x(void) { return Print::_text_x; }
 int Print::get_text_y(void) { return Print::_text_y; }
 int Print::inc_text_y(void) { return ++Print::_text_y; }
@@ -176,17 +149,72 @@ int Print::get_timer_y(void) { return Print::_text_y + Print::_timer_shift_y; }
 int Print::get_timer_x(void) { return Print::_timer_x; }
 
 int Print::get_input_y(void) { return Print::_text_y + Print::_input_shift_y; }
+
 int Print::get_stats_y(void) {
   return Print::get_input_y() + Print::_stats_shift_y;
 }
 
-#ifdef TYPOS_DEBUG
-int Print::get_info_y(void) {
-  return Print::get_input_y() + Print::_info_shift_y;
-}
-int Print::get_info_x(void) { return Print::_info_x; }
-#endif
-
 int Print::get_center_x(size_t text_len) {
   return stdscr->_maxx / 2 - text_len / 2;
 }
+
+#ifdef TYPOS_DEBUG
+
+void Print::input_status(const Typing &text, const bool is_ok,
+                         const int input) {
+  const TypingWord *const word = text.get_word();
+  const char ch = word->get_char();
+
+  int y = Print::get_input_status_y();
+  int x = Print::get_input_status_x();
+
+  Print::clean_line(y);
+
+  if (ch) {
+    if (is_ok) {
+      Colorize::cmvprintw(COLORIZE_OK, y, x, "correct char\n");
+    } else {
+      Colorize::cmvprintw(COLORIZE_ERROR, y, x, "invalid char\n");
+    }
+  } else if (is_ok) {
+    Colorize::cmvprintw(COLORIZE_OK, y, x, "ok, next word\n");
+  } else {
+    Colorize::cmvprintw(COLORIZE_WARN, y, x, "WTF\n");
+  }
+
+  Print::clean_line(y + 1);
+  Colorize::cmvprintw(
+      COLORIZE_INFO, y + 1, x, "WPos: %zu; WClr: %s; CPosAtW: %zu;",
+      text.get_current_word_pos(), Colorize::clrtostr(word->get_color()),
+      word->get_current_pos());
+
+  Print::typing_status(text);
+
+  {
+    const size_t word_length = word ? word->get_length() : 24;
+
+    y = Print::get_input_y();
+    x = Print::get_center_x(word_length);
+
+    Colorize::cmvprintw(COLORIZE_INFO, y, x + word_length,
+                        " | last input: %3d:'%2c'", input, input ? input : ' ');
+  }
+}
+
+void Print::typing_status(const Typing &text) {
+  int y = Print::get_input_status_y() + 2;
+  int x = Print::get_input_status_x();
+
+  Print::clean_line(y);
+
+  Colorize::cmvprintw(COLORIZE_INFO, y, x, "RAW: %.2f; WPM: %.2f; ACC: %.2f;",
+                      text.get_gross_wpm(), text.get_wpm(),
+                      text.get_accuracy());
+}
+
+int Print::get_input_status_y(void) {
+  return Print::get_input_y() + Print::_input_status_shift_y;
+}
+int Print::get_input_status_x(void) { return Print::_input_status_x; }
+
+#endif

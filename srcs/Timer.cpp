@@ -41,9 +41,23 @@ void Timer::timer_handler(int signo) {
   }
 
   Print::timer(Timer::_remaining_seconds);
+
+#ifdef TYPOS_DEBUG
+  Print::typing_status(*g_Typing);
+#endif
 }
 
 void Timer::break_the_words(void) {
+  const int y = Print::get_stats_y();
+  const auto clean_lines = [y]() {
+    Print::clean_line(y);
+    Print::clean_line(y + 1);
+    Print::clean_line(y + 3);
+    Print::clean_line(Print::get_input_y());
+    Print::clean_line(Print::get_input_y() + 1);
+  };
+
+  clean_lines();
   Print::stats(g_Typing->get_stats_data());
 
   int exit_input = 0;
@@ -53,13 +67,8 @@ void Timer::break_the_words(void) {
       !(exit_input == Typing::KEY_ESC || exit_input == Typing::KEY_NEW_LINE));
 
   if (exit_input == Typing::KEY_NEW_LINE && g_Typing) {
+    clean_lines();
     g_Typing->reset();
-
-    const int y = Print::get_stats_y();
-    Print::clean_line(y);
-    Print::clean_line(y + 1);
-    Print::clean_line(y + 3);
-    Print::clean_line(Print::get_input_y());
 
     box(stdscr, 0, 0);
     Print::render_all(*g_Typing);

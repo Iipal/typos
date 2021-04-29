@@ -85,3 +85,20 @@ int Colorize::cmvaddch(color_t color, int y, int x, const chtype ch) {
 
   return out;
 }
+
+#ifdef TYPOS_DEBUG
+
+const char *Colorize::clrtostr(color_t color) {
+  static const char *strs[COLORIZE_MAX + 1] = {
+      "COLORIZE_DEFAULT", "COLORIZE_OK",   "COLORIZE_WARN",
+      "COLORIZE_ERROR",   "COLORIZE_INFO", "COLORIZE_INFO_INVERT",
+      "INVALID_COLOR"};
+  int idx = color;
+
+  if (color < COLORIZE_MIN || color >= COLORIZE_MAX) {
+    idx = COLORIZE_MAX;
+  }
+  return strs[idx];
+}
+
+#endif

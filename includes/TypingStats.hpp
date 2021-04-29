@@ -22,12 +22,12 @@ public:
   void reset_chars(void);
   void reset_typos(void);
 
-  float get_gross_wpm(void);
-  float get_wpm(void);
-  float get_accuracy(void);
-  int get_chars(void);
-  int get_typos(void);
-  TypingStatsData get_stats_data(void);
+  float get_gross_wpm(void) const;
+  float get_wpm(void) const;
+  float get_accuracy(void) const;
+  int get_chars(void) const;
+  int get_typos(void) const;
+  TypingStatsData get_stats_data(void) const;
 
 private:
   int _total_typos;

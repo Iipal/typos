@@ -74,20 +74,16 @@ void Typing::backspace(void) {
     --this->current_word_pos;
     Print::clean_prev_word(word);
   } else {
-    if (word->get_current_pos()) {
-      word->dec_current_pos();
-    }
+    word->dec_current_pos();
     if (word->get_color_at(word->get_current_pos()) != COLORIZE_OK) {
       this->dec_typos();
     }
     word->set_color_at(COLORIZE_DEFAULT);
 
-    bool is_word_ok = word->is_ok();
-    color_t new_word_color = COLORIZE_DEFAULT;
-    if (is_word_ok && word->get_current_pos()) {
-      new_word_color = COLORIZE_OK;
+    bool is_word_ok_now = word->is_ok();
+    if (is_word_ok_now) {
+      word->set_color(COLORIZE_OK);
     }
-    word->set_color(new_word_color);
   }
 }
 
@@ -108,13 +104,17 @@ bool Typing::validate_input(int input, TypingWord *const word) {
     is_ok = (ch == input);
     if (!is_ok) {
       clr = COLORIZE_WARN;
-      this->inc_typos();
     }
+    word->set_color(clr);
     word->set_color_at(clr);
   } else if (!ch) {
     if ((input != Typing::KEY_SPACE_BAR && input != Typing::KEY_NEW_LINE)) {
       is_ok = false;
     }
+  }
+
+  if (!is_ok) {
+    this->inc_typos();
   }
 
   return is_ok;
