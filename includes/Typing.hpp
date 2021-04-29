@@ -22,7 +22,7 @@ public:
   void reset(void);
 
   TypingWord **get_words(void) const;
-  size_t get_words_length(void) const;
+  size_t get_length(void) const;
   size_t get_current_word_pos(void) const;
   TypingWord *get_word(void) const;
   TypingWord *get_word(size_t pos) const;

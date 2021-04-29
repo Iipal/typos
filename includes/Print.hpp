@@ -7,6 +7,7 @@ public:
   static void render_all(const Typing &text, int input);
 
   static void text(const Typing &text);
+  static void text(const Typing &text, size_t n_words);
   static void text_delimiter(void);
 
   static void timer(int seconds);

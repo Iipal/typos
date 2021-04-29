@@ -72,12 +72,16 @@ int main(int argc, char *argv[]) {
   Typing test_typing = Typing(__test_strings, __test_strings_length);
   g_Typing = &test_typing;
 
+  Print::text(test_typing);
+  Print::text_delimiter();
+
   while (!stop) {
     box(win, 0, 0);
     const TypingWord *current_word = test_typing.get_word();
     const char current_ch = current_word->get_char();
 
-    Print::render_all(test_typing, input);
+    Print::text(test_typing, test_typing.get_current_word_pos() + 1);
+    Print::input_word(current_word, input);
 
     input = Typing::get_input();
     is_input_ok = false;

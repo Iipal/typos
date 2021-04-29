@@ -138,7 +138,7 @@ void Typing::reset(void) {
 }
 
 TypingWord **Typing::get_words(void) const { return this->words; }
-size_t Typing::get_words_length(void) const { return this->length; }
+size_t Typing::get_length(void) const { return this->length; }
 size_t Typing::get_current_word_pos(void) const {
   return this->current_word_pos;
 }

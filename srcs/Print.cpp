@@ -11,19 +11,21 @@ void Print::render_all(const Typing &text, int input) {
   Print::input_word(text.get_word(), input);
 }
 
-void Print::text(const Typing &text) {
-  curs_set(0);
+void Print::text(const Typing &text) { Print::text(text, text.get_length()); }
+void Print::text(const Typing &text, size_t n_words) {
+  static bool is_text_y_set = false;
 
-  const size_t max_x = stdscr->_maxx - 2;
+  curs_set(0);
 
   TypingWord **words = text.get_words();
   const size_t current_word_pos = text.get_current_word_pos();
   const TypingWord *current_word = text.get_word();
   const size_t current_ch_pos = current_word->get_current_pos();
 
-  Print::reset_text_y();
+  const size_t max_x = stdscr->_maxx - 2;
+  int text_y = Print::_text_y_default;
 
-  for (size_t i = 0, start_print_pos_x = 0; words[i]; ++i) {
+  for (size_t i = 0, start_print_pos_x = 0; words[i] && n_words > i; ++i) {
     const TypingWord *word = words[i];
     const std::string str = word->get_string();
 
@@ -35,11 +37,11 @@ void Print::text(const Typing &text) {
     }
 
     if (start_print_pos_x + word->get_length() > max_x) {
-      Print::inc_text_y();
+      ++text_y;
       start_print_pos_x = 0;
     }
 
-    const int y = Print::get_text_y();
+    const int y = text_y;
     const int x = Print::get_text_x();
 
     if (current_word_pos == i) {
@@ -59,6 +61,11 @@ void Print::text(const Typing &text) {
     }
 
     start_print_pos_x += word->get_length() + 1;
+  }
+
+  if (!is_text_y_set) {
+    is_text_y_set = true;
+    Print::_text_y = text_y;
   }
 }
 
