@@ -44,7 +44,7 @@ void Timer::timer_handler(int signo) {
 }
 
 void Timer::break_the_words(void) {
-  Print::stats();
+  Print::stats(g_Typing->get_stats_data());
 
   int exit_input = 0;
   do {
@@ -54,7 +54,6 @@ void Timer::break_the_words(void) {
 
   if (exit_input == Typing::KEY_NEW_LINE && g_Typing) {
     g_Typing->reset();
-    Stats::reset_all();
 
     const int y = Print::get_stats_y();
     Print::clean_line(y);

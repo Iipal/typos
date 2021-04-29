@@ -61,7 +61,7 @@ void Typing::iterate(void) {
     word->inc_current_pos();
   }
 
-  Stats::inc_cpm();
+  this->inc_chars();
   if (!word) {
     this->reset();
   }
@@ -78,7 +78,7 @@ void Typing::backspace(void) {
       word->dec_current_pos();
     }
     if (word->get_color_at(word->get_current_pos()) != COLORIZE_OK) {
-      Stats::dec_typos();
+      this->dec_typos();
     }
     word->set_color_at(COLORIZE_DEFAULT);
 
@@ -108,7 +108,7 @@ bool Typing::validate_input(int input, TypingWord *const word) {
     is_ok = (ch == input);
     if (!is_ok) {
       clr = COLORIZE_WARN;
-      Stats::inc_typos();
+      this->inc_typos();
     }
     word->set_color_at(clr);
   } else if (!ch) {
@@ -133,6 +133,8 @@ void Typing::reset(void) {
       word->set_color_at(COLORIZE_DEFAULT, i);
     }
   }
+
+  this->reset_stats();
 }
 
 TypingWord **Typing::get_words(void) const { return this->words; }

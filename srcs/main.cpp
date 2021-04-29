@@ -57,7 +57,6 @@ int main(int argc, char *argv[]) {
 
   signal(SIGINT, finish);
   signal(SIGKILL, finish);
-  signal(SIGCHLD, finish);
 
   WINDOW *win = NULL;
   assert((win = initscr()));

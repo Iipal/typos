@@ -12,7 +12,7 @@ public:
   static void timer(int seconds);
   static void input_word(const TypingWord *const word, int input);
 
-  static void stats(void);
+  static void stats(const TypingStatsData &data);
 
 #ifdef TYPOS_DEBUG
   static void status(const char ch, const bool is_ok);

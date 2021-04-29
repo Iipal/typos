@@ -8,10 +8,10 @@
 
 #include "Colorize.hpp"
 #include "TypingWord.hpp"
+#include "TypingStats.hpp"
 #include "Typing.hpp"
 #include "Print.hpp"
 #include "Timer.hpp"
-#include "Stats.hpp"
 #include "Flags.hpp"
 
 extern void _Noreturn finish(int);

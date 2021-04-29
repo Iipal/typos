@@ -1,7 +1,7 @@
 #pragma once
 #include "typos.hpp"
 
-class Typing {
+class Typing : public TypingStats {
 public:
   static int const KEY_DEL = 0x7F;
   static int const KEY_ESC = 0x1B;

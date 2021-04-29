@@ -117,14 +117,15 @@ void Print::input_word(const TypingWord *const word, int input) {
   curs_set(1);
 }
 
-void Print::stats(void) {
+void Print::stats(const TypingStatsData &data) {
   const char *msg1 = "YOU TIMED OUT";
   const char *msg2 = "Enter: Restart; Esc: Exit;";
   char buff[1024] = {0};
 
   snprintf(buff, sizeof(buff) - 1,
-           "WPM: %.2f; CPM: %d; TYPOS: %d; ACC: %.2f %%", Stats::get_wpm(),
-           Stats::get_cpm(), Stats::get_typos(), Stats::get_accuracy());
+           "WPM: %.2f; RAW WPM: %.2f; TYPED: %d chars; TYPOS: %d; ACC: %.2f;",
+           data.wpm, data.gross_wpm, data.characters, data.typos,
+           data.accuracy);
 
   const int y = Print::get_stats_y();
 
