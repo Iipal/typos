@@ -29,15 +29,6 @@ const std::string __test_strings[] = {
 const size_t __test_strings_length =
     sizeof(__test_strings) / sizeof(*__test_strings);
 
-inline void _Noreturn finish(int sig) {
-  (void)sig;
-  if (stdscr) {
-    delwin(stdscr);
-  }
-  endwin();
-  exit(EXIT_SUCCESS);
-}
-
 static inline int welcome_screen(void) {
   const std::string msg = "PRESS ANY KEY TO START";
   const int x = Print::get_center_x(msg.length());

@@ -15,4 +15,11 @@
 #include "Timer.hpp"
 #include "Flags.hpp"
 
-extern void _Noreturn finish(int);
+static inline void _Noreturn finish(int sig) {
+  (void)sig;
+  if (stdscr) {
+    delwin(stdscr);
+  }
+  endwin();
+  exit(EXIT_SUCCESS);
+}
