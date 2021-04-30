@@ -3,10 +3,10 @@
 
 class Print {
 public:
-  static void render_all(const Typing &text);
+  static void current_char(const TypingChar &ch, int input);
+  static void clear_current_char(const TypingChar &ch);
 
-  static void current_char(TypingChar &ch, int input);
-  static void clear_current_char(TypingChar &ch);
+  static void render_all(const Typing &text);
 
   static void text(const Typing &text);
   static void text(const Typing &text, size_t n_words);

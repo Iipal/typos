@@ -4,27 +4,31 @@
 int Print::_text_y = Print::_text_y_default;
 int Print::_text_x = 1;
 
+void Print::current_char(const TypingChar &ch, int input) {
+  int y = ch.get_screen_y();
+  int x = ch.get_screen_x();
+  chtype _ch = !(chtype)ch ? input : (chtype)ch;
+  color_t _clr = (!(chtype)ch && ' ' != _ch) ? COLORIZE_INFO_INVERT : ch;
+
+  Colorize::cmvaddch(_clr, y, x, _ch);
+}
+
+void Print::clear_current_char(const TypingChar &ch) {
+  int y = ch.get_screen_y();
+  int x = ch.get_screen_x();
+  chtype _ch = !(chtype)ch ? Typing::KEY_SPACE_BAR : (chtype)ch;
+
+  Colorize::cmvaddch(COLORIZE_DEFAULT, y, x, _ch);
+}
+
 void Print::render_all(const Typing &text) {
   Print::text(text);
   Print::text_delimiter();
   Print::input_word(text.get_word());
 }
 
-void Print::current_char(TypingChar &ch, int input) {
-  chtype _ch = !input ? ' ' : input;
-  Colorize::cmvaddch(ch.get_color(), ch.get_screen_y(), ch.get_screen_x(), _ch);
-}
-
-void Print::clear_current_char(TypingChar &ch) {
-  chtype _ch = !ch.get_char() ? ' ' : ch.get_char();
-  Colorize::cmvaddch(COLORIZE_DEFAULT, ch.get_screen_y(), ch.get_screen_x(),
-                     _ch);
-}
-
 void Print::text(const Typing &text) { Print::text(text, text.get_length()); }
 void Print::text(const Typing &text, size_t n_words) {
-  static bool is_text_y_set = false;
-
   curs_set(0);
   clear();
 
@@ -75,10 +79,7 @@ void Print::text(const Typing &text, size_t n_words) {
     start_print_pos_x += word->get_length() + 1;
   }
 
-  if (!is_text_y_set) {
-    is_text_y_set = true;
     Print::_text_y = text_y;
-  }
 
   box(stdscr, 0, 0);
 }

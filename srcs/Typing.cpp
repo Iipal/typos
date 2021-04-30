@@ -79,11 +79,16 @@ void Typing::iterate(void) {
 
 void Typing::backspace(void) {
   TypingWord *word = this->words[this->current_word_pos];
+  const chtype ch = word->get_char_at();
 
   if (!word || (!word->get_current_pos() && this->current_word_pos)) {
     --this->current_word_pos;
     Print::clean_prev_word(word);
   } else {
+    if (!ch) {
+      word->set_color_at(COLORIZE_DEFAULT);
+    }
+
     word->dec_current_pos();
     if (word->get_color_at(word->get_current_pos()) != COLORIZE_OK) {
       this->dec_typos();
