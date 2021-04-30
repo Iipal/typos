@@ -8,13 +8,13 @@ Typing::Typing(const std::string *strings, size_t strings_length)
 
   const size_t max_x = stdscr->_maxx - 2;
   int y = 1;
-  int x = 1;
+  int x = 0;
   for (size_t i = 0; strings_length > i; ++i) {
     if (x + strings[i].length() > max_x) {
       ++y;
-      x = 1;
+      x = 0;
     }
-    this->words[i] = new TypingWord(y, x, strings[i]);
+    this->words[i] = new TypingWord(y, x + 1, strings[i]);
     x += strings[i].length() + 1;
   }
 

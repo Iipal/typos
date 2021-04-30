@@ -26,6 +26,7 @@ void Print::text(const Typing &text, size_t n_words) {
   static bool is_text_y_set = false;
 
   curs_set(0);
+  clear();
 
   TypingWord **words = text.get_words();
   const size_t current_word_pos = text.get_current_word_pos();
