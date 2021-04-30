@@ -7,6 +7,7 @@
 #include <signal.h>
 
 #include "Colorize.hpp"
+#include "TypingChar.hpp"
 #include "TypingWord.hpp"
 #include "TypingStats.hpp"
 #include "Typing.hpp"

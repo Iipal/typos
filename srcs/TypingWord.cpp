@@ -1,24 +1,25 @@
 #include "typos.hpp"
 
 TypingWord::TypingWord() {}
-TypingWord::TypingWord(std::string word_string)
-    : string(word_string.c_str()), at_pos_colors(NULL), pos(0),
-      length(word_string.length()), string_color(COLORIZE_DEFAULT) {
-  const size_t word_length = word_string.length();
-  this->at_pos_colors = new color_t[word_length];
-  for (size_t i = 0; word_length > i; ++i) {
-    this->at_pos_colors[i] = COLORIZE_DEFAULT;
+TypingWord::TypingWord(int y, int x, std::string str)
+    : pos(0), length(str.length()), color(COLORIZE_DEFAULT) {
+
+  const size_t word_length = str.length();
+  this->chars = new TypingChar[word_length + 1];
+
+  for (size_t i = 0; word_length >= i; ++i) {
+    this->chars[i] = TypingChar(y, x + i, str[i]);
   }
 }
 TypingWord::~TypingWord() {
-  if (this->at_pos_colors) {
-    delete[] this->at_pos_colors;
+  if (this->chars) {
+    delete[] this->chars;
   }
 }
 
 bool TypingWord::is_ok(void) {
   for (size_t i = 0; this->length > i; ++i) {
-    color_t at_color = this->at_pos_colors[i];
+    color_t at_color = this->chars[i].get_color();
     if (COLORIZE_WARN == at_color || COLORIZE_ERROR == at_color) {
       return false;
     }
@@ -27,14 +28,16 @@ bool TypingWord::is_ok(void) {
   return true;
 }
 void TypingWord::validate(void) {
-  this->string_color = this->is_ok() ? COLORIZE_OK : COLORIZE_ERROR;
+  this->color = this->is_ok() ? COLORIZE_OK : COLORIZE_ERROR;
 }
 
-const std::string &TypingWord::get_string(void) const { return this->string; }
+const TypingChar *TypingWord::get_chars(void) const { return this->chars; }
 const size_t &TypingWord::get_length(void) const { return this->length; }
 
-const char &TypingWord::get_char(void) const { return this->string[this->pos]; }
-const char &TypingWord::get_char(size_t pos) const { return this->string[pos]; }
+TypingChar &TypingWord::get_char(void) const {
+  return this->get_char(this->pos);
+}
+TypingChar &TypingWord::get_char(size_t pos) const { return this->chars[pos]; }
 
 const size_t &TypingWord::get_current_pos(void) const { return this->pos; }
 void TypingWord::inc_current_pos(void) { ++this->pos; }
@@ -44,19 +47,31 @@ void TypingWord::dec_current_pos(void) {
 }
 void TypingWord::set_pos(size_t pos) { this->pos = pos; }
 
-const color_t &TypingWord::get_color(void) const { return this->string_color; }
-void TypingWord::set_color(color_t color) { this->string_color = color; }
+const color_t &TypingWord::get_color(void) const { return this->color; }
+void TypingWord::set_color(color_t color) { this->color = color; }
 
-const color_t &TypingWord::get_color_at(void) const {
-  return this->at_pos_colors[this->pos];
+color_t TypingWord::get_color_at(void) const {
+  return this->get_color_at(this->pos);
 }
-const color_t &TypingWord::get_color_at(size_t at_pos) const {
-  return this->at_pos_colors[at_pos];
+color_t TypingWord::get_color_at(size_t at_pos) const {
+  return this->chars[at_pos].get_color();
 }
 
 void TypingWord::set_color_at(color_t color) {
-  this->at_pos_colors[this->pos] = color;
+  this->set_color_at(color, this->pos);
 }
 void TypingWord::set_color_at(color_t color, size_t at_pos) {
-  this->at_pos_colors[at_pos] = color;
+  this->chars[at_pos].set_color(color);
+}
+
+std::string TypingWord::to_str(void) const {
+  char word_chars[128] = {0};
+
+  for (size_t i = 0; this->length > i; ++i) {
+    word_chars[i] = this->chars[i].get_char();
+  }
+
+  std::string out(word_chars);
+
+  return out;
 }

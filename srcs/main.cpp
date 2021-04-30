@@ -77,11 +77,9 @@ int main(int argc, char *argv[]) {
   while (!stop) {
     box(win, 0, 0);
     const TypingWord *current_word = test_typing.get_word();
-    const char current_ch = current_word->get_char();
+    const TypingChar current_char = current_word->get_char();
+    const char current_ch = current_char.get_char();
 
-    // because of indexing is starting from 0 - +2 means for printing the
-    // current word AND for clearing the NEXT word if it's was typed before;
-    Print::text(test_typing, test_typing.get_current_word_pos() + 2);
     Print::input_word(current_word);
 
     input = Typing::get_input();
@@ -91,9 +89,11 @@ int main(int argc, char *argv[]) {
       break;
     } else if (input == Typing::KEY_DEL) {
       test_typing.backspace();
+      Print::clear_current_char(test_typing.get_word()->get_char());
     } else {
       is_input_ok = test_typing.validate_input(input);
 
+      Print::current_char(current_word->get_char(), input);
       if (current_ch || (!current_ch && is_input_ok)) {
         test_typing.iterate();
       }

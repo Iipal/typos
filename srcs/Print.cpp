@@ -10,6 +10,17 @@ void Print::render_all(const Typing &text) {
   Print::input_word(text.get_word());
 }
 
+void Print::current_char(TypingChar &ch, int input) {
+  chtype _ch = !input ? ' ' : input;
+  Colorize::cmvaddch(ch.get_color(), ch.get_screen_y(), ch.get_screen_x(), _ch);
+}
+
+void Print::clear_current_char(TypingChar &ch) {
+  chtype _ch = !ch.get_char() ? ' ' : ch.get_char();
+  Colorize::cmvaddch(COLORIZE_DEFAULT, ch.get_screen_y(), ch.get_screen_x(),
+                     _ch);
+}
+
 void Print::text(const Typing &text) { Print::text(text, text.get_length()); }
 void Print::text(const Typing &text, size_t n_words) {
   static bool is_text_y_set = false;
@@ -26,7 +37,7 @@ void Print::text(const Typing &text, size_t n_words) {
 
   for (size_t i = 0, start_print_pos_x = 0; words[i] && n_words > i; ++i) {
     const TypingWord *word = words[i];
-    const std::string str = word->get_string();
+    const std::string str = word->to_str();
 
     color_t clr = COLORIZE_DEFAULT;
     if (current_word_pos > i) {
@@ -45,15 +56,16 @@ void Print::text(const Typing &text, size_t n_words) {
 
     if (current_word_pos == i) {
       for (size_t i = 0; word->get_length() > i; ++i) {
+        const char ch = str[i];
         color_t current_ch_color = COLORIZE_DEFAULT;
         if (current_ch_pos == i) {
-          current_ch_color = !str[i] ? COLORIZE_INFO_INVERT : COLORIZE_INFO;
+          current_ch_color = !ch ? COLORIZE_INFO_INVERT : COLORIZE_INFO;
         } else if (current_ch_pos > i) {
           current_ch_color = word->get_color_at(i);
         }
 
         Colorize::cmvaddch(current_ch_color, y, x + start_print_pos_x + i,
-                           str[i] ? str[i] : ' ');
+                           ch ? ch : ' ');
       }
     } else {
       Colorize::cmvprintw(clr, y, x + start_print_pos_x, "%s ", str.c_str());
@@ -107,7 +119,8 @@ void Print::input_word(const TypingWord *const word) {
     Colorize::cmvprintw(COLORIZE_INFO, y, x, "end of words");
   } else {
     for (size_t i = 0; word_length > i; ++i) {
-      Colorize::cmvaddch(word->get_color_at(i), y, x + i, word->get_char(i));
+      Colorize::cmvaddch(word->get_color_at(i), y, x + i,
+                         word->get_char(i).get_char());
     }
   }
 
@@ -190,7 +203,7 @@ int Print::get_center_x(size_t text_len) {
 void Print::input_status(const Typing &text, const bool is_ok,
                          const int input) {
   const TypingWord *const word = text.get_word();
-  const char ch = word->get_char();
+  const char ch = word->get_char().get_char();
 
   int y = Print::get_input_status_y();
   int x = Print::get_input_status_x();

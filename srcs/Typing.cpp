@@ -5,9 +5,19 @@ Typing *g_Typing = NULL;
 Typing::Typing(const std::string *strings, size_t strings_length)
     : length(strings_length), current_word_pos(0) {
   this->words = new TypingWord *[strings_length + 1];
+
+  const size_t max_x = stdscr->_maxx - 2;
+  int y = 1;
+  int x = 1;
   for (size_t i = 0; strings_length > i; ++i) {
-    this->words[i] = new TypingWord(strings[i]);
+    if (x + strings[i].length() > max_x) {
+      ++y;
+      x = 1;
+    }
+    this->words[i] = new TypingWord(y, x, strings[i]);
+    x += strings[i].length() + 1;
   }
+
   this->words[strings_length] = NULL;
 }
 Typing::~Typing() {
@@ -47,7 +57,7 @@ void Typing::iterate(void) {
 
   if (is_accessible_at_word) {
     word = this->words[this->current_word_pos];
-    is_accessible_at_char = !!word->get_char();
+    is_accessible_at_char = !!word->get_char().get_char();
   }
 
   if (is_accessible_at_word && !is_accessible_at_char) {
@@ -96,7 +106,7 @@ bool Typing::validate_input(int input, TypingWord *const word) {
     return true;
   }
 
-  const char ch = word->get_char();
+  const char ch = word->get_char().get_char();
   bool is_ok = true;
 
   if (ch) {
