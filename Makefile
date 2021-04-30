@@ -30,10 +30,10 @@ $(ECHO) " | $$2: $(MSG_SUCCESS)"
 endef
 
 -include $(OBJS:.o=.d)
-$(OBJS): %.o: %.c
+$(OBJS): %.o: %.cpp
 	@$(call compilation,$<,$@)
 
-$(ASMS): %.S: %.c
+$(ASMS): %.S: %.cpp
 	@$(call compilation,$<,$@)
 
 $(LIBS_DIRS):

@@ -1,7 +1,7 @@
 make_optional:
  ifneq (,$(filter $(MAKECMDGOALS),debug debug_all))
 	@$(eval CFLAGS_OPTIONAL:=$(CFLAGS_DEBUG))
-	@$(eval DEFINES:=$(shell echo $(basename $(NAME)) | tr a-z A-Z)_DEBUG)
+	@$(eval DEFINES:=$(shell echo $(basename $(NAME)) | tr a-z A-Z)_DEBUG _GLIBCXX_DEBUG)
  endif
  ifneq (,$(filter $(MAKECMDGOALS),sanitize sanitize_all))
 	@$(eval CFLAGS_OPTIONAL:=$(CFLAGS_SANITIZE))

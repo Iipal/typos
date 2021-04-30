@@ -1,25 +1,18 @@
-#include "typos.h"
+#include "Flags.hpp"
+#include <err.h>
+#include <getopt.h>
 
-#define FLAG_N 'n'
 #define FLAG_H 'h'
 #define FLAG_T 't'
 
-#define FLAGS_OPT "hn:t:"
+#define FLAGS_OPT "ht:"
 
 #define FLAGS_USAGE "Usage: ./typos [" FLAGS_OPT "]"
 
-#define FLAG_N_DEFAULT 25
-#define FLAG_N_MIN 10
-#define FLAG_N_MAX 100
+#define FLAG_T_DEFAULT Timer::SECONDS_DEFAULT
+#define FLAG_T_MIN Timer::SECONDS_MIN
+#define FLAG_T_MAX Timer::SECONDS_MAX
 
-#define FLAG_T_DEFAULT TIMER_SECONDS_DEFAULT
-#define FLAG_T_MIN TIMER_SECONDS_MIN
-#define FLAG_T_MAX TIMER_SECONDS_MAX
-
-#define FLAG_N_DESC                                                            \
-  "Number of maximum random words to type.\n"                                  \
-  "                Accepts only positive integer in range: 10 - 100; "         \
-  "Default: 25."
 #define FLAG_T_DESC                                                            \
   "Number of maximum time to type in seconds.\n"                               \
   "                Accepts only positive integer in range: 10 - 240; "         \
@@ -28,19 +21,11 @@
 #define FLAG_H_DESC                                                            \
   FLAGS_USAGE "\n"                                                             \
               "  -h          : print this message.\n"                          \
-              "  -t [seconds]: " FLAG_T_DESC "\n"                              \
-              "  -n [number] : " FLAG_N_DESC "\n"
+              "  -t [seconds]: " FLAG_T_DESC "\n"
 
-struct s_flags g_flags = {FLAG_N_DEFAULT, FLAG_T_DEFAULT};
+unsigned int Flags::max_time = FLAG_T_DEFAULT;
 
-static inline void invalid_positive_integer_errx(char flag, int value, int min,
-                                                 int max, int def) {
-  errx(EXIT_FAILURE,
-       "Invalid argument for `%c`.\nGiven argument: `%d`\n"
-       "Accepts only positive integer in range: %d - %d; "
-       "Default: %d.\n",
-       flag, value, min, max, def);
-}
+Flags::Flags() {}
 
 static inline ssize_t flag_positive_integer_arg_parse(const char *arg,
                                                       char flag, int min,
@@ -57,23 +42,22 @@ static inline ssize_t flag_positive_integer_arg_parse(const char *arg,
   }
 
   if (!is_ok) {
-    invalid_positive_integer_errx(flag, value, min, max, def);
+    errx(EXIT_FAILURE,
+         "Invalid argument for `%c`.\nGiven argument: `%ld`\n"
+         "Accepts only positive integer in range: %d - %d; "
+         "Default: %d.\n",
+         flag, value, min, max, def);
   }
   return value;
 }
 
-inline void flags_parse(int argc, char *argv[]) {
+void Flags::parse(int argc, char *argv[]) {
   int c;
   while (-1 != (c = getopt(argc, argv, FLAGS_OPT))) {
     switch (c) {
     case FLAG_T:
-      g_flags.max_time = flag_positive_integer_arg_parse(
+      Flags::max_time = flag_positive_integer_arg_parse(
           optarg, FLAG_T, FLAG_T_MIN, FLAG_T_MAX, FLAG_T_DEFAULT);
-      break;
-
-    case FLAG_N:
-      g_flags.max_words = flag_positive_integer_arg_parse(
-          optarg, FLAG_N, FLAG_N_MIN, FLAG_N_MAX, FLAG_N_DEFAULT);
       break;
 
     case '?':

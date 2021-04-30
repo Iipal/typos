@@ -5,8 +5,8 @@ NPWD := $(CURDIR)/$(NAME)
 
 # all source code .c files must to places in to "srcs" folder(or sub-dirs) only.
 ifneq (,$(wildcard ./srcs))
-SRCS := $(shell find srcs -name "*.c")
-OBJS := $(SRCS:.c=.o)
+SRCS := $(shell find srcs -name "*.cpp")
+OBJS := $(SRCS:.cpp=.o)
 ASMS := # reversed for 'assembly' and 'assembly_all' rules where ASMS:=$(OBJS:%.o=%.S) and OBJS:= sets to nothing
 else
 $(error "all source code .c files must to places in to "srcs" folder(or sub-dirs) only.")
@@ -41,10 +41,10 @@ LIBS_NAMES := $(join $(LIBS_DIRS),$(addsuffix .a,$(addprefix /,$(notdir $(LIBS_D
 endif
 
 # Compiler settings.
-CC                    := clang
-CFLAGS                := -Wall -Wextra -Werror -Wunused -MMD -std=c11
+CC                    := clang++
+CFLAGS                := -Wall -Wextra -Werror -Wunused -MMD -std=c++17
 CFLAGS_PEDANTIC       := -Wpedantic
-CFLAGS_DEBUG          := -g3 -o0
+CFLAGS_DEBUG          := -g3
 CFLAGS_SANITIZE       := $(CFLAGS_DEBUG) -fsanitize=address
 CFLAGS_OPTIMIZE       := -march=native -mtune=native -Ofast -pipe -flto -fpic
 CFLAGS_ASSEMBLY       := $(filter-out -flto -fpic,$(CFLAGS_OPTIMIZE)) -S -masm=intel
