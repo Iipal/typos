@@ -34,4 +34,14 @@ To see the help info about some options:
 ```bash
 ./typos -h
 ```
-###### -n option is currently under development
+
+# Stats:
+ - WPM: a.k.a Net WPM; the correct way of calculating WPM including corrected typos.
+ - RAW WPM: a.k.a Gross WPM; WPM without any typos calculations.
+ - REAL WPM: a.k.a Net WPM v2; calculating Net WPM, but with all typos what you ever made in your life ...
+ - TYPED: count of all typed characters.
+ - CPS: Characters Per Second.
+ - TYPOS: Corrected typos.
+ - REAL TYPOS: All typos that you made.
+ - ACC: Accuracy with corrected typos.
+ - REAL ACC: Accuracy with all typos.
