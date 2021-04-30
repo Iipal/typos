@@ -118,22 +118,49 @@ void Print::input_word(const TypingWord *const word) {
 }
 
 void Print::stats(const TypingStatsData &data) {
-  const char *msg1 = "YOU TIMED OUT";
-  const char *msg2 = "Enter: Restart; Esc: Exit;";
-  char buff[1024] = {0};
-
-  snprintf(buff, sizeof(buff) - 1,
-           "WPM: %.2f; RAW WPM: %.2f; TYPED: %d chars; TYPOS: %d; ACC: %.2f;",
-           data.wpm, data.gross_wpm, data.characters, data.typos,
-           data.accuracy);
-
   const int y = Print::get_stats_y();
 
-  Colorize::cmvprintw(COLORIZE_OK, y, Print::get_center_x(strlen(msg1)), msg1);
-  Colorize::cmvprintw(COLORIZE_OK, y + 1, Print::get_center_x(strlen(buff)),
-                      buff);
-  Colorize::cmvprintw(COLORIZE_OK, y + 3, Print::get_center_x(strlen(msg2)),
-                      msg2);
+  const char *msg1 = "YOU TIMED OUT";
+  const char *msg2 = "Enter: Restart; Esc: Exit;";
+
+  Colorize::cmvprintw(COLORIZE_OK, y, Print::get_center_x(strlen(msg1) - 1),
+                      msg1);
+
+  struct __s_stats_data {
+    const char *fmt;
+    float value;
+  };
+
+#define STATS_DATA_DELIMITER                                                   \
+  {                                                                            \
+    "", { "", 0.0f }                                                           \
+  }
+
+  std::pair<const char *, __s_stats_data> stats_data[] = {
+      {"WPM", {"%-7.2f", data.wpm.net_wpm}},
+      {"RAW WPM", {"%-7.2f", data.wpm.gross_wpm}},
+      {"REAL WPM", {"%-7.2f", data.wpm.net_real_wpm}},
+      STATS_DATA_DELIMITER,
+      {"TYPED", {"%-7.0f", static_cast<float>(data.characters)}},
+      {"CPS", {"%-7.2f", data.cps}},
+      STATS_DATA_DELIMITER,
+      {"TYPOS", {"%-7.0f", static_cast<float>(data.corrected_typos)}},
+      {"REAL TYPOS", {"%-7.0f", static_cast<float>(data.not_corrected_typos)}},
+      STATS_DATA_DELIMITER,
+      {"ACC", {"%-7.2f", data.accuracy}},
+      {"REAL ACC", {"%-7.2f", data.real_accuracy}},
+  };
+
+  char fmt_buff[64] = {0};
+  size_t data_y = y + 2;
+  size_t data_x = Print::get_center_x(20);
+  for (const auto &[key, v] : stats_data) {
+    snprintf(fmt_buff, sizeof(fmt_buff) - 1, "%%10s | %s", v.fmt);
+    Colorize::cmvprintw(COLORIZE_OK, data_y++, data_x, fmt_buff, key, v.value);
+  }
+
+  Colorize::cmvprintw(COLORIZE_OK, data_y + 1,
+                      Print::get_center_x(strlen(msg2)), msg2);
 }
 
 int Print::get_text_x(void) { return Print::_text_x; }
@@ -207,9 +234,9 @@ void Print::typing_status(const Typing &text) {
 
   Print::clean_line(y);
 
-  Colorize::cmvprintw(COLORIZE_INFO, y, x, "RAW: %.2f; WPM: %.2f; ACC: %.2f;",
-                      text.get_gross_wpm(), text.get_wpm(),
-                      text.get_accuracy());
+  Colorize::cmvprintw(COLORIZE_INFO, y, x, "RAW: %.2f; REAL: %.2f; CPS: %.2f;",
+                      text.get_gross_wpm(), text.get_real_accuracy(),
+                      text.get_cps());
 }
 
 int Print::get_input_status_y(void) {

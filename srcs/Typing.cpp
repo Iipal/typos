@@ -115,6 +115,7 @@ bool Typing::validate_input(int input, TypingWord *const word) {
 
   if (!is_ok) {
     this->inc_typos();
+    this->inc_total_typos();
   }
 
   return is_ok;

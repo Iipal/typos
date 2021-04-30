@@ -1,10 +1,19 @@
 #pragma once
 
 typedef struct s_typing_stats_data {
-  float gross_wpm;
-  float wpm;
+  struct {
+    float net_wpm;
+    float net_real_wpm;
+    float gross_wpm;
+  } wpm;
+
+  float cps;
+
   float accuracy;
-  int typos;
+  float real_accuracy;
+
+  int corrected_typos;
+  int not_corrected_typos;
   int characters;
 } TypingStatsData;
 
@@ -14,6 +23,7 @@ public:
 
   void inc_chars(void);
   void inc_typos(void);
+  void inc_total_typos(void);
 
   void dec_chars(void);
   void dec_typos(void);
@@ -21,15 +31,28 @@ public:
   void reset_stats(void);
   void reset_chars(void);
   void reset_typos(void);
+  void reset_total_typos(void);
 
   float get_gross_wpm(void) const;
   float get_wpm(void) const;
+  float get_real_wpm(void) const;
+
+  float get_cps(void) const;
+
   float get_accuracy(void) const;
+  float get_real_accuracy(void) const;
+
   int get_chars(void) const;
   int get_typos(void) const;
+  int get_total_typos(void) const;
+
   TypingStatsData get_stats_data(void) const;
 
 private:
   int _total_typos;
+  int _not_corrected_typos;
   int _total_characters;
+
+  float _wpm_calc(float typos) const;
+  float _acc_calc(float typos) const;
 };

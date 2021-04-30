@@ -50,9 +50,9 @@ void Timer::timer_handler(int signo) {
 void Timer::break_the_words(void) {
   const int y = Print::get_stats_y();
   const auto clean_lines = [y]() {
-    Print::clean_line(y);
-    Print::clean_line(y + 1);
-    Print::clean_line(y + 3);
+    for (int i = y; y + 16 > i; ++i) { // hardcoded clear of typing stats
+      Print::clean_line(i);
+    }
     Print::clean_line(Print::get_input_y());
     Print::clean_line(Print::get_input_y() + 1);
   };
