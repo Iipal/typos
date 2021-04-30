@@ -57,7 +57,7 @@ void Typing::iterate(void) {
 
   if (is_accessible_at_word) {
     word = this->words[this->current_word_pos];
-    is_accessible_at_char = !!word->get_char().get_char();
+    is_accessible_at_char = !!(chtype)word->get_char_at();
   }
 
   if (is_accessible_at_word && !is_accessible_at_char) {
@@ -111,12 +111,12 @@ bool Typing::validate_input(int input, TypingWord *const word) {
     return true;
   }
 
-  const char ch = word->get_char().get_char();
+  const chtype ch = word->get_char_at();
   bool is_ok = true;
 
   if (ch) {
     color_t clr = COLORIZE_OK;
-    is_ok = (ch == input);
+    is_ok = ((int)ch == input);
     if (!is_ok) {
       clr = COLORIZE_WARN;
     }

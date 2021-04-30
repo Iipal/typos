@@ -79,7 +79,7 @@ void Print::text(const Typing &text, size_t n_words) {
     start_print_pos_x += word->get_length() + 1;
   }
 
-    Print::_text_y = text_y;
+  Print::_text_y = text_y;
 
   box(stdscr, 0, 0);
 }
@@ -123,8 +123,7 @@ void Print::input_word(const TypingWord *const word) {
     Colorize::cmvprintw(COLORIZE_INFO, y, x, "end of words");
   } else {
     for (size_t i = 0; word_length > i; ++i) {
-      Colorize::cmvaddch(word->get_color_at(i), y, x + i,
-                         word->get_char(i).get_char());
+      Colorize::cmvaddch(word->get_color_at(i), y, x + i, word->get_char_at(i));
     }
   }
 
@@ -207,7 +206,7 @@ int Print::get_center_x(size_t text_len) {
 void Print::input_status(const Typing &text, const bool is_ok,
                          const int input) {
   const TypingWord *const word = text.get_word();
-  const char ch = word->get_char().get_char();
+  const chtype ch = word->get_char_at().get_char();
 
   int y = Print::get_input_status_y();
   int x = Print::get_input_status_x();

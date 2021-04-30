@@ -67,8 +67,8 @@ int main(int argc, char *argv[]) {
 
   while (!stop) {
     const TypingWord *current_word = test_typing.get_word();
-    const TypingChar current_char = current_word->get_char();
-    const char current_ch = current_char.get_char();
+    const TypingChar current_char = current_word->get_char_at();
+    const chtype current_ch = current_char;
 
     Print::input_word(current_word);
 
@@ -78,12 +78,16 @@ int main(int argc, char *argv[]) {
     if (Typing::KEY_ESC == input) {
       break;
     } else if (input == Typing::KEY_DEL) {
+      if (!current_ch) {
+        Print::clear_current_char(current_char);
+      }
+
       test_typing.backspace();
-      Print::clear_current_char(test_typing.get_word()->get_char());
+      Print::clear_current_char(test_typing.get_word()->get_char_at());
     } else {
       is_input_ok = test_typing.validate_input(input);
 
-      Print::current_char(current_word->get_char(), input);
+      Print::current_char(current_word->get_char_at(), input);
       if (current_ch || (!current_ch && is_input_ok)) {
         test_typing.iterate();
       }

@@ -13,8 +13,8 @@ public:
   const TypingChar *get_chars(void) const;
   const size_t &get_length(void) const;
 
-  TypingChar &get_char(void) const;
-  TypingChar &get_char(size_t pos) const;
+  TypingChar &get_char_at(void) const;
+  TypingChar &get_char_at(size_t pos) const;
 
   const size_t &get_current_pos(void) const;
   void inc_current_pos(void);
