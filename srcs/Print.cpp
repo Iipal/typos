@@ -79,6 +79,8 @@ void Print::text(const Typing &text, size_t n_words) {
     is_text_y_set = true;
     Print::_text_y = text_y;
   }
+
+  box(stdscr, 0, 0);
 }
 
 void Print::text_delimiter(void) {

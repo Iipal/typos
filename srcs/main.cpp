@@ -75,7 +75,6 @@ int main(int argc, char *argv[]) {
   Print::text_delimiter();
 
   while (!stop) {
-    box(win, 0, 0);
     const TypingWord *current_word = test_typing.get_word();
     const TypingChar current_char = current_word->get_char();
     const char current_ch = current_char.get_char();
