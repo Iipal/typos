@@ -5,6 +5,7 @@
 #include <memory>
 #include <ncurses.h>
 #include <signal.h>
+#include <vector>
 
 #include "Colorize.hpp"
 #include "TypingChar.hpp"
@@ -14,6 +15,7 @@
 #include "Print.hpp"
 #include "Timer.hpp"
 #include "Flags.hpp"
+#include "Words.hpp"
 
 static inline void _Noreturn finish(int sig) {
   (void)sig;

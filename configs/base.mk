@@ -3,9 +3,14 @@
 NAME := $(notdir $(CURDIR))
 NPWD := $(CURDIR)/$(NAME)
 
+EXCLUDE := srcs/WORDS.cpp
+
 # all source code .c files must to places in to "srcs" folder(or sub-dirs) only.
 ifneq (,$(wildcard ./srcs))
 SRCS := $(shell find srcs -name "*.cpp")
+ ifneq (,$(EXCLUDE))
+  SRCS := $(filter-out $(EXCLUDE), $(SRCS))
+ endif
 OBJS := $(SRCS:.cpp=.o)
 ASMS := # reversed for 'assembly' and 'assembly_all' rules where ASMS:=$(OBJS:%.o=%.S) and OBJS:= sets to nothing
 else

@@ -13,7 +13,7 @@ public:
   static int const KEY_ARROW_RIGHT = KEY_RIGHT;
 
   Typing();
-  Typing(const std::string *strings, size_t strings_length);
+  Typing(const std::vector<std::string> strings, size_t strings_length);
   virtual ~Typing();
 
   static int get_input();
