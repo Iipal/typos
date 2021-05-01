@@ -41,5 +41,3 @@ private:
   size_t length;
   size_t current_word_pos;
 };
-
-extern Typing *g_Typing;

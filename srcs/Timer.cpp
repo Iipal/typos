@@ -2,14 +2,19 @@
 
 int Timer::_remaining_seconds = Timer::SECONDS_DEFAULT;
 int Timer::_elapsed_seconds = 0;
+Typing *Timer::_typing = NULL;
 
 Timer::Timer() {}
 
-void Timer::init(int seconds) {
+void Timer::init(int seconds) { Timer::init(seconds, NULL); }
+void Timer::init(int seconds, Typing *typing) {
   if (Timer::SECONDS_MIN <= seconds && Timer::SECONDS_MAX >= seconds) {
     Timer::_remaining_seconds = seconds;
   }
   Timer::_elapsed_seconds = 0;
+  if (typing) {
+    Timer::_typing = typing;
+  }
 
   struct sigaction act;
   act.sa_handler = Timer::timer_handler;
@@ -43,7 +48,7 @@ void Timer::timer_handler(int signo) {
   Print::timer(Timer::_remaining_seconds);
 
 #ifdef TYPOS_DEBUG
-  Print::typing_status(*g_Typing);
+  Print::typing_status(*Timer::_typing);
 #endif
 }
 
@@ -58,7 +63,7 @@ void Timer::break_the_words(void) {
   };
 
   clean_lines();
-  Print::stats(g_Typing->get_stats_data());
+  Print::stats(Timer::_typing->get_stats_data());
 
   int exit_input = 0;
   do {
@@ -66,12 +71,12 @@ void Timer::break_the_words(void) {
   } while (
       !(exit_input == Typing::KEY_ESC || exit_input == Typing::KEY_NEW_LINE));
 
-  if (exit_input == Typing::KEY_NEW_LINE && g_Typing) {
+  if (exit_input == Typing::KEY_NEW_LINE) {
     clean_lines();
-    g_Typing->reset();
+    Timer::_typing->reset();
 
     box(stdscr, 0, 0);
-    Print::render_all(*g_Typing);
+    Print::render_all(*Timer::_typing);
 
     Timer::init(Flags::max_time);
   } else {

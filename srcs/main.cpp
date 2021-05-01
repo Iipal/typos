@@ -38,8 +38,6 @@ static inline int welcome_screen(void) {
 
   int input = Typing::get_input();
 
-  Timer::init(Flags::max_time);
-
   return input;
 }
 
@@ -62,10 +60,12 @@ int main(int argc, char *argv[]) {
   bool stop = welcome_screen() == Typing::KEY_ESC;
 
   Typing test_typing = Typing(__test_strings, __test_strings_length);
-  g_Typing = &test_typing;
+  if (!stop) {
+    Timer::init(Flags::max_time, &test_typing);
 
-  Print::text(test_typing);
-  Print::text_delimiter();
+    Print::text(test_typing);
+    Print::text_delimiter();
+  }
 
   while (!stop) {
     const TypingWord *current_word = test_typing.get_word();

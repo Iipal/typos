@@ -1,7 +1,5 @@
 #include "typos.hpp"
 
-Typing *g_Typing = NULL;
-
 Typing::Typing(const std::string *strings, size_t strings_length)
     : length(strings_length), current_word_pos(0) {
   this->words = new TypingWord *[strings_length + 1];
