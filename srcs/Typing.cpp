@@ -116,9 +116,14 @@ void Typing::reset_word() {
   TypingWord *word = this->get_word();
   const size_t word_pos = word->get_current_pos();
 
-  auto clear_word = [](TypingWord *_w) {
+  auto clear_word = [this](TypingWord *_w) {
     const size_t _w_pos = _w->get_current_pos();
     for (size_t i = 0; _w_pos >= i; ++i) {
+      const color_t ch_clr = _w->get_char_at(i);
+      if (COLORIZE_ERROR == ch_clr || COLORIZE_WARN == ch_clr) {
+        this->dec_typos();
+      }
+      
       _w->set_color_at(COLORIZE_DEFAULT, i);
       Print::clear_current_char(_w->get_char_at(i));
     }
