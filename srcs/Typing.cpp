@@ -114,19 +114,14 @@ bool Typing::validate_input(int input, TypingWord *const word) {
   const chtype ch = word->get_char_at();
   bool is_ok = true;
 
-  if (ch) {
     color_t clr = COLORIZE_OK;
-    is_ok = ((int)ch == input);
+  is_ok = ((int)ch == input || (!(int)ch && (input == Typing::KEY_SPACE_BAR ||
+                                             input == Typing::KEY_NEW_LINE)));
     if (!is_ok) {
       clr = COLORIZE_WARN;
     }
     word->set_color(clr);
     word->set_color_at(clr);
-  } else if (!ch) {
-    if ((input != Typing::KEY_SPACE_BAR && input != Typing::KEY_NEW_LINE)) {
-      is_ok = false;
-    }
-  }
 
   if (!is_ok) {
     this->inc_typos();
