@@ -111,6 +111,44 @@ void Typing::backspace(void) {
   }
 }
 
+void Typing::move_to_next_ch(void) {
+  TypingWord *word = this->get_word();
+  const TypingChar ch = word->get_char_at();
+
+  const size_t word_pos = word->get_current_pos();
+  const size_t word_length = word->get_length();
+
+  if (ch.get_color() != COLORIZE_DEFAULT) {
+    if (word_pos >= word_length) {
+      Print::clean_prev_word(word);
+      ++this->current_word_pos;
+    } else {
+      word->inc_current_pos();
+    }
+  }
+}
+
+void Typing::move_to_prev_ch(void) {
+  TypingWord *word = this->get_word();
+  const TypingChar ch = word->get_char_at();
+
+  const size_t word_pos = word->get_current_pos();
+  const int chx = ch.get_screen_x();
+  const int chy = ch.get_screen_y();
+
+  if (1 == chx && chy > 1) {
+    Print::clean_prev_word(word);
+    --this->current_word_pos;
+  } else if (1 < chx) {
+    if (word_pos) {
+      word->dec_current_pos();
+    } else {
+      Print::clean_prev_word(word);
+      --this->current_word_pos;
+    }
+  }
+}
+
 bool Typing::validate_input(int input) {
   TypingWord *current_word = this->words[this->current_word_pos];
   return this->validate_input(input, current_word);

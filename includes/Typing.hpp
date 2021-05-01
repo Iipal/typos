@@ -21,6 +21,10 @@ public:
 
   void iterate(void);
   void backspace(void);
+
+  void move_to_next_ch(void);
+  void move_to_prev_ch(void);
+
   bool validate_input(int input);
   bool validate_input(int input, TypingWord *word);
 
