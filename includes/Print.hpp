@@ -14,13 +14,15 @@ public:
   static void text_delimiter(void);
 
   static void timer(int seconds);
-  static void input_word(const TypingWord *const word);
+  static void input_word(const TypingWord *const prev,
+                         const TypingWord *const word,
+                         const TypingWord *const next);
 
   static void stats(const TypingStatsData &data);
 
-  static void clean_prev_word(const TypingWord *const word);
   static void clean_line(int y);
   static void clean_line(int y, int x);
+  static void clean_input(void);
 
   static int get_text_x(void);
   static int get_text_y(void);

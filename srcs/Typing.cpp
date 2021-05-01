@@ -72,7 +72,7 @@ void Typing::iterate(void) {
   if (is_accessible_at_word && !is_accessible_at_char) {
     if (this->current_word_pos != this->length) {
       ++this->current_word_pos;
-      Print::clean_prev_word(word);
+      Print::clean_input();
     }
 
     word->validate();
@@ -93,7 +93,7 @@ void Typing::backspace(void) {
 
   if (!word || (!word->get_current_pos() && this->current_word_pos)) {
     --this->current_word_pos;
-    Print::clean_prev_word(word);
+    Print::clean_input();
   } else {
     if (!ch) {
       word->set_color_at(COLORIZE_DEFAULT);
@@ -150,7 +150,7 @@ void Typing::move_to_next_ch(void) {
 
   if (ch.get_color() != COLORIZE_DEFAULT) {
     if (word_pos >= word_length) {
-      Print::clean_prev_word(word);
+      Print::clean_input();
       ++this->current_word_pos;
     } else {
       word->inc_current_pos();
@@ -167,13 +167,13 @@ void Typing::move_to_prev_ch(void) {
   const int chy = ch.get_screen_y();
 
   if (1 == chx && chy > 1) {
-    Print::clean_prev_word(word);
+    Print::clean_input();
     --this->current_word_pos;
   } else if (1 < chx) {
     if (word_pos) {
       word->dec_current_pos();
     } else {
-      Print::clean_prev_word(word);
+      Print::clean_input();
       --this->current_word_pos;
     }
   }
@@ -209,7 +209,7 @@ bool Typing::validate_input(int input, TypingWord *const word) {
 }
 
 void Typing::reset(void) {
-  Print::clean_prev_word(NULL);
+  Print::clean_input();
   this->current_word_pos = 0;
   for (size_t i = 0; this->length > i; ++i) {
     TypingWord *word = this->words[i];
@@ -224,13 +224,35 @@ void Typing::reset(void) {
 }
 
 TypingWord **Typing::get_words(void) const { return this->words; }
+
+TypingWord *Typing::get_word(void) const {
+  return this->get_word(this->current_word_pos);
+}
+TypingWord *Typing::get_word(size_t at_pos) const {
+  TypingWord *out = this->words[at_pos];
+  return out;
+}
+TypingWord *Typing::get_prev_word(void) const {
+  TypingWord *out = NULL;
+
+  if (this->current_word_pos) {
+    out = this->words[this->current_word_pos - 1];
+  }
+
+  return out;
+}
+
+TypingWord *Typing::get_next_word(void) const {
+  TypingWord *out = NULL;
+
+  if (this->length > this->current_word_pos + 1) {
+    out = this->words[this->current_word_pos + 1];
+  }
+
+  return out;
+}
+
 size_t Typing::get_length(void) const { return this->length; }
 size_t Typing::get_current_word_pos(void) const {
   return this->current_word_pos;
-}
-TypingWord *Typing::get_word(void) const {
-  return this->words[this->current_word_pos];
-}
-TypingWord *Typing::get_word(size_t at_pos) const {
-  return this->words[at_pos];
 }

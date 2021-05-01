@@ -33,7 +33,8 @@ void Print::render_all(const Typing &text) {
   Print::text(text);
   Print::text_delimiter();
   Print::timer(Timer::get_remaining_seconds());
-  Print::input_word(text.get_word());
+  Print::input_word(text.get_prev_word(), text.get_word(),
+                    text.get_next_word());
 }
 
 void Print::text(const Typing &text) { Print::text(text, text.get_length()); }
@@ -97,9 +98,9 @@ void Print::clean_line(int y, int x) {
   mvhline(y, stdscr->_maxx, ACS_SBSB, 1);
 }
 
-void Print::clean_prev_word(const TypingWord *const word) {
+void Print::clean_input(void) {
   const int y = Print::get_input_y();
-  const int x = Print::get_center_x(word ? word->get_length() : 30);
+  const int x = Print::get_timer_x() + 6;
 
   Print::clean_line(y, x);
   Print::clean_line(y + 1, x); // clearing the word underline
@@ -115,20 +116,40 @@ void Print::timer(int seconds) {
   curs_set(0);
 }
 
-void Print::input_word(const TypingWord *const word) {
-  const size_t word_length = word ? word->get_length() : 12;
+void Print::input_word(const TypingWord *const prev,
+                       const TypingWord *const word,
+                       const TypingWord *const next) {
+  Print::clean_input();
+
   const int y = Print::get_input_y();
-  const int x = Print::get_center_x(word_length);
+  const int x = Print::get_center_x(2) - (word ? word->get_current_pos() : 0);
 
   if (!word) {
     Colorize::cmvprintw(COLORIZE_INFO, y, x, "end of words");
-  } else {
-    for (size_t i = 0; word_length > i; ++i) {
-      Colorize::cmvaddch(word->get_color_at(i), y, x + i, word->get_char_at(i));
-    }
+    return;
   }
 
-  mvhline(y + 1, x, ACS_BSBS, word ? word_length + 1 : 0);
+  auto print_word = [y](const TypingWord *const _w, int start_x,
+                        unsigned attrs) {
+    for (size_t i = 0; _w->get_length() > i; ++i) {
+      Colorize::cmvaddch(_w->get_color_at(i), attrs, y, start_x + i,
+                         _w->get_char_at(i));
+    }
+  };
+
+  if (prev) {
+    print_word(prev, x - prev->get_length() - 1, A_DIM);
+  }
+  print_word(word, x, 0);
+  if (next) {
+    unsigned a = A_DIM;
+    if (word->get_current_pos() + 2 >= word->get_length()) {
+      a = 0;
+    }
+    print_word(next, x + word->get_length() + 1, a);
+  }
+
+  mvhline(y + 1, x, ACS_BSBS, word ? word->get_length() : 0);
 
   move(y, x + (word ? word->get_current_pos() : 0));
   curs_set(1);
