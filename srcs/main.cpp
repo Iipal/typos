@@ -72,21 +72,34 @@ int main(int argc, char *argv[]) {
     const TypingChar current_char = current_word->get_char_at();
     const chtype current_ch = current_char;
 
+    Print::current_input_char(current_char);
     Print::input_word(current_word);
 
     input = Typing::get_input();
     is_input_ok = true;
 
-    if (Typing::KEY_ESC == input) {
+    switch (input) {
+    case Typing::KEY_ARROW_LEFT:
+      Print::current_input_char(current_char, 0);
+      test_typing.move_to_prev_ch();
       break;
-    } else if (input == Typing::KEY_DEL) {
-      if (!current_ch) {
-        Print::clear_current_char(current_char);
-      }
 
+    case Typing::KEY_ARROW_RIGHT:
+      Print::current_input_char(current_char, 0);
+      test_typing.move_to_next_ch();
+      break;
+
+    case Typing::KEY_ESC:
+      stop = true;
+      break;
+
+    case Typing::KEY_DEL:
+      Print::clear_current_char(current_char);
       test_typing.backspace();
       Print::clear_current_char(test_typing.get_word()->get_char_at());
-    } else {
+      break;
+
+    default:
       is_input_ok = test_typing.validate_input(input);
 
       Print::current_char(current_word->get_char_at(), input);
