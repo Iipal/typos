@@ -13,6 +13,18 @@ void Print::current_char(const TypingChar &ch, int input) {
   Colorize::cmvaddch(_clr, y, x, _ch);
 }
 
+void Print::current_input_char(const TypingChar &ch, unsigned attrs) {
+  int y = ch.get_screen_y();
+  int x = ch.get_screen_x();
+  chtype _ch = !(chtype)ch ? Typing::KEY_SPACE_BAR : (chtype)ch;
+  color_t _clr = (!(chtype)ch && ' ' != _ch) ? COLORIZE_INFO_INVERT : ch;
+
+  Colorize::cmvaddch(_clr, attrs, y, x, _ch);
+}
+void Print::current_input_char(const TypingChar &ch) {
+  Print::current_input_char(ch, A_UNDERLINE);
+}
+
 void Print::clear_current_char(const TypingChar &ch) {
   int y = ch.get_screen_y();
   int x = ch.get_screen_x();
