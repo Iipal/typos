@@ -45,16 +45,12 @@ Typing speed test in terminal written in C++ using ncurses.
 
 ## Installation the deps.:
 ```bash
-sudo apt-get install libncurses5-dev libncursesw5-dev
+sudo apt-get install libncurses5-dev libncursesw5-dev clang
 ```
 
 Most of the other tools is already pre-installed in most of Linux distros. but if u still have troubles when building the app:
 ```bash
-sudo apt-get install build-essential gcc
-```
-Or even try different compiler:
-```bash
-sudo apt-get install clang
+sudo apt-get install build-essential
 ```
 
 ## Building:
