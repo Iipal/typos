@@ -122,7 +122,8 @@ void Print::input_word(const TypingWord *const prev,
   Print::clean_input();
 
   const int y = Print::get_input_y();
-  const int x = Print::get_center_x(2) - (word ? word->get_current_pos() : 0);
+  const int center_x = Print::get_center_x(2);
+  const int x = center_x - (word ? word->get_current_pos() : 0);
 
   if (!word) {
     Colorize::cmvprintw(COLORIZE_INFO, y, x, "end of words");
@@ -151,7 +152,7 @@ void Print::input_word(const TypingWord *const prev,
 
   mvhline(y + 1, x, ACS_BSBS, word ? word->get_length() : 0);
 
-  move(y, x + (word ? word->get_current_pos() : 0));
+  move(y, center_x);
   curs_set(1);
 }
 
