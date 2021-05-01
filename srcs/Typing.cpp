@@ -1,7 +1,8 @@
 #include "typos.hpp"
 
-Typing::Typing(const std::string *strings, size_t strings_length)
-    : length(strings_length), current_word_pos(0) {
+Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
+    : TypingStats(), length(strings_length), current_word_pos(0) {
+
   this->words = new TypingWord *[strings_length + 1];
 
   const size_t max_x = stdscr->_maxx - 2;
@@ -65,7 +66,7 @@ void Typing::iterate(void) {
 
   if (is_accessible_at_word) {
     word = this->words[this->current_word_pos];
-    is_accessible_at_char = !!(chtype)word->get_char_at();
+    is_accessible_at_char = !!word && !!word->get_char_at().get_char();
   }
 
   if (is_accessible_at_word && !is_accessible_at_char) {
@@ -80,8 +81,9 @@ void Typing::iterate(void) {
   }
 
   this->inc_chars();
-  if (!word) {
+  if (!this->get_word()) {
     this->reset();
+    Print::render_all(*this);
   }
 }
 
@@ -214,8 +216,6 @@ void Typing::reset(void) {
       word->set_color_at(COLORIZE_DEFAULT, i);
     }
   }
-
-  this->reset_stats();
 }
 
 TypingWord **Typing::get_words(void) const { return this->words; }

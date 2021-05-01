@@ -214,7 +214,7 @@ int Print::get_center_x(size_t text_len) {
 void Print::input_status(const Typing &text, const bool is_ok,
                          const int input) {
   const TypingWord *const word = text.get_word();
-  const chtype ch = word->get_char_at().get_char();
+  const chtype ch = word ? word->get_char_at().get_char() : 0;
 
   int y = Print::get_input_status_y();
   int x = Print::get_input_status_x();
@@ -234,10 +234,12 @@ void Print::input_status(const Typing &text, const bool is_ok,
   }
 
   Print::clean_line(y + 1);
-  Colorize::cmvprintw(
-      COLORIZE_INFO, y + 1, x, "WPos: %zu; WClr: %s; CPosAtW: %zu;",
-      text.get_current_word_pos(), Colorize::clrtostr(word->get_color()),
-      word->get_current_pos());
+  if (word) {
+    Colorize::cmvprintw(
+        COLORIZE_INFO, y + 1, x, "WPos: %zu; WClr: %s; CPosAtW: %zu;",
+        text.get_current_word_pos(), Colorize::clrtostr(word->get_color()),
+        word->get_current_pos());
+  }
 
   Print::typing_status(text);
 

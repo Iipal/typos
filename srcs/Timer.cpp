@@ -74,6 +74,7 @@ void Timer::break_the_words(void) {
   if (exit_input == Typing::KEY_NEW_LINE) {
     clean_lines();
     Timer::_typing->reset();
+    Timer::_typing->reset_stats();
 
     box(stdscr, 0, 0);
     Print::render_all(*Timer::_typing);

@@ -2,7 +2,8 @@
 
 #include <math.h>
 
-TypingStats::TypingStats() : _total_typos(0), _total_characters(0) {}
+TypingStats::TypingStats()
+    : _total_typos(0), _not_corrected_typos(0), _total_characters(0) {}
 
 void TypingStats::inc_chars(void) { ++this->_total_characters; }
 void TypingStats::inc_typos(void) { ++this->_total_typos; }
