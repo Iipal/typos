@@ -37,8 +37,7 @@ int Typing::get_input(void) {
   curs_set(1);
 
   while ((ch = getch())) {
-    if (isprint(ch) || Typing::KEY_DEL == ch || Typing::KEY_ESC == ch ||
-        Typing::KEY_NEW_LINE == ch) {
+    if (Typing::is_acceptable_input(ch)) {
       break;
     }
     napms(50);
@@ -47,6 +46,16 @@ int Typing::get_input(void) {
   curs_set(0);
 
   return ch;
+}
+
+bool Typing::is_acceptable_input(int input) {
+  return isprint(input) || Typing::is_functionality_input(input);
+}
+
+bool Typing::is_functionality_input(int input) {
+  return (Typing::KEY_NEW_LINE == input || Typing::KEY_ESC == input ||
+          Typing::KEY_DEL == input || Typing::KEY_ARROW_LEFT == input ||
+          Typing::KEY_ARROW_RIGHT == input);
 }
 
 void Typing::iterate(void) {

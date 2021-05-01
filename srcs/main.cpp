@@ -52,6 +52,8 @@ int main(int argc, char *argv[]) {
   WINDOW *win = NULL;
   assert((win = initscr()));
   noecho();
+  cbreak();
+  keypad(stdscr, true);
 
   Colorize::init_colors();
 
