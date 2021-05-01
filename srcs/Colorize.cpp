@@ -37,6 +37,21 @@ void Colorize::update_pair(color_t color, int fg, int bg) {
   Colorize::_colorize_pairs_mapper[color] = COLORIZE_ENABLED;
 }
 
+int Colorize::__default_on(color_t c, unsigned attrs) {
+  attrset(attrs);
+  return c;
+}
+int Colorize::__default_off(color_t c, unsigned attrs) {
+  attroff(attrs);
+  return c;
+}
+int Colorize::__enabled_on(color_t c, unsigned attrs) {
+  return attrset(COLOR_PAIR(c) | attrs);
+}
+int Colorize::__enabled_off(color_t c, unsigned attrs) {
+  return attroff(COLOR_PAIR(c) | attrs);
+}
+
 int Colorize::_color_on(color_t c, unsigned attrs) {
   return Colorize::_colorize_pairs[Colorize::_colorize_pairs_mapper[c]]
       ->color_on(c, attrs);

@@ -48,20 +48,10 @@ private:
   static int _color_on(color_t c, unsigned attrs);
   static int _color_off(color_t c, unsigned attrs);
 
-  static int __default_on(color_t c, unsigned attrs) {
-    attrset(attrs);
-    return c;
-  }
-  static int __default_off(color_t c, unsigned attrs) {
-    attroff(attrs);
-    return c;
-  }
-  static int __enabled_on(color_t c, unsigned attrs) {
-    return attrset(COLOR_PAIR(c) | attrs);
-  }
-  static int __enabled_off(color_t c, unsigned attrs) {
-    return attroff(COLOR_PAIR(c) | attrs);
-  }
+  static int __default_on(color_t c, unsigned attrs);
+  static int __default_off(color_t c, unsigned attrs);
+  static int __enabled_on(color_t c, unsigned attrs);
+  static int __enabled_off(color_t c, unsigned attrs);
 
   static const struct s_colorize_pair _colorize_pairs[2][2];
   static color_t _colorize_pairs_mapper[COLORIZE_MAX];

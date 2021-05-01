@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     const TypingChar current_char = current_word->get_char_at();
     const chtype current_ch = current_char;
 
-    Print::current_input_char(current_char);
+    Print::current_char(current_char);
     Print::input_word(current_word);
 
     input = Typing::get_input();
@@ -84,12 +84,12 @@ int main(int argc, char *argv[]) {
       break;
 
     case Typing::KEY_ARROW_LEFT:
-      Print::current_input_char(current_char, 0);
+      Print::current_char(current_char, 0);
       test_typing.move_to_prev_ch();
       break;
 
     case Typing::KEY_ARROW_RIGHT:
-      Print::current_input_char(current_char, 0);
+      Print::current_char(current_char, 0);
       test_typing.move_to_next_ch();
       break;
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
     default:
       is_input_ok = test_typing.validate_input(input);
 
-      Print::current_char(current_word->get_char_at(), input);
+      Print::current_char(current_word->get_char_at(), 0);
       if (current_ch || (!current_ch && is_input_ok)) {
         test_typing.iterate();
       }

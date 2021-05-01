@@ -3,9 +3,8 @@
 
 class Print {
 public:
-  static void current_char(const TypingChar &ch, int input);
-  static void current_input_char(const TypingChar &ch, unsigned attrs);
-  static void current_input_char(const TypingChar &ch);
+  static void current_char(const TypingChar &ch);
+  static void current_char(const TypingChar &ch, unsigned attrs);
   static void clear_current_char(const TypingChar &ch);
 
   static void render_all(const Typing &text);

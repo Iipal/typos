@@ -4,23 +4,21 @@
 int Print::_text_y = Print::_text_y_default;
 int Print::_text_x = 1;
 
-void Print::current_char(const TypingChar &ch, int input) {
-  int y = ch.get_screen_y();
-  int x = ch.get_screen_x();
-  chtype _ch = !(chtype)ch ? input : (chtype)ch;
-
-  Colorize::cmvaddch(ch, y, x, _ch);
-}
-
-void Print::current_input_char(const TypingChar &ch, unsigned attrs) {
+void Print::current_char(const TypingChar &ch, unsigned attrs) {
   int y = ch.get_screen_y();
   int x = ch.get_screen_x();
   chtype _ch = !(chtype)ch ? Typing::KEY_SPACE_BAR : (chtype)ch;
 
-  Colorize::cmvaddch(ch, attrs, y, x, _ch);
+  unsigned _attrs = attrs;
+  if (ch.get_color() == COLORIZE_WARN) {
+    _attrs |= A_BOLD;
+  }
+
+  Colorize::cmvaddch(ch, _attrs, y, x, _ch);
 }
-void Print::current_input_char(const TypingChar &ch) {
-  Print::current_input_char(ch, A_UNDERLINE);
+
+void Print::current_char(const TypingChar &ch) {
+  Print::current_char(ch, A_UNDERLINE);
 }
 
 void Print::clear_current_char(const TypingChar &ch) {
