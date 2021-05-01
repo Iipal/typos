@@ -33,37 +33,75 @@ void Colorize::update_pair(color_t color, int fg, int bg) {
   Colorize::_colorize_pairs_mapper[color] = COLORIZE_ENABLED;
 }
 
-int Colorize::_color_on(color_t c) {
+int Colorize::_color_on(color_t c, unsigned attrs) {
   return Colorize::_colorize_pairs[Colorize::_colorize_pairs_mapper[c]]
-      ->color_on(c);
+      ->color_on(c, attrs);
 }
 
-int Colorize::_color_off(color_t c) {
+int Colorize::_color_off(color_t c, unsigned attrs) {
   return Colorize::_colorize_pairs[Colorize::_colorize_pairs_mapper[c]]
-      ->color_off(c);
+      ->color_off(c, attrs);
 }
 
-int Colorize::cvprintw(color_t color, const char *fmt, va_list va) {
+int Colorize::cvprintw(color_t color, unsigned attrs, const char *fmt,
+                       va_list va) {
   int out = 0;
 
-  Colorize::_color_on(color);
+  Colorize::_color_on(color, attrs);
   out = vw_printw(stdscr, fmt, va);
-  Colorize::_color_off(color);
+  Colorize::_color_off(color, attrs);
 
   return out;
 }
 
-int Colorize::cprintw(color_t color, const char *fmt, ...) {
+int Colorize::cprintw(color_t color, unsigned attrs, const char *fmt, ...) {
   va_list va;
   int out = 0;
 
   va_start(va, fmt);
-  out = Colorize::cvprintw(color, fmt, va);
+  out = Colorize::cvprintw(color, attrs, fmt, va);
   va_end(va);
 
   return out;
 }
 
+int Colorize::cmvprintw(color_t color, unsigned attrs, int y, int x,
+                        const char *fmt, ...) {
+  va_list va;
+  int out = 0;
+
+  va_start(va, fmt);
+  move(y, x);
+  out = Colorize::cvprintw(color, attrs, fmt, va);
+  va_end(va);
+
+  return out;
+}
+
+int Colorize::cmvaddch(color_t color, unsigned attrs, int y, int x,
+                       const chtype ch) {
+  int out = 0;
+
+  Colorize::_color_on(color, attrs);
+  out = mvaddch(y, x, ch);
+  Colorize::_color_off(color, attrs);
+
+  return out;
+}
+
+int Colorize::cvprintw(color_t color, const char *fmt, va_list va) {
+  return Colorize::cvprintw(color, 0, fmt, va);
+}
+int Colorize::cprintw(color_t color, const char *fmt, ...) {
+  va_list va;
+  int out = 0;
+
+  va_start(va, fmt);
+  out = Colorize::cvprintw(color, 0, fmt, va);
+  va_end(va);
+
+  return out;
+}
 int Colorize::cmvprintw(color_t color, int y, int x, const char *fmt, ...) {
   va_list va;
   int out = 0;
@@ -75,15 +113,8 @@ int Colorize::cmvprintw(color_t color, int y, int x, const char *fmt, ...) {
 
   return out;
 }
-
 int Colorize::cmvaddch(color_t color, int y, int x, const chtype ch) {
-  int out = 0;
-
-  Colorize::_color_on(color);
-  out = mvaddch(y, x, ch);
-  Colorize::_color_off(color);
-
-  return out;
+  return Colorize::cmvaddch(color, 0, y, x, ch);
 }
 
 #ifdef TYPOS_DEBUG
