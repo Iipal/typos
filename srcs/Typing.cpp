@@ -3,7 +3,7 @@
 Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
     : TypingStats(), length(strings_length), current_word_pos(0) {
 
-  this->words = new TypingWord *[strings_length + 1];
+  assert(this->words = new TypingWord *[strings_length + 1]);
 
   const size_t max_x = stdscr->_maxx - 2;
   int y = 1;
@@ -13,7 +13,9 @@ Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
       ++y;
       x = 0;
     }
-    this->words[i] = new TypingWord(y, x + 1, strings[i]);
+
+    assert(this->words[i] = new TypingWord(y, x + 1, strings[i]));
+
     x += strings[i].length() + 1;
   }
 
@@ -21,10 +23,8 @@ Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
 }
 Typing::~Typing() {
   if (this->words) {
-    for (size_t i = 0; this->length > i; ++i) {
-      if (this->words[i]) {
-        delete this->words[i];
-      }
+    for (size_t i = 0; this->words[i]; ++i) {
+      delete this->words[i];
     }
     delete[] this->words;
   }
@@ -123,7 +123,7 @@ void Typing::reset_word() {
       if (COLORIZE_ERROR == ch_clr || COLORIZE_WARN == ch_clr) {
         this->dec_typos();
       }
-      
+
       _w->set_color_at(COLORIZE_DEFAULT, i);
       Print::clear_current_char(_w->get_char_at(i));
     }
@@ -195,7 +195,7 @@ bool Typing::validate_input(int input, TypingWord *const word) {
   is_ok = ((int)ch == input || (!(int)ch && (input == Typing::KEY_SPACE_BAR ||
                                              input == Typing::KEY_NEW_LINE)));
   if (!is_ok) {
-    clr = COLORIZE_WARN;
+    clr = COLORIZE_ERROR;
   }
   word->set_color(clr);
   word->set_color_at(clr);

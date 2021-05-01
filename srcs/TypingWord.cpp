@@ -5,7 +5,7 @@ TypingWord::TypingWord(int y, int x, std::string str)
     : pos(0), length(str.length()), color(COLORIZE_DEFAULT) {
 
   const size_t word_length = str.length();
-  this->chars = new TypingChar[word_length + 1];
+  assert(this->chars = new TypingChar[word_length + 1]);
 
   for (size_t i = 0; word_length >= i; ++i) {
     this->chars[i] = TypingChar(y, x + i, str[i]);

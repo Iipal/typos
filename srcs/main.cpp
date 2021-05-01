@@ -34,11 +34,8 @@ int main(int argc, char *argv[]) {
   }
 
   Typing test_typing(Words::get_words(Flags::max_words), Flags::max_words);
-
   Timer::init(Flags::max_time, &test_typing);
-
-  Print::text(test_typing);
-  Print::text_delimiter();
+  Print::render_all(test_typing);
 
   while (!stop) {
     const TypingWord *current_word = test_typing.get_word();

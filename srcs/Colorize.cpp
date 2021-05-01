@@ -18,7 +18,7 @@ void Colorize::init_colors(void) {
     if (start_color() == OK) {
       Colorize::update_pair(COLORIZE_DEFAULT, COLOR_WHITE, COLOR_BLACK);
       Colorize::update_pair(COLORIZE_OK, COLOR_GREEN, COLOR_BLACK);
-      Colorize::update_pair(COLORIZE_WARN, COLOR_BLACK, COLOR_YELLOW);
+      Colorize::update_pair(COLORIZE_WARN, COLOR_YELLOW, COLOR_BLACK);
       Colorize::update_pair(COLORIZE_ERROR, COLOR_RED, COLOR_BLACK);
       Colorize::update_pair(COLORIZE_INFO, COLOR_CYAN, COLOR_BLACK);
       Colorize::update_pair(COLORIZE_INFO_INVERT, COLOR_WHITE, COLOR_MAGENTA);

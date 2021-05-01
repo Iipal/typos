@@ -10,7 +10,7 @@ void Print::current_char(const TypingChar &ch, unsigned attrs) {
   chtype _ch = !(chtype)ch ? Typing::KEY_SPACE_BAR : (chtype)ch;
 
   unsigned _attrs = attrs;
-  if (ch.get_color() == COLORIZE_WARN) {
+  if (ch.get_color() == COLORIZE_ERROR) {
     _attrs |= A_BOLD;
   }
 
@@ -32,6 +32,7 @@ void Print::clear_current_char(const TypingChar &ch) {
 void Print::render_all(const Typing &text) {
   Print::text(text);
   Print::text_delimiter();
+  Print::timer(Timer::get_remaining_seconds());
   Print::input_word(text.get_word());
 }
 
@@ -42,8 +43,6 @@ void Print::text(const Typing &text, size_t n_words) {
 
   TypingWord **words = text.get_words();
   const size_t current_word_pos = text.get_current_word_pos();
-  const TypingWord *current_word = text.get_word();
-  const size_t current_ch_pos = current_word->get_current_pos();
 
   const size_t max_x = stdscr->_maxx - 2;
   int text_y = Print::_text_y_default;
@@ -70,13 +69,7 @@ void Print::text(const Typing &text, size_t n_words) {
     if (current_word_pos == i) {
       for (size_t i = 0; word->get_length() > i; ++i) {
         const char ch = str[i];
-        color_t current_ch_color = COLORIZE_DEFAULT;
-        if (current_ch_pos == i) {
-          current_ch_color = !ch ? COLORIZE_INFO_INVERT : COLORIZE_INFO;
-        } else if (current_ch_pos > i) {
-          current_ch_color = word->get_color_at(i);
-        }
-
+        color_t current_ch_color = word->get_color_at(i);
         Colorize::cmvaddch(current_ch_color, y, x + start_print_pos_x + i,
                            ch ? ch : ' ');
       }
