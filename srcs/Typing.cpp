@@ -53,7 +53,8 @@ bool Typing::is_acceptable_input(int input) {
 bool Typing::is_functionality_input(int input) {
   return (Typing::KEY_NEW_LINE == input || Typing::KEY_ESC == input ||
           Typing::KEY_DEL == input || Typing::KEY_ARROW_LEFT == input ||
-          Typing::KEY_ARROW_RIGHT == input);
+          Typing::KEY_ARROW_RIGHT == input ||
+          Typing::KEY_CTRL_BACKSPACE == input);
 }
 
 void Typing::iterate(void) {
@@ -105,6 +106,30 @@ void Typing::backspace(void) {
     bool is_word_ok_now = word->is_ok();
     if (is_word_ok_now) {
       word->set_color(COLORIZE_OK);
+    }
+  }
+}
+
+void Typing::reset_word() {
+  TypingWord *word = this->get_word();
+  const size_t word_pos = word->get_current_pos();
+
+  auto clear_word = [](TypingWord *_w) {
+    const size_t _w_pos = _w->get_current_pos();
+    for (size_t i = 0; _w_pos >= i; ++i) {
+      _w->set_color_at(COLORIZE_DEFAULT, i);
+      Print::clear_current_char(_w->get_char_at(i));
+    }
+    _w->set_pos(0);
+  };
+
+  if (word_pos) {
+    clear_word(word);
+  } else {
+    Print::clear_current_char(word->get_char_at());
+    if (this->current_word_pos) {
+      --this->current_word_pos;
+      clear_word(this->get_word());
     }
   }
 }

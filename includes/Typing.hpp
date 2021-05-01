@@ -3,6 +3,7 @@
 
 class Typing : public TypingStats {
 public:
+  static int const KEY_CTRL_BACKSPACE = 0x8;
   static int const KEY_DEL = KEY_BACKSPACE;
   static int const KEY_ESC = 0x1B;
   static int const KEY_NEW_LINE = 0x0A;
@@ -21,6 +22,8 @@ public:
 
   void iterate(void);
   void backspace(void);
+
+  void reset_word(void);
 
   void move_to_next_ch(void);
   void move_to_prev_ch(void);

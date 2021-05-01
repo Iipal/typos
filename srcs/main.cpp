@@ -79,6 +79,10 @@ int main(int argc, char *argv[]) {
     is_input_ok = true;
 
     switch (input) {
+    case Typing::KEY_CTRL_BACKSPACE:
+      test_typing.reset_word();
+      break;
+
     case Typing::KEY_ARROW_LEFT:
       Print::current_input_char(current_char, 0);
       test_typing.move_to_prev_ch();
