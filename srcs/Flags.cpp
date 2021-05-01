@@ -4,10 +4,13 @@
 
 #define FLAG_H 'h'
 #define FLAG_T 't'
+#define FLAG_M 'm'
 
-#define FLAGS_OPT "ht:"
+#define FLAGS_OPT "ht:m"
 
 #define FLAGS_USAGE "Usage: ./typos [" FLAGS_OPT "]"
+
+#define FLAG_M_DEFAULT false
 
 #define FLAG_T_DEFAULT Timer::SECONDS_DEFAULT
 #define FLAG_T_MIN Timer::SECONDS_MIN
@@ -21,9 +24,11 @@
 #define FLAG_H_DESC                                                            \
   FLAGS_USAGE "\n"                                                             \
               "  -h          : print this message.\n"                          \
+              "  -m          : Monochrome mode. Disabling all colors.\n"       \
               "  -t [seconds]: " FLAG_T_DESC "\n"
 
 unsigned int Flags::max_time = FLAG_T_DEFAULT;
+bool Flags::is_monochrome = FLAG_M_DEFAULT;
 
 Flags::Flags() {}
 
@@ -58,6 +63,10 @@ void Flags::parse(int argc, char *argv[]) {
     case FLAG_T:
       Flags::max_time = flag_positive_integer_arg_parse(
           optarg, FLAG_T, FLAG_T_MIN, FLAG_T_MAX, FLAG_T_DEFAULT);
+      break;
+
+    case FLAG_M:
+      Flags::is_monochrome = true;
       break;
 
     case '?':

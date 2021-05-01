@@ -10,6 +10,10 @@ color_t Colorize::_colorize_pairs_mapper[COLORIZE_MAX] = {
 Colorize::Colorize() {}
 
 void Colorize::init_colors(void) {
+  if (Flags::is_monochrome) {
+    return;
+  }
+
   if (has_colors()) {
     if (start_color() == OK) {
       Colorize::update_pair(COLORIZE_DEFAULT, COLOR_WHITE, COLOR_BLACK);
