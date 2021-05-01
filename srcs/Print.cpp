@@ -8,18 +8,16 @@ void Print::current_char(const TypingChar &ch, int input) {
   int y = ch.get_screen_y();
   int x = ch.get_screen_x();
   chtype _ch = !(chtype)ch ? input : (chtype)ch;
-  color_t _clr = (!(chtype)ch && ' ' != _ch) ? COLORIZE_INFO_INVERT : ch;
 
-  Colorize::cmvaddch(_clr, y, x, _ch);
+  Colorize::cmvaddch(ch, y, x, _ch);
 }
 
 void Print::current_input_char(const TypingChar &ch, unsigned attrs) {
   int y = ch.get_screen_y();
   int x = ch.get_screen_x();
   chtype _ch = !(chtype)ch ? Typing::KEY_SPACE_BAR : (chtype)ch;
-  color_t _clr = (!(chtype)ch && ' ' != _ch) ? COLORIZE_INFO_INVERT : ch;
 
-  Colorize::cmvaddch(_clr, attrs, y, x, _ch);
+  Colorize::cmvaddch(ch, attrs, y, x, _ch);
 }
 void Print::current_input_char(const TypingChar &ch) {
   Print::current_input_char(ch, A_UNDERLINE);
@@ -227,14 +225,14 @@ void Print::input_status(const Typing &text, const bool is_ok,
 
   if (ch) {
     if (is_ok) {
-      Colorize::cmvprintw(COLORIZE_OK, y, x, "correct char\n");
+      Colorize::cmvprintw(COLORIZE_OK, y, x, "correct char");
     } else {
-      Colorize::cmvprintw(COLORIZE_ERROR, y, x, "invalid char\n");
+      Colorize::cmvprintw(COLORIZE_ERROR, y, x, "invalid char");
     }
   } else if (is_ok) {
-    Colorize::cmvprintw(COLORIZE_OK, y, x, "ok, next word\n");
+    Colorize::cmvprintw(COLORIZE_OK, y, x, "ok, next word");
   } else {
-    Colorize::cmvprintw(COLORIZE_WARN, y, x, "WTF\n");
+    Colorize::cmvprintw(COLORIZE_WARN, y, x, "WTF");
   }
 
   Print::clean_line(y + 1);
