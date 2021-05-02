@@ -31,15 +31,25 @@ Typing speed test in terminal written in C++ using ncurses.
 ***
 
 #### Flags:
- - `-h`: Prints this help message.
- - `-t <seconds>`: Number of maximum time to type in seconds. <sub>Accepts only positive integer in range: 10 - 240; Default: 60.</sub>
- - `-w <number>`: Number of maximum words to type. <sub>Accepts only positive integer in range: 10 - 150; Default: 42;</sub>
- - `-S <path>`: Full path to file where your stats will be saved. <sub>Default: `./typos.log`;</sub>
- - `-s`: Auto-save your stats at the end. <sub>Default: false;</sub>
- - `-a`: Words sorted in alphabetical order. <sub>Default: false;</sub>
- - `-m`: Monochrome mode. <sub>Default: false;</sub>
- - `-f`: Free typing mode. The timer will not start. <sub>Default: false;</sub>
-
+- `-h`: Prints this help message.
+- `-t <seconds>`: Number of maximum time to type in seconds. <sub>Accepts only positive integer in range: 10 - 240; Default: 60.</sub>
+- `-w <number>`: Number of maximum words to type. <sub>Accepts only positive integer in range: 10 - 150; Default: 42;</sub>
+- `-S <path>`: Full path to file where your stats will be saved. <sub>Default: `./typos.log`;</sub>
+- `-o <fmt_str>`: Stats format string. <sub>Valid format options: `|wrRtcTCaA`; Default: `wrR|tc|TC|aA`;</sub>
+  - `|`: Delimiter.
+  - `w`: Net WPM.
+  - `r`: Gross WPM.
+  - `R`: Net WPM v2.
+  - `t`: Total typed characters.
+  - `c`: Characters Per Second.
+  - `T`: Corrected typos.
+  - `C`: All typos.
+  - `a`: Accuracy with corrected typos.
+  - `A`: Accuracy with all typos.
+- `-s`: Auto-save your stats at the end. <sub>Default: false;</sub>
+- `-a`: Words sorted in alphabetical order. <sub>Default: false;</sub>
+- `-m`: Monochrome mode. <sub>Default: false;</sub>
+- `-f`: Free typing mode. The timer will not start. <sub>Default: false;</sub>
 ***
 
 #### Keybindigs:
@@ -65,7 +75,7 @@ Typing speed test in terminal written in C++ using ncurses.
   - <kbd>Tab</kbd>: Restart the test.
   - <kbd>Ctrl</kbd>+<kbd>R</kbd>: Restart the test and re-roll the words.
 
-> !! IMPORTANT !!; My advice is to use <kbd>Ctrl</kbd>+<kbd>C</kbd>, and <kbd>Ctrl</kbd>+<kbd>D</kbd> keybindings instead of <kbd>Esc</kbd> whatever it's possible. Because of reasons of handling the "Escape Sequences" the <kbd>Esc</kbd>-key by itself has a delay in 1 sec. 
+> !! IMPORTANT !!; My advice is to use <kbd>Ctrl</kbd>+<kbd>C</kbd>, and <kbd>Ctrl</kbd>+<kbd>D</kbd> keybindings instead of <kbd>Esc</kbd> whatever it's possible. Because of reasons of handling the "Escape Sequences" the <kbd>Esc</kbd>-key by itself has a delay in 1 sec.
 >> The <kbd>Esc</kbd> is not removed because for some peoples the <kbd>Esc</kbd>-key may be a more comfortable way to close the program.
 
 ***
