@@ -1,5 +1,7 @@
 #include "typos.hpp"
 
+#include <fstream>
+#include <iomanip>
 #include <math.h>
 
 TypingStats::TypingStats()
@@ -74,4 +76,46 @@ TypingStatsData TypingStats::get_stats_data(void) const {
           this->get_typos(),
           this->get_total_typos(),
           this->get_chars()};
+};
+
+TypingStatsDataFmt *
+TypingStats::get_stats_data_fmt(const TypingStatsData &data) {
+  TypingStatsDataFmt *out = new TypingStatsDataFmt[13];
+
+  out[0] = {"WPM", {"%-7.2f", data.wpm.net_wpm}};
+  out[1] = {"RAW WPM", {"%-7.2f", data.wpm.gross_wpm}};
+  out[2] = {"REAL WPM", {"%-7.2f", data.wpm.net_real_wpm}};
+  out[3] = STATS_DATA_DELIMITER;
+  out[4] = {"TYPED", {"%-7.2f", (float)data.characters}};
+  out[5] = {"CPS", {"%-7.2f", data.cps}};
+  out[6] = STATS_DATA_DELIMITER;
+  out[7] = {"TYPOS", {"%-7.0f", (float)data.corrected_typos}};
+  out[8] = {"REAL TYPOS", {"%-7.0f", (float)data.not_corrected_typos}};
+  out[9] = STATS_DATA_DELIMITER;
+  out[10] = {"ACC", {"%-7.2f", data.accuracy}};
+  out[11] = {"REAL ACC", {"%-7.2f", data.real_accuracy}};
+  out[12] = {NULL, {NULL, .0f}};
+
+  return out;
+}
+void TypingStats::save_stats(const TypingStatsDataFmt *const fmt) {
+  std::ofstream file(STATS_SAVE_FILE_NAME, std::ios::app);
+  time_t now = time(0);
+  tm *_tmp = localtime(&now);
+
+  file << std::endl
+       << std::put_time(_tmp, "%a %b %d %H:%M:%S %Y") << " :" << std::endl;
+
+  char fmt_buff[64] = {0};
+  char output_buff[128] = {0};
+
+  for (size_t i = 0; fmt[i].first; ++i) {
+    snprintf(fmt_buff, sizeof(fmt_buff) - 1, "%%10s | %s", fmt[i].second.fmt);
+    snprintf(output_buff, sizeof(output_buff) - 1, fmt_buff, fmt[i].first,
+             fmt[i].second.value);
+
+    file << output_buff << std::endl;
+  }
+
+  file.close();
 }

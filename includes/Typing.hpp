@@ -9,6 +9,8 @@ public:
   static int const KEY_NEW_LINE = 0x0A;
   static int const KEY_SPACE_BAR = 0x20;
 
+  static int const KEY_SLASH = 0x2F;
+
   static int const KEY_ARROW_LEFT = KEY_LEFT;
   static int const KEY_ARROW_RIGHT = KEY_RIGHT;
 

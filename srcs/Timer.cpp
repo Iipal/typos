@@ -1,5 +1,7 @@
 #include "typos.hpp"
 
+#include <string.h>
+
 int Timer::_remaining_seconds = Timer::SECONDS_DEFAULT;
 int Timer::_elapsed_seconds = 0;
 Typing *Timer::_typing = NULL;
@@ -53,6 +55,8 @@ void Timer::timer_handler(int signo) {
 }
 
 void Timer::break_the_words(void) {
+  const char *msg_saved = "SAVED TO " STATS_SAVE_FILE_NAME;
+
   const int y = Print::get_stats_y();
   const auto clean_lines = [y]() {
     for (int i = y; y + 16 > i; ++i) { // hardcoded clear of typing stats
@@ -65,22 +69,48 @@ void Timer::break_the_words(void) {
   clean_lines();
   Print::stats(Timer::_typing->get_stats_data());
 
-  int exit_input = 0;
-  do {
-    exit_input = Typing::get_input();
-  } while (
-      !(exit_input == Typing::KEY_ESC || exit_input == Typing::KEY_NEW_LINE));
+  int ch = 0;
+  bool is_saved = false;
+  bool stop = false;
 
-  if (exit_input == Typing::KEY_NEW_LINE) {
-    clean_lines();
-    Timer::_typing->reset();
-    Timer::_typing->reset_stats();
+  while (!stop) {
+    ch = Typing::get_input();
 
-    box(stdscr, 0, 0);
-    Print::render_all(*Timer::_typing);
+    switch (ch) {
+    case Typing::KEY_SLASH: {
+      if (!is_saved) {
+        TypingStatsDataFmt *fmt =
+            TypingStats::get_stats_data_fmt(Timer::_typing->get_stats_data());
+        TypingStats::save_stats(fmt);
+        delete fmt;
 
-    Timer::init(Flags::max_time);
-  } else {
-    finish(0);
+        is_saved = true;
+        Colorize::cmvprintw(COLORIZE_INFO_INVERT, Print::get_input_y(),
+                            Print::get_center_x(strlen(msg_saved)), msg_saved);
+      }
+
+      break;
+    }
+
+    case Typing::KEY_NEW_LINE: {
+      clean_lines();
+      Timer::_typing->reset();
+      Timer::_typing->reset_stats();
+
+      box(stdscr, 0, 0);
+      Print::render_all(*Timer::_typing);
+
+      Timer::init(Flags::max_time);
+      stop = true;
+      break;
+    }
+
+    case Typing::KEY_ESC:
+      finish(0);
+      break;
+
+    default:
+      break;
+    }
   }
 }

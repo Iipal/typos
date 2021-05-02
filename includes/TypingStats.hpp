@@ -17,6 +17,20 @@ typedef struct s_typing_stats_data {
   int characters;
 } TypingStatsData;
 
+struct s_typing_stats_data_fmt {
+  const char *fmt;
+  float value;
+};
+
+typedef std::pair<const char *, s_typing_stats_data_fmt> TypingStatsDataFmt;
+
+#define STATS_DATA_DELIMITER                                                   \
+  {                                                                            \
+    "", { "", .0f }                                                            \
+  }
+
+#define STATS_SAVE_FILE_NAME "./typos.log"
+
 class TypingStats {
 public:
   TypingStats();
@@ -47,6 +61,9 @@ public:
   int get_total_typos(void) const;
 
   TypingStatsData get_stats_data(void) const;
+
+  static TypingStatsDataFmt *get_stats_data_fmt(const TypingStatsData &data);
+  static void save_stats(const TypingStatsDataFmt *const fmt);
 
 private:
   int _total_typos;
