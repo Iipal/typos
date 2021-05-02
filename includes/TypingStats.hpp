@@ -20,14 +20,10 @@ typedef struct s_typing_stats_data {
 struct s_typing_stats_data_fmt {
   const char *fmt;
   float value;
+  color_t clr;
 };
 
 typedef std::pair<const char *, s_typing_stats_data_fmt> TypingStatsDataFmt;
-
-#define STATS_DATA_DELIMITER                                                   \
-  {                                                                            \
-    "", { "", .0f }                                                            \
-  }
 
 #define STATS_SAVE_FILE_NAME "./typos.log"
 

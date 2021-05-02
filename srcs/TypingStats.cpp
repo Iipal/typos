@@ -78,23 +78,29 @@ TypingStatsData TypingStats::get_stats_data(void) const {
           this->get_chars()};
 };
 
+#define STATS_DATA_DELIMITER                                                   \
+  {                                                                            \
+    "", { "", .0f, COLORIZE_INFO }                                             \
+  }
+
 TypingStatsDataFmt *
 TypingStats::get_stats_data_fmt(const TypingStatsData &data) {
   TypingStatsDataFmt *out = new TypingStatsDataFmt[13];
 
-  out[0] = {"WPM", {"%-7.2f", data.wpm.net_wpm}};
-  out[1] = {"RAW WPM", {"%-7.2f", data.wpm.gross_wpm}};
-  out[2] = {"REAL WPM", {"%-7.2f", data.wpm.net_real_wpm}};
+  out[0] = {"WPM", {"%-7.2f", data.wpm.net_wpm, COLORIZE_OK}};
+  out[1] = {"RAW WPM", {"%-7.2f", data.wpm.gross_wpm, COLORIZE_DEFAULT}};
+  out[2] = {"REAL WPM", {"%-7.2f", data.wpm.net_real_wpm, COLORIZE_WARN}};
   out[3] = STATS_DATA_DELIMITER;
-  out[4] = {"TYPED", {"%-7.2f", (float)data.characters}};
-  out[5] = {"CPS", {"%-7.2f", data.cps}};
+  out[4] = {"TYPED", {"%-7.2f", (float)data.characters, COLORIZE_OK}};
+  out[5] = {"CPS", {"%-7.2f", data.cps, COLORIZE_OK}};
   out[6] = STATS_DATA_DELIMITER;
-  out[7] = {"TYPOS", {"%-7.0f", (float)data.corrected_typos}};
-  out[8] = {"REAL TYPOS", {"%-7.0f", (float)data.not_corrected_typos}};
+  out[7] = {"TYPOS", {"%-7.0f", (float)data.corrected_typos, COLORIZE_WARN}};
+  out[8] = {"REAL TYPOS",
+            {"%-7.0f", (float)data.not_corrected_typos, COLORIZE_ERROR}};
   out[9] = STATS_DATA_DELIMITER;
-  out[10] = {"ACC", {"%-7.2f", data.accuracy}};
-  out[11] = {"REAL ACC", {"%-7.2f", data.real_accuracy}};
-  out[12] = {NULL, {NULL, .0f}};
+  out[10] = {"ACC", {"%-7.2f", data.accuracy, COLORIZE_OK}};
+  out[11] = {"REAL ACC", {"%-7.2f", data.real_accuracy, COLORIZE_WARN}};
+  out[12] = {NULL, {NULL, .0f, COLORIZE_DEFAULT}};
 
   return out;
 }
