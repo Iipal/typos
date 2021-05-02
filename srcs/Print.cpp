@@ -103,7 +103,9 @@ void Print::clean_input(void) {
   const int x = Print::get_timer_x() + 6;
 
   Print::clean_line(y, x);
-  Print::clean_line(y + 1, x); // clearing the word underline
+
+  // clear the current character underline
+  Colorize::cmvaddch(COLORIZE_DEFAULT, y + 1, Print::get_center_x(2), ' ');
 }
 
 void Print::timer(int seconds) {
@@ -139,9 +141,15 @@ void Print::input_word(const TypingWord *const prev,
   };
 
   if (prev) {
-    print_word(prev, x - prev->get_length() - 1, A_DIM);
+    unsigned a = A_DIM;
+    if (2 > word->get_current_pos()) {
+      a = 0;
+    }
+    print_word(prev, x - prev->get_length() - 1, a);
   }
+
   print_word(word, x, 0);
+
   if (next) {
     unsigned a = A_DIM;
     if (word->get_current_pos() + 2 >= word->get_length()) {
@@ -150,7 +158,7 @@ void Print::input_word(const TypingWord *const prev,
     print_word(next, x + word->get_length() + 1, a);
   }
 
-  mvhline(y + 1, x, ACS_BSBS, word ? word->get_length() : 0);
+  mvhline(y + 1, center_x, ACS_BSBS, 1);
 
   move(y, center_x);
   curs_set(1);
