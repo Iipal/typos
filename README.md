@@ -7,10 +7,10 @@ Typing speed test in terminal written in C++ using ncurses.
  - You can move across already typped characters with Arrow Keys.
  - Deleting input of current word by pressing <kbd>Ctrl</kbd>+<kbd>Backspace</kbd>, or if you at the start of the word - this shortcut will move the cursor to begin of the previous word.
  - When words are ended, but time still ticking - you will start typing the same words from the beginning again. (Statistic will not be reset until the time is over)
+ - You can reset the current test with <kbd>Tab</kbd>, or on the Stats Screen with <kbd>Enter</kbd>.
  - Under all the words displaying also prints previous, current, and next word to type with the current character always at the center of the screen.
  - Displaying the timer.
  - Detailed statistics.
- - Ability to restart the test.
 
  ***
 #### Statistics:
