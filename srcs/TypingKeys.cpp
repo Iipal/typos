@@ -19,7 +19,6 @@ chtype TypingKeys::get_input(void) {
 
 bool TypingKeys::is_valid_input_key(chtype input) { return _valid_keys[input]; }
 
-#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc99-designator"
 
 const bool TypingKeys::_valid_keys[KEY_MAX] = {
@@ -28,8 +27,10 @@ const bool TypingKeys::_valid_keys[KEY_MAX] = {
     [TypingKeys::KEY_CTRL_BACKSPACE] = true,
     [TypingKeys::KEY_TAB] = true,
     [TypingKeys::KEY_NEW_LINE] = true,
+    [TypingKeys::KEY_CTRL_R] = true,
     [TypingKeys::KEY_CTRL_S] = true,
     [TypingKeys::KEY_ESC] = true,
+
     [TypingKeys::KEY_SPACE] = true,
     [TypingKeys::KEY_EXC_MARK] = true,
     [TypingKeys::KEY_QUOTE] = true,
@@ -125,9 +126,8 @@ const bool TypingKeys::_valid_keys[KEY_MAX] = {
     [TypingKeys::KEY_VERTICAL_SLASH] = true,
     [TypingKeys::KEY_CRL_BRACKET_CLOSE] = true,
     [TypingKeys::KEY_TILDE] = true,
+
     [TypingKeys::KEY_ARROW_LEFT] = true,
     [TypingKeys::KEY_ARROW_RIGHT] = true,
     [TypingKeys::KEY_DEL] = true,
 };
-
-#pragma clang diagnostic pop

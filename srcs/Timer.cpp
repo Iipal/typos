@@ -96,15 +96,15 @@ void Timer::break_the_words(void) {
       break;
     }
 
+    case TypingKeys::KEY_CTRL_R:
+      Timer::_typing->new_words();
     case TypingKeys::KEY_TAB: {
       clean_lines();
       Timer::_typing->reset();
       Timer::_typing->reset_stats();
-
-      box(stdscr, 0, 0);
+      Timer::init(Flags::max_time);
       Print::render_all(*Timer::_typing);
 
-      Timer::init(Flags::max_time);
       stop = true;
       break;
     }

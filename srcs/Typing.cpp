@@ -2,7 +2,11 @@
 
 Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
     : TypingStats(), length(strings_length), current_word_pos(0) {
+  this->_new_words(strings, strings_length);
+}
 
+void Typing::_new_words(const std::vector<std::string> strings,
+                        size_t strings_length) {
   try {
     this->words = new TypingWord *[strings_length + 1];
 
@@ -27,13 +31,16 @@ Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
     exit(EXIT_FAILURE);
   }
 }
-Typing::~Typing() {
+
+Typing::~Typing() { this->_delete_words(); }
+void Typing::_delete_words(void) {
   if (this->words) {
     for (size_t i = 0; this->words[i]; ++i) {
       delete this->words[i];
     }
     delete[] this->words;
   }
+  this->words = NULL;
 }
 
 void Typing::iterate(void) {
@@ -190,7 +197,7 @@ bool Typing::validate_input(int input, TypingWord *const word) {
 void Typing::reset(void) {
   Print::clean_input();
   this->current_word_pos = 0;
-  for (size_t i = 0; this->length > i; ++i) {
+  for (size_t i = 0; this->words[i]; ++i) {
     TypingWord *word = this->words[i];
     const size_t word_length = word->get_length();
 
@@ -200,6 +207,11 @@ void Typing::reset(void) {
       word->set_color_at(COLORIZE_DEFAULT, i);
     }
   }
+}
+
+void Typing::new_words(void) {
+  this->_delete_words();
+  this->_new_words(Words::get_words(Flags::max_words), Flags::max_words);
 }
 
 TypingWord **Typing::get_words(void) const { return this->words; }
@@ -220,7 +232,6 @@ TypingWord *Typing::get_prev_word(void) const {
 
   return out;
 }
-
 TypingWord *Typing::get_next_word(void) const {
   TypingWord *out = NULL;
 
@@ -229,6 +240,16 @@ TypingWord *Typing::get_next_word(void) const {
   }
 
   return out;
+}
+
+TypingChar Typing::get_char_at(void) const {
+  return this->get_word()->get_char_at();
+};
+TypingChar Typing::get_char_at(size_t ch_pos) const {
+  return this->get_char_at(ch_pos, this->current_word_pos);
+}
+TypingChar Typing::get_char_at(size_t ch_pos, size_t w_pos) const {
+  return this->get_word(w_pos)->get_char_at(ch_pos);
 }
 
 size_t Typing::get_length(void) const { return this->length; }

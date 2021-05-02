@@ -9,6 +9,7 @@ struct TypingKeys {
   static const unsigned char KEY_CTRL_BACKSPACE = 0x8;
   static const unsigned char KEY_TAB = 0x9;
   static const unsigned char KEY_NEW_LINE = 0x0A;
+  static const unsigned char KEY_CTRL_R = 0x12;
   static const unsigned char KEY_CTRL_S = 0x13;
   static const unsigned char KEY_ESC = 0x1B;
 

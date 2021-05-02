@@ -46,11 +46,7 @@ int main(int argc, char *argv[]) {
   Print::render_all(test_typing);
 
   while (!stop) {
-    const TypingWord *current_word = test_typing.get_word();
-    const TypingChar current_char = current_word->get_char_at();
-    const chtype current_ch = current_char;
-
-    Print::current_char(current_char);
+    Print::current_char(test_typing.get_char_at());
     Print::input_word(test_typing);
 
     input = TypingKeys::get_input();
@@ -62,11 +58,13 @@ int main(int argc, char *argv[]) {
       break;
 
     case TypingKeys::KEY_DEL:
-      Print::clear_current_char(current_char);
+      Print::clear_current_char(test_typing.get_char_at());
       test_typing.backspace();
-      Print::clear_current_char(test_typing.get_word()->get_char_at());
+      Print::clear_current_char(test_typing.get_char_at());
       break;
 
+    case TypingKeys::KEY_CTRL_R:
+      test_typing.new_words();
     case TypingKeys::KEY_TAB:
       test_typing.reset();
       test_typing.reset_stats();
@@ -75,12 +73,12 @@ int main(int argc, char *argv[]) {
       break;
 
     case TypingKeys::KEY_ARROW_LEFT:
-      Print::current_char(current_char, 0);
+      Print::current_char(test_typing.get_char_at(), 0);
       test_typing.move_to_prev_ch();
       break;
 
     case TypingKeys::KEY_ARROW_RIGHT:
-      Print::current_char(current_char, 0);
+      Print::current_char(test_typing.get_char_at(), 0);
       test_typing.move_to_next_ch();
       break;
 
@@ -93,8 +91,11 @@ int main(int argc, char *argv[]) {
     default:
       is_input_ok = test_typing.validate_input(input);
 
-      Print::current_char(current_word->get_char_at(), 0);
-      if (current_ch || (!current_ch && is_input_ok)) {
+      const TypingChar ch = test_typing.get_char_at();
+      Print::current_char(ch, 0);
+
+      const char _ch = ch;
+      if (_ch || (!_ch && is_input_ok)) {
         test_typing.iterate();
       }
     }
