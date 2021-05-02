@@ -109,6 +109,10 @@ void Print::clean_input(void) {
 }
 
 void Print::timer(int seconds) {
+  if (Flags::is_free_mode) {
+    return;
+  }
+
   curs_set(0);
 
   int min = seconds / 60;

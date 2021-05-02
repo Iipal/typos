@@ -9,6 +9,7 @@ public:
   static unsigned int max_words;
   static bool is_monochrome;
   static bool is_alphabetic;
+  static bool is_free_mode;
 
 private:
   Flags();

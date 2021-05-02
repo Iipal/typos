@@ -7,8 +7,9 @@
 #define FLAG_T 't'
 #define FLAG_M 'm'
 #define FLAG_A 'a'
+#define FLAG_F 'f'
 
-#define FLAGS_OPT "hw:t:ma"
+#define FLAGS_OPT "hw:t:maf"
 
 #define FLAGS_USAGE "Usage: ./typos [" FLAGS_OPT "]"
 
@@ -29,8 +30,8 @@
   "Default: 60."
 
 #define FLAG_M_DEFAULT false
-
 #define FLAG_A_DEFAULT false
+#define FLAG_F_DEFAULT false
 
 #define FLAG_H_DESC                                                            \
   FLAGS_USAGE                                                                  \
@@ -39,12 +40,15 @@
   "  -w [number] : " FLAG_W_DESC "\n"                                          \
   "  -t [seconds]: " FLAG_T_DESC "\n"                                          \
   "  -m          : Monochrome mode. Default: false;\n"                         \
-  "  -a          : Words sorted in alphabetical order. Default: false;\n"
+  "  -a          : Words sorted in alphabetical order. Default: false;\n"      \
+  "  -f          : Free typing mode. The timer will not start. Default: "      \
+  "false; \n"
 
 unsigned int Flags::max_time = FLAG_T_DEFAULT;
 unsigned int Flags::max_words = FLAG_W_DEFAULT;
 bool Flags::is_monochrome = FLAG_M_DEFAULT;
 bool Flags::is_alphabetic = FLAG_A_DEFAULT;
+bool Flags::is_free_mode = FLAG_F_DEFAULT;
 
 Flags::Flags() {}
 
@@ -94,6 +98,10 @@ void Flags::parse(int argc, char *argv[]) {
       Flags::is_alphabetic = true;
       break;
 
+    case FLAG_F:
+      Flags::is_free_mode = true;
+      break;
+
     case '?':
       fprintf(stderr, "%s\n", FLAGS_USAGE);
       exit(EXIT_FAILURE);
@@ -104,6 +112,7 @@ void Flags::parse(int argc, char *argv[]) {
       exit(EXIT_SUCCESS);
 
     default:
+      printf("%s\n", FLAG_H_DESC);
       exit(EXIT_FAILURE);
     }
   }

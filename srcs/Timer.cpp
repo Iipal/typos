@@ -18,6 +18,10 @@ void Timer::init(int seconds, Typing *typing) {
     Timer::_typing = typing;
   }
 
+  if (Flags::is_free_mode) {
+    return;
+  }
+
   struct sigaction act;
   act.sa_handler = Timer::timer_handler;
   act.sa_flags = SA_NOCLDWAIT;
