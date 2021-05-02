@@ -74,10 +74,10 @@ void Timer::break_the_words(void) {
   bool stop = false;
 
   while (!stop) {
-    ch = Typing::get_input();
+    ch = TypingKeys::get_input();
 
     switch (ch) {
-    case Typing::KEY_CTRL_S: {
+    case TypingKeys::KEY_CTRL_S: {
       if (!is_saved) {
         TypingStatsDataFmt *fmt =
             TypingStats::get_stats_data_fmt(Timer::_typing->get_stats_data());
@@ -92,7 +92,7 @@ void Timer::break_the_words(void) {
       break;
     }
 
-    case Typing::KEY_NEW_LINE: {
+    case TypingKeys::KEY_NEW_LINE: {
       clean_lines();
       Timer::_typing->reset();
       Timer::_typing->reset_stats();
@@ -105,9 +105,9 @@ void Timer::break_the_words(void) {
       break;
     }
 
-    case Typing::KEY_ESC:
-    case Typing::KEY_CTRL_D:
-    case Typing::KEY_CTRL_C:
+    case TypingKeys::KEY_ESC:
+    case TypingKeys::KEY_CTRL_D:
+    case TypingKeys::KEY_CTRL_C:
       finish(0);
       break;
 

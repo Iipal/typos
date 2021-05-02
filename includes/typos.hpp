@@ -9,6 +9,7 @@
 #include <exception>
 
 #include "Colorize.hpp"
+#include "TypingKeys.hpp"
 #include "TypingChar.hpp"
 #include "TypingWord.hpp"
 #include "TypingStats.hpp"

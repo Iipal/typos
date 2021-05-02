@@ -36,44 +36,6 @@ Typing::~Typing() {
   }
 }
 
-int Typing::get_input(void) {
-  int ch = 0;
-
-  curs_set(1);
-
-  while ((ch = getch())) {
-    if (Typing::is_acceptable_input(ch)) {
-      break;
-    }
-    napms(50);
-  }
-
-  curs_set(0);
-
-  return ch;
-}
-
-bool Typing::is_acceptable_input(int input) {
-  return isprint(input) || Typing::is_functionality_input(input);
-}
-
-bool Typing::is_functionality_input(int input) {
-  static const int _valid_keys[] = {
-      Typing::KEY_DEL,         Typing::KEY_CTRL_BACKSPACE,
-      Typing::KEY_CTRL_C,      Typing::KEY_ARROW_LEFT,
-      Typing::KEY_ARROW_RIGHT, Typing::KEY_CTRL_D,
-      Typing::KEY_NEW_LINE,    Typing::KEY_TAB,
-      Typing::KEY_CTRL_S,      Typing::KEY_ESC};
-  const size_t _valid_keys_length = sizeof(_valid_keys) / sizeof(*_valid_keys);
-
-  for (size_t i = 0; _valid_keys_length > i; ++i) {
-    if (_valid_keys[i] == input) {
-      return true;
-    }
-  }
-  return false;
-}
-
 void Typing::iterate(void) {
   const bool is_accessible_at_word =
       !!this->words && !!this->words[this->current_word_pos];
@@ -208,8 +170,9 @@ bool Typing::validate_input(int input, TypingWord *const word) {
   bool is_ok = true;
 
   color_t clr = COLORIZE_OK;
-  is_ok = ((int)ch == input || (!(int)ch && (input == Typing::KEY_SPACE_BAR ||
-                                             input == Typing::KEY_NEW_LINE)));
+  is_ok =
+      ((int)ch == input || (!(int)ch && (input == TypingKeys::KEY_SPACE ||
+                                         input == TypingKeys::KEY_NEW_LINE)));
   if (!is_ok) {
     clr = COLORIZE_ERROR;
   }

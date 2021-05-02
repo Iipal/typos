@@ -7,10 +7,10 @@ static inline bool welcome_screen(void) {
   box(stdscr, 0, 0);
   Colorize::cmvprintw(COLORIZE_OK, 1, x, msg.c_str());
 
-  int input = Typing::get_input();
+  int input = TypingKeys::get_input();
 
-  if (Typing::KEY_CTRL_D == input || Typing::KEY_CTRL_C == input ||
-      Typing::KEY_ESC == input) {
+  if (TypingKeys::KEY_CTRL_D == input || TypingKeys::KEY_CTRL_C == input ||
+      TypingKeys::KEY_ESC == input) {
     return true;
   }
 
@@ -54,40 +54,40 @@ int main(int argc, char *argv[]) {
     Print::input_word(test_typing.get_prev_word(), current_word,
                       test_typing.get_next_word());
 
-    input = Typing::get_input();
+    input = TypingKeys::get_input();
     is_input_ok = true;
 
     switch (input) {
-    case Typing::KEY_CTRL_BACKSPACE:
+    case TypingKeys::KEY_CTRL_BACKSPACE:
       test_typing.reset_word();
       break;
 
-    case Typing::KEY_DEL:
+    case TypingKeys::KEY_DEL:
       Print::clear_current_char(current_char);
       test_typing.backspace();
       Print::clear_current_char(test_typing.get_word()->get_char_at());
       break;
 
-    case Typing::KEY_TAB:
+    case TypingKeys::KEY_TAB:
       test_typing.reset();
       test_typing.reset_stats();
       Timer::init(Flags::max_time);
       Print::render_all(test_typing);
       break;
 
-    case Typing::KEY_ARROW_LEFT:
+    case TypingKeys::KEY_ARROW_LEFT:
       Print::current_char(current_char, 0);
       test_typing.move_to_prev_ch();
       break;
 
-    case Typing::KEY_ARROW_RIGHT:
+    case TypingKeys::KEY_ARROW_RIGHT:
       Print::current_char(current_char, 0);
       test_typing.move_to_next_ch();
       break;
 
-    case Typing::KEY_ESC:
-    case Typing::KEY_CTRL_C:
-    case Typing::KEY_CTRL_D:
+    case TypingKeys::KEY_ESC:
+    case TypingKeys::KEY_CTRL_C:
+    case TypingKeys::KEY_CTRL_D:
       stop = true;
       break;
 

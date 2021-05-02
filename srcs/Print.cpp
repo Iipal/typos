@@ -7,7 +7,7 @@ int Print::_text_x = 1;
 void Print::current_char(const TypingChar &ch, unsigned attrs) {
   int y = ch.get_screen_y();
   int x = ch.get_screen_x();
-  chtype _ch = !(chtype)ch ? Typing::KEY_SPACE_BAR : (chtype)ch;
+  chtype _ch = !(chtype)ch ? TypingKeys::KEY_SPACE : (chtype)ch;
 
   unsigned _attrs = attrs;
   if (ch.get_color() == COLORIZE_ERROR) {
@@ -24,7 +24,7 @@ void Print::current_char(const TypingChar &ch) {
 void Print::clear_current_char(const TypingChar &ch) {
   int y = ch.get_screen_y();
   int x = ch.get_screen_x();
-  chtype _ch = !(chtype)ch ? Typing::KEY_SPACE_BAR : (chtype)ch;
+  chtype _ch = !(chtype)ch ? TypingKeys::KEY_SPACE : (chtype)ch;
 
   Colorize::cmvaddch(COLORIZE_DEFAULT, y, x, _ch);
 }
