@@ -33,6 +33,29 @@ Typing speed test in terminal written in C++ using ncurses.
  - `-m`: Monochrome mode. Default: false;
 
  ***
+#### Keybindigs:
+ - Welcome Screen:
+   - <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>D</kbd>, and <kbd>Esc</kbd>: Now closing the `typos`.
+   - Any other key will start the `typos`.
+
+ - While typing:
+   - <kbd>Tab</kbd>: Fully resetting current typing test(Already typed stats, words, and even timer will be reset). And you will start the test from the beginning.
+   - <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>D</kbd>, and <kbd>Esc</kbd>: Now closing the `typos`.
+   - <kbd>Ctrl</kbd>+<kbd>Backspace</kbd>: Removing current word, or goes to start of the previous.
+   - <kbd>Backspace</kbd>: Removing current character.
+   - <kbd>←</kbd>: Moves to the previously typed character.
+   - <kbd>→</kbd>: Moves to the next character. Works only for already typed characters.
+   - Only printable characters will be prompt to the test (see `man 3 isprint`).
+   - Any other input will be ignored.
+
+ - Stats Screen:
+   - <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>D</kbd>, and <kbd>Esc</kbd>: Now closing the `typos`.
+   - <kbd>Ctrl</kbd>+<kbd>S</kbd>: Saves your typing test result to `./typos.log` file. By appending new test data to the end of the file and with the current local date at the top of each result. 
+   - <kbd>Enter</kbd>: Restart the test.
+   - 
+> !! IMPORTANT !!; Because of reasons of handling the "Escape Sequences" the <kbd>Esc</kbd>-key by itself has a delay in 1 sec. My advice is to use <kbd>Ctrl</kbd>+<kbd>C</kbd>, and <kbd>Ctrl</kbd>+<kbd>D</kbd> keybindgds instead of <kbd>Esc</kbd> whatever it's possible. The <kbd>Esc</kbd> is not removed because for some peoples the <kbd>Esc</kbd>-key may be a more comfortable way to close the program.
+
+ ***
 #### Debug mode
  Will show you some additional information about current input with some stats if you need it.
 
