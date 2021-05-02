@@ -1,4 +1,5 @@
 #include "typos.hpp"
+#include <sstream>
 #include <string.h>
 
 int Print::_text_y = Print::_text_y_default;
@@ -224,24 +225,34 @@ int Print::get_center_x(size_t text_len) {
 void Print::input_status(const Typing &text, const bool is_ok,
                          const int input) {
   const TypingWord *const word = text.get_word();
-  const chtype ch = word ? word->get_char_at().get_char() : 0;
+  const chtype ch = word ? (chtype)word->get_char_at() : 0;
 
   int y = Print::get_input_status_y();
   int x = Print::get_input_status_x();
 
   Print::clean_line(y);
 
+  std::stringstream ss("");
+  color_t status_clr = COLORIZE_DEFAULT;
+
   if (ch) {
     if (is_ok) {
-      Colorize::cmvprintw(COLORIZE_OK, y, x, "correct char");
+      ss << "correct char";
+      status_clr = COLORIZE_OK;
     } else {
-      Colorize::cmvprintw(COLORIZE_ERROR, y, x, "invalid char");
+      ss << "invalid char";
+      status_clr = COLORIZE_ERROR;
     }
   } else if (is_ok) {
-    Colorize::cmvprintw(COLORIZE_OK, y, x, "ok, next word");
+    ss << "ok, next word";
+    status_clr = COLORIZE_OK;
   } else {
-    Colorize::cmvprintw(COLORIZE_WARN, y, x, "WTF");
+    ss << "WTF";
+    status_clr = COLORIZE_WARN;
   }
+
+  Colorize::cmvprintw(status_clr, y, x, "%s | last input: %3d:'%2c'",
+                      ss.str().c_str(), input, input ? input : ' ');
 
   Print::clean_line(y + 1);
   if (word) {
@@ -252,16 +263,6 @@ void Print::input_status(const Typing &text, const bool is_ok,
   }
 
   Print::typing_status(text);
-
-  {
-    const size_t word_length = word ? word->get_length() : 24;
-
-    y = Print::get_input_y();
-    x = Print::get_center_x(word_length);
-
-    Colorize::cmvprintw(COLORIZE_INFO, y, x + word_length,
-                        " | last input: %3d:'%2c'", input, input ? input : ' ');
-  }
 }
 
 void Print::typing_status(const Typing &text) {
