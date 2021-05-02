@@ -3,23 +3,29 @@
 Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
     : TypingStats(), length(strings_length), current_word_pos(0) {
 
-  assert(this->words = new TypingWord *[strings_length + 1]);
+  try {
+    this->words = new TypingWord *[strings_length + 1];
 
-  const size_t max_x = stdscr->_maxx - 2;
-  int y = 1;
-  int x = 0;
-  for (size_t i = 0; strings_length > i; ++i) {
-    if (x + strings[i].length() > max_x) {
-      ++y;
-      x = 0;
+    const size_t max_x = stdscr->_maxx - 2;
+    int y = 1;
+    int x = 0;
+    for (size_t i = 0; strings_length > i; ++i) {
+      if (x + strings[i].length() > max_x) {
+        ++y;
+        x = 0;
+      }
+
+      this->words[i] = new TypingWord(y, x + 1, strings[i]);
+
+      x += strings[i].length() + 1;
     }
 
-    assert(this->words[i] = new TypingWord(y, x + 1, strings[i]));
-
-    x += strings[i].length() + 1;
+    this->words[strings_length] = NULL;
+  } catch (std::exception &e) {
+    endwin();
+    std::cerr << "Allocation failed: " << e.what() << std::endl;
+    exit(EXIT_FAILURE);
   }
-
-  this->words[strings_length] = NULL;
 }
 Typing::~Typing() {
   if (this->words) {

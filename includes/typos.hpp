@@ -6,6 +6,7 @@
 #include <ncurses.h>
 #include <signal.h>
 #include <vector>
+#include <exception>
 
 #include "Colorize.hpp"
 #include "TypingChar.hpp"
