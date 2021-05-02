@@ -82,6 +82,8 @@ Just make it working:
 make
 ```
 
+More options for Makefile are described [here](https://github.com/Iipal/MakeMeBetter).
+
 ## Using the typos:
 After successful installation you can run it like this:
 ```bash
@@ -92,3 +94,14 @@ To see the help info about some options:
 ```bash
 ./typos -h
 ```
+ 
+If you wanted globally access to the `typos`:
+```bash
+mkdir -p ~/.bin;
+git clone https://github.com/Iipal/typos/ ~/.bin/typos;
+cd ~/.bin/typos && make re;
+sudo ln -P ~/.bin/typos/typos /usr/bin/typos;
+
+```
+
+> Be careful with saving stat log, it always will be stored in the directory where you call the `typos`.
