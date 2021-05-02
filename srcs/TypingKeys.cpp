@@ -6,15 +6,10 @@ chtype TypingKeys::get_input(void) {
   curs_set(1);
 
   while ((ch = getch())) {
-    if (~0u == ch) {
-      napms(25);
-      continue;
-    } else {
-      if (TypingKeys::is_valid_input_key(ch)) {
-        break;
-      }
-      napms(25);
+    if (~0u != ch && TypingKeys::is_valid_input_key(ch)) {
+      break;
     }
+    napms(25);
   }
 
   curs_set(0);
