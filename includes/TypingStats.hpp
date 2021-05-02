@@ -25,8 +25,6 @@ struct s_typing_stats_data_fmt {
 
 typedef std::pair<const char *, s_typing_stats_data_fmt> TypingStatsDataFmt;
 
-#define STATS_SAVE_FILE_NAME "./typos.log"
-
 class TypingStats {
 public:
   TypingStats();

@@ -105,7 +105,7 @@ TypingStats::get_stats_data_fmt(const TypingStatsData &data) {
   return out;
 }
 void TypingStats::save_stats(const TypingStatsDataFmt *const fmt) {
-  std::ofstream file(STATS_SAVE_FILE_NAME, std::ios::app);
+  std::ofstream file(Flags::save_path, std::ios::app);
   time_t now = time(0);
   tm *_tmp = localtime(&now);
 

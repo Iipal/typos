@@ -59,8 +59,6 @@ void Timer::timer_handler(int signo) {
 }
 
 void Timer::break_the_words(void) {
-  const char *msg_saved = "SAVED TO " STATS_SAVE_FILE_NAME;
-
   const int y = Print::get_stats_y();
   const auto clean_lines = [y]() {
     for (int i = y; y + 16 > i; ++i) { // hardcoded clear of typing stats
@@ -73,8 +71,28 @@ void Timer::break_the_words(void) {
   clean_lines();
   Print::stats(Timer::_typing->get_stats_data());
 
-  int ch = 0;
   bool is_saved = false;
+  auto save_stats = [&is_saved]() {
+    if (!is_saved) {
+      TypingStatsDataFmt *fmt =
+          TypingStats::get_stats_data_fmt(Timer::_typing->get_stats_data());
+      TypingStats::save_stats(fmt);
+      delete[] fmt;
+
+      char buff[64] = {0};
+      snprintf(buff, sizeof(buff) - 1, "SAVED TO %s", Flags::save_path.c_str());
+
+      is_saved = true;
+      Colorize::cmvprintw(COLORIZE_INFO_INVERT, Print::get_input_y(),
+                          Print::get_center_x(strlen(buff)), buff);
+    }
+  };
+
+  if (Flags::is_auto_save) {
+    save_stats();
+  }
+
+  int ch = 0;
   bool stop = false;
 
   while (!stop) {
@@ -82,17 +100,7 @@ void Timer::break_the_words(void) {
 
     switch (ch) {
     case TypingKeys::KEY_CTRL_S: {
-      if (!is_saved) {
-        TypingStatsDataFmt *fmt =
-            TypingStats::get_stats_data_fmt(Timer::_typing->get_stats_data());
-        TypingStats::save_stats(fmt);
-        delete[] fmt;
-
-        is_saved = true;
-        Colorize::cmvprintw(COLORIZE_INFO_INVERT, Print::get_input_y(),
-                            Print::get_center_x(strlen(msg_saved)), msg_saved);
-      }
-
+      save_stats();
       break;
     }
 
