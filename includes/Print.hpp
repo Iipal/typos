@@ -14,6 +14,7 @@ public:
   static void text_delimiter(void);
 
   static void timer(int seconds);
+  static void input_word(const Typing &text);
   static void input_word(const TypingWord *const prev,
                          const TypingWord *const word,
                          const TypingWord *const next);

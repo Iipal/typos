@@ -11,6 +11,7 @@ SRCS := $(shell find srcs -name "*.cpp")
  ifneq (,$(EXCLUDE))
   SRCS := $(filter-out $(EXCLUDE), $(SRCS))
  endif
+SRCS := $(sort $(SRCS))
 OBJS := $(SRCS:.cpp=.o)
 ASMS := # reversed for 'assembly' and 'assembly_all' rules where ASMS:=$(OBJS:%.o=%.S) and OBJS:= sets to nothing
 else

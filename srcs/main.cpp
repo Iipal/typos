@@ -51,8 +51,7 @@ int main(int argc, char *argv[]) {
     const chtype current_ch = current_char;
 
     Print::current_char(current_char);
-    Print::input_word(test_typing.get_prev_word(), current_word,
-                      test_typing.get_next_word());
+    Print::input_word(test_typing);
 
     input = TypingKeys::get_input();
     is_input_ok = true;

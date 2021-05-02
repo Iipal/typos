@@ -30,6 +30,7 @@ void Print::clear_current_char(const TypingChar &ch) {
 }
 
 void Print::render_all(const Typing &text) {
+  curs_set(0);
   Print::text(text);
   Print::text_delimiter();
   Print::timer(Timer::get_remaining_seconds());
@@ -39,7 +40,6 @@ void Print::render_all(const Typing &text) {
 
 void Print::text(const Typing &text) { Print::text(text, text.get_length()); }
 void Print::text(const Typing &text, size_t n_words) {
-  curs_set(0);
   clear();
 
   TypingWord **words = text.get_words();
@@ -109,15 +109,20 @@ void Print::clean_input(void) {
 }
 
 void Print::timer(int seconds) {
+  curs_set(0);
+
   int min = seconds / 60;
   int sec = seconds % 60;
   int y = Print::get_timer_y();
   int x = Print::get_timer_x();
 
   Colorize::cmvprintw(COLORIZE_INFO, y, x, "%02d:%02d", min, sec);
-  curs_set(0);
 }
 
+void Print::input_word(const Typing &text) {
+  Print::input_word(text.get_prev_word(), text.get_word(),
+                    text.get_next_word());
+}
 void Print::input_word(const TypingWord *const prev,
                        const TypingWord *const word,
                        const TypingWord *const next) {
@@ -161,7 +166,6 @@ void Print::input_word(const TypingWord *const prev,
   mvhline(y + 1, center_x, ACS_BSBS, 1);
 
   move(y, center_x);
-  curs_set(1);
 }
 
 void Print::stats(const TypingStatsData &data) {
