@@ -86,6 +86,10 @@ int Colorize::cprintw(color_t color, unsigned attrs, const char *fmt, ...) {
 
 int Colorize::cmvprintw(color_t color, unsigned attrs, int y, int x,
                         const char *fmt, ...) {
+  if (stdscr->_maxy <= y) {
+    return 0;
+  }
+
   va_list va;
   int out = 0;
 
@@ -122,6 +126,10 @@ int Colorize::cprintw(color_t color, const char *fmt, ...) {
   return out;
 }
 int Colorize::cmvprintw(color_t color, int y, int x, const char *fmt, ...) {
+  if (stdscr->_maxy <= y) {
+    return 0;
+  }
+
   va_list va;
   int out = 0;
 

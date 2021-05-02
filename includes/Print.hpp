@@ -61,7 +61,7 @@ private:
   static const int _timer_shift_y = _input_shift_y;
   static const int _timer_x = 5;
 
-  static const int _stats_shift_y = 3;
+  static const int _stats_shift_y = 0;
 
 #ifdef TYPOS_DEBUG
   static const int _input_status_shift_y = 2;

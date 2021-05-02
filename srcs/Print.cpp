@@ -174,11 +174,10 @@ void Print::input_word(const TypingWord *const prev,
 void Print::stats(const TypingStatsData &data) {
   const int y = Print::get_stats_y();
 
-  const char *msg1 = "YOU TIMED OUT";
+  const char *msg1 = "TIME'S UP";
   const char *msg2 = "Restart: `Tab` | Exit: `Ctrl+C` | Save Result: `Ctrl+S`";
 
-  Colorize::cmvprintw(COLORIZE_OK, y, Print::get_center_x(strlen(msg1) - 1),
-                      msg1);
+  Colorize::cmvprintw(COLORIZE_OK, y, Print::get_center_x(strlen(msg1)), msg1);
 
   TypingStatsDataFmt *fmt = TypingStats::get_stats_data_fmt(data);
 
@@ -195,6 +194,7 @@ void Print::stats(const TypingStatsData &data) {
 
   Colorize::cmvprintw(COLORIZE_OK, data_y + 1,
                       Print::get_center_x(strlen(msg2)), msg2);
+  box(stdscr, 0, 0);
 }
 
 int Print::get_text_x(void) { return Print::_text_x; }
