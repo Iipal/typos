@@ -10,6 +10,7 @@ public:
 
   static int const KEY_DEL = KEY_BACKSPACE;
   static int const KEY_ESC = 0x1B;
+  static int const KEY_TAB = 0x9;
   static int const KEY_NEW_LINE = 0x0A;
   static int const KEY_SPACE_BAR = 0x20;
 

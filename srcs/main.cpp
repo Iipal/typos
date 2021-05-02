@@ -62,6 +62,19 @@ int main(int argc, char *argv[]) {
       test_typing.reset_word();
       break;
 
+    case Typing::KEY_DEL:
+      Print::clear_current_char(current_char);
+      test_typing.backspace();
+      Print::clear_current_char(test_typing.get_word()->get_char_at());
+      break;
+
+    case Typing::KEY_TAB:
+      test_typing.reset();
+      test_typing.reset_stats();
+      Timer::init(Flags::max_time);
+      Print::render_all(test_typing);
+      break;
+
     case Typing::KEY_ARROW_LEFT:
       Print::current_char(current_char, 0);
       test_typing.move_to_prev_ch();
@@ -76,12 +89,6 @@ int main(int argc, char *argv[]) {
     case Typing::KEY_CTRL_C:
     case Typing::KEY_CTRL_D:
       stop = true;
-      break;
-
-    case Typing::KEY_DEL:
-      Print::clear_current_char(current_char);
-      test_typing.backspace();
-      Print::clear_current_char(test_typing.get_word()->get_char_at());
       break;
 
     default:

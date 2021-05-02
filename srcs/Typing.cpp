@@ -59,9 +59,11 @@ bool Typing::is_acceptable_input(int input) {
 
 bool Typing::is_functionality_input(int input) {
   static const int _valid_keys[] = {
-      Typing::KEY_DEL,        Typing::KEY_CTRL_BACKSPACE, Typing::KEY_CTRL_C,
-      Typing::KEY_ARROW_LEFT, Typing::KEY_ARROW_RIGHT,    Typing::KEY_CTRL_D,
-      Typing::KEY_NEW_LINE,   Typing::KEY_CTRL_S};
+      Typing::KEY_DEL,         Typing::KEY_CTRL_BACKSPACE,
+      Typing::KEY_CTRL_C,      Typing::KEY_ARROW_LEFT,
+      Typing::KEY_ARROW_RIGHT, Typing::KEY_CTRL_D,
+      Typing::KEY_NEW_LINE,    Typing::KEY_TAB,
+      Typing::KEY_CTRL_S};
   const size_t _valid_keys_length = sizeof(_valid_keys) / sizeof(*_valid_keys);
 
   for (size_t i = 0; _valid_keys_length > i; ++i) {
