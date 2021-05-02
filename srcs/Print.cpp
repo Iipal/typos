@@ -168,7 +168,8 @@ void Print::stats(const TypingStatsData &data) {
   const int y = Print::get_stats_y();
 
   const char *msg1 = "YOU TIMED OUT";
-  const char *msg2 = "Restart: `Enter` | Exit: `Esc` | Save Result: `/`";
+  const char *msg2 =
+      "Restart: `Enter` | Exit: `Ctrl+C` | Save Result: `Ctrl+S`";
 
   Colorize::cmvprintw(COLORIZE_OK, y, Print::get_center_x(strlen(msg1) - 1),
                       msg1);
@@ -184,7 +185,7 @@ void Print::stats(const TypingStatsData &data) {
                         fmt[i].first, fmt[i].second.value);
   }
 
-  delete fmt;
+  delete[] fmt;
 
   Colorize::cmvprintw(COLORIZE_OK, data_y + 1,
                       Print::get_center_x(strlen(msg2)), msg2);

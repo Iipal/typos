@@ -1,6 +1,6 @@
 #include "typos.hpp"
 
-static inline int welcome_screen(void) {
+static inline bool welcome_screen(void) {
   const std::string msg = "PRESS ANY KEY TO START";
   const int x = Print::get_center_x(msg.length());
 
@@ -9,8 +9,15 @@ static inline int welcome_screen(void) {
 
   int input = Typing::get_input();
 
-  return input;
+  if (Typing::KEY_CTRL_D == input || Typing::KEY_CTRL_C == input ||
+      Typing::KEY_ESC == input) {
+    return true;
+  }
+
+  return false;
 }
+
+void do_nothing_sig(int sig) { (void)sig; }
 
 int main(int argc, char *argv[]) {
   signal(SIGINT, finish);
@@ -22,13 +29,14 @@ int main(int argc, char *argv[]) {
   assert((win = initscr()));
   noecho();
   cbreak();
+  raw();
   keypad(stdscr, true);
 
   Colorize::init_colors();
 
   int input = 0;
   bool is_input_ok = true;
-  bool stop = welcome_screen() == Typing::KEY_ESC;
+  bool stop = welcome_screen();
   if (stop) {
     finish(0);
   }
@@ -65,6 +73,8 @@ int main(int argc, char *argv[]) {
       break;
 
     case Typing::KEY_ESC:
+    case Typing::KEY_CTRL_C:
+    case Typing::KEY_CTRL_D:
       stop = true;
       break;
 

@@ -77,12 +77,12 @@ void Timer::break_the_words(void) {
     ch = Typing::get_input();
 
     switch (ch) {
-    case Typing::KEY_SLASH: {
+    case Typing::KEY_CTRL_S: {
       if (!is_saved) {
         TypingStatsDataFmt *fmt =
             TypingStats::get_stats_data_fmt(Timer::_typing->get_stats_data());
         TypingStats::save_stats(fmt);
-        delete fmt;
+        delete[] fmt;
 
         is_saved = true;
         Colorize::cmvprintw(COLORIZE_INFO_INVERT, Print::get_input_y(),
@@ -106,6 +106,8 @@ void Timer::break_the_words(void) {
     }
 
     case Typing::KEY_ESC:
+    case Typing::KEY_CTRL_D:
+    case Typing::KEY_CTRL_C:
       finish(0);
       break;
 

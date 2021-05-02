@@ -3,13 +3,15 @@
 
 class Typing : public TypingStats {
 public:
+  static int const KEY_CTRL_C = 0x3;
+  static int const KEY_CTRL_D = 0x4;
   static int const KEY_CTRL_BACKSPACE = 0x8;
+  static int const KEY_CTRL_S = 0x13;
+
   static int const KEY_DEL = KEY_BACKSPACE;
   static int const KEY_ESC = 0x1B;
   static int const KEY_NEW_LINE = 0x0A;
   static int const KEY_SPACE_BAR = 0x20;
-
-  static int const KEY_SLASH = 0x2F;
 
   static int const KEY_ARROW_LEFT = KEY_LEFT;
   static int const KEY_ARROW_RIGHT = KEY_RIGHT;
