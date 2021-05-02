@@ -5,13 +5,14 @@
 #define FLAG_h 'h'
 #define FLAG_w 'w'
 #define FLAG_t 't'
+#define FLAG_S 'S'
+#define FLAG_o 'o'
+#define FLAG_s 's'
 #define FLAG_m 'm'
 #define FLAG_a 'a'
 #define FLAG_f 'f'
-#define FLAG_s 's'
-#define FLAG_S 'S'
 
-#define FLAGS_OPT "hw:t:mafsS:"
+#define FLAGS_OPT "hw:t:S:o:smaf"
 
 #define FLAGS_USAGE "Usage: ./typos [" FLAGS_OPT "]"
 
@@ -31,11 +32,39 @@
   "                Accepts only positive integer in range: 10 - 240; "         \
   "Default: 60."
 
+#define FLAG_o_DEFAULT "wrR|tc|TC|aA"
+#define FLAG_o_VALID "|wrRtcTCaA"
+#define FLAG_o_DESC                                                            \
+  "Stats format string.\n\n"                                                   \
+  "                Valid format options: `" FLAG_o_VALID "`;\n"                \
+  "                Default: `" FLAG_o_DEFAULT "`.\n\n"                         \
+  "                Explanation:\n"                                             \
+  "                 - `|`: Delimiter.\n"                                       \
+  "                 - `w`: Net WPM.\n"                                         \
+  "                 - `r`: Gross WPM.\n"                                       \
+  "                 - `R`: Net WPM v2.\n"                                      \
+  "                 - `t`: Total typed characters.\n"                          \
+  "                 - `c`: Characters Per Second.\n"                           \
+  "                 - `T`: Corrected typos.\n"                                 \
+  "                 - `C`: All typos.\n"                                       \
+  "                 - `a`: Accuracy with corrected typos.\n"                   \
+  "                 - `A`: Accuracy with all typos.\n"
+
 #define FLAG_S_DEFAULT "./typos.log"
+#define FLAG_S_DESC                                                            \
+  "Full path to file where your stats will be saved. Default: `./typos.log`;"
+
 #define FLAG_s_DEFAULT false
+#define FLAG_s_DESC "Auto-save your stats at the end. Default: false;"
+
 #define FLAG_m_DEFAULT false
+#define FLAG_m_DESC "Monochrome mode. Default: false;"
+
 #define FLAG_a_DEFAULT false
+#define FLAG_a_DESC "Words sorted in alphabetical order. Default: false;"
+
 #define FLAG_f_DEFAULT false
+#define FLAG_f_DESC "Free typing mode. The timer will not start. Default: false"
 
 #define FLAG_H_DESC                                                            \
   FLAGS_USAGE                                                                  \
@@ -43,17 +72,17 @@
   "  -h          : print this message.\n"                                      \
   "  -w [number] : " FLAG_w_DESC "\n"                                          \
   "  -t [seconds]: " FLAG_t_DESC "\n"                                          \
-  "  -S [path]   : Full path to file where your stats will be saved. "         \
-  "Default: `./typos.log`;\n"                                                  \
-  "  -s          : Auto-save your stats at the end. Default: false;\n"         \
-  "  -m          : Monochrome mode. Default: false;\n"                         \
-  "  -a          : Words sorted in alphabetical order. Default: false;\n"      \
-  "  -f          : Free typing mode. The timer will not start. Default: "      \
-  "false; \n"
+  "  -S [path]   : " FLAG_S_DESC "\n"                                          \
+  "  -o [fmt_str]: " FLAG_o_DESC "\n"                                          \
+  "  -s          : " FLAG_s_DESC "\n"                                          \
+  "  -m          : " FLAG_m_DESC "\n"                                          \
+  "  -a          : " FLAG_a_DESC "\n"                                          \
+  "  -f          : " FLAG_f_DESC "\n"
 
 unsigned int Flags::max_time = FLAG_t_DEFAULT;
 unsigned int Flags::max_words = FLAG_w_DEFAULT;
 std::string Flags::save_path = FLAG_S_DEFAULT;
+std::string Flags::stats_fmt = FLAG_o_DEFAULT;
 bool Flags::is_auto_save = FLAG_s_DEFAULT;
 bool Flags::is_monochrome = FLAG_m_DEFAULT;
 bool Flags::is_alphabetic = FLAG_a_DEFAULT;
@@ -85,6 +114,19 @@ static inline ssize_t flag_positive_integer_arg_parse(const char *arg,
   return value;
 }
 
+static inline std::string flag_stats_fmt_arg_parse(const char *arg) {
+  const size_t arg_len = strlen(arg);
+
+  for (size_t i = 0; arg_len > i; ++i) {
+    if (!strchr(FLAG_o_VALID, arg[i])) {
+      errx(EXIT_FAILURE, "Invalid stats format option: `%c`.\n%s", arg[i],
+           FLAG_o_DESC);
+    }
+  }
+
+  return std::string(arg);
+}
+
 void Flags::parse(int argc, char *argv[]) {
   int c;
   while (-1 != (c = getopt(argc, argv, FLAGS_OPT))) {
@@ -101,6 +143,10 @@ void Flags::parse(int argc, char *argv[]) {
 
     case FLAG_S:
       Flags::save_path = std::string(optarg);
+      break;
+
+    case FLAG_o:
+      Flags::stats_fmt = flag_stats_fmt_arg_parse(optarg);
       break;
 
     case FLAG_s:

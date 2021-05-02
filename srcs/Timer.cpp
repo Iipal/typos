@@ -1,7 +1,5 @@
 #include "typos.hpp"
 
-#include <string.h>
-
 int Timer::_remaining_seconds = Timer::SECONDS_DEFAULT;
 int Timer::_elapsed_seconds = 0;
 Typing *Timer::_typing = NULL;
@@ -71,7 +69,7 @@ void Timer::break_the_words(void) {
   clean_lines();
   Print::stats(Timer::_typing->get_stats_data());
 
-  bool is_saved = false;
+  bool is_saved = !Flags::stats_fmt.length();
   auto save_stats = [&is_saved]() {
     if (!is_saved) {
       TypingStatsDataFmt *fmt =

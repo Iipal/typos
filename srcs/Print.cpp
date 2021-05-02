@@ -1,6 +1,5 @@
 #include "typos.hpp"
 #include <sstream>
-#include <string.h>
 
 int Print::_text_y = Print::_text_y_default;
 int Print::_text_x = 1;
@@ -174,10 +173,9 @@ void Print::input_word(const TypingWord *const prev,
 
 void Print::stats(const TypingStatsData &data) {
   const int y = Print::get_stats_y();
+  const bool is_save_available = !!Flags::stats_fmt.length();
 
   const char *msg1 = "TIME'S UP";
-  const char *msg2 = "Restart: `Tab` | Exit: `Ctrl+C` | Save Result: `Ctrl+S`";
-
   Colorize::cmvprintw(COLORIZE_OK, y, Print::get_center_x(strlen(msg1)), msg1);
 
   TypingStatsDataFmt *fmt = TypingStats::get_stats_data_fmt(data);
@@ -193,8 +191,14 @@ void Print::stats(const TypingStatsData &data) {
 
   delete[] fmt;
 
+  const char *msg2 = "Restart: `Tab` | Exit: `Ctrl+C`";
+  char msg2_buff[64] = {0};
+
+  snprintf(msg2_buff, sizeof(msg2_buff), "%s%s", msg2,
+           is_save_available ? "| Save Result: `Ctrl+S`" : "");
+
   Colorize::cmvprintw(COLORIZE_OK, data_y + 1,
-                      Print::get_center_x(strlen(msg2)), msg2);
+                      Print::get_center_x(strlen(msg2_buff)), msg2_buff);
   box(stdscr, 0, 0);
 }
 

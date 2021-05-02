@@ -1,7 +1,9 @@
 #include "typos.hpp"
 
 #include <fstream>
+#include <functional>
 #include <iomanip>
+#include <map>
 #include <math.h>
 
 TypingStats::TypingStats()
@@ -82,28 +84,87 @@ TypingStatsData TypingStats::get_stats_data(void) const {
   {                                                                            \
     "", { "", .0f, COLORIZE_INFO }                                             \
   }
+#define STATS_FMT_DELIMITER '|'
+#define STATS_FMT_w 'w'
+#define STATS_FMT_r 'r'
+#define STATS_FMT_R 'R'
+#define STATS_FMT_t 't'
+#define STATS_FMT_c 'c'
+#define STATS_FMT_T 'T'
+#define STATS_FMT_C 'C'
+#define STATS_FMT_a 'a'
+#define STATS_FMT_A 'A'
 
 TypingStatsDataFmt *
 TypingStats::get_stats_data_fmt(const TypingStatsData &data) {
-  TypingStatsDataFmt *out = new TypingStatsDataFmt[13];
+  static const std::map<char, std::function<TypingStatsDataFmt(void)>>
+      __fmt_to_arg = {
+          {STATS_FMT_DELIMITER,
+           []() -> TypingStatsDataFmt { return STATS_DATA_DELIMITER; }},
+          {STATS_FMT_w,
+           [&data]() -> TypingStatsDataFmt {
+             return {"WPM", {"%-7.2f", data.wpm.net_wpm, COLORIZE_OK}};
+           }},
+          {STATS_FMT_r,
+           [&data]() -> TypingStatsDataFmt {
+             return {"RAW WPM",
+                     {"%-7.2f", data.wpm.gross_wpm, COLORIZE_DEFAULT}};
+           }},
+          {STATS_FMT_R,
+           [&data]() -> TypingStatsDataFmt {
+             return {"REAL WPM",
+                     {"%-7.2f", data.wpm.net_real_wpm, COLORIZE_WARN}};
+           }},
+          {STATS_FMT_t,
+           [&data]() -> TypingStatsDataFmt {
+             return {"TYPED", {"%-7.2f", (float)data.characters, COLORIZE_OK}};
+           }},
+          {STATS_FMT_c,
+           [&data]() -> TypingStatsDataFmt {
+             return {"CPS", {"%-7.2f", data.cps, COLORIZE_OK}};
+           }},
+          {STATS_FMT_T,
+           [&data]() -> TypingStatsDataFmt {
+             return {"TYPOS",
+                     {"%-7.0f", (float)data.corrected_typos, COLORIZE_WARN}};
+           }},
+          {STATS_FMT_C,
+           [&data]() -> TypingStatsDataFmt {
+             return {
+                 "REAL TYPOS",
+                 {"%-7.0f", (float)data.not_corrected_typos, COLORIZE_ERROR}};
+           }},
+          {STATS_FMT_a,
+           [&data]() -> TypingStatsDataFmt {
+             return {"ACC", {"%-7.2f", data.accuracy, COLORIZE_OK}};
+           }},
+          {STATS_FMT_A, [&data]() -> TypingStatsDataFmt {
+             return {"REAL ACC", {"%-7.2f", data.real_accuracy, COLORIZE_WARN}};
+           }}};
 
-  out[0] = {"WPM", {"%-7.2f", data.wpm.net_wpm, COLORIZE_OK}};
-  out[1] = {"RAW WPM", {"%-7.2f", data.wpm.gross_wpm, COLORIZE_DEFAULT}};
-  out[2] = {"REAL WPM", {"%-7.2f", data.wpm.net_real_wpm, COLORIZE_WARN}};
-  out[3] = STATS_DATA_DELIMITER;
-  out[4] = {"TYPED", {"%-7.2f", (float)data.characters, COLORIZE_OK}};
-  out[5] = {"CPS", {"%-7.2f", data.cps, COLORIZE_OK}};
-  out[6] = STATS_DATA_DELIMITER;
-  out[7] = {"TYPOS", {"%-7.0f", (float)data.corrected_typos, COLORIZE_WARN}};
-  out[8] = {"REAL TYPOS",
-            {"%-7.0f", (float)data.not_corrected_typos, COLORIZE_ERROR}};
-  out[9] = STATS_DATA_DELIMITER;
-  out[10] = {"ACC", {"%-7.2f", data.accuracy, COLORIZE_OK}};
-  out[11] = {"REAL ACC", {"%-7.2f", data.real_accuracy, COLORIZE_WARN}};
-  out[12] = {NULL, {NULL, .0f, COLORIZE_DEFAULT}};
+  try {
+    const size_t fmt_len = Flags::stats_fmt.length();
+    TypingStatsDataFmt *out = new TypingStatsDataFmt[fmt_len + 1];
+    size_t i = 0;
 
-  return out;
+    for (; fmt_len > i; ++i) {
+      auto __arg_caller = __fmt_to_arg.at(Flags::stats_fmt[i]);
+      out[i] = __arg_caller();
+    }
+    out[i] = {NULL, {NULL, 0, COLORIZE_DEFAULT}};
+
+    return out;
+
+  } catch (std::exception &e) {
+    endwin();
+    std::cerr << "Something went wrong with formating your stats: " << e.what()
+              << std::endl;
+    exit(EXIT_FAILURE);
+  };
+
+  return NULL;
 }
+
 void TypingStats::save_stats(const TypingStatsDataFmt *const fmt) {
   std::ofstream file(Flags::save_path, std::ios::app);
   time_t now = time(0);

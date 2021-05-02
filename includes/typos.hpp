@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <ncurses.h>
+#include <string.h>
 #include <signal.h>
 #include <vector>
 #include <exception>
