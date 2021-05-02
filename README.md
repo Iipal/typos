@@ -32,11 +32,13 @@ Typing speed test in terminal written in C++ using ncurses.
 
 #### Flags:
  - `-h`: Prints this help message.
- - `-t <seconds>`: Number of maximum time to type in seconds. Accepts only positive integer in range: 10 - 240; Default: 60.
- - `-w <number>`: Number of maximum words to type. Accepts only positive integer in range: 10 - 150; Default: 42;
- - `-a`: Words sorted in alphabetical order. Default: false;
- - `-m`: Monochrome mode. Default: false;
- - `-f`: Free typing mode. The timer will not start. Default: false;
+ - `-t <seconds>`: Number of maximum time to type in seconds. <sub>Accepts only positive integer in range: 10 - 240; Default: 60.</sub>
+ - `-w <number>`: Number of maximum words to type. <sub>Accepts only positive integer in range: 10 - 150; Default: 42;</sub>
+ - `-S <path>`: Full path to file where your stats will be saved. <sub>Default: `./typos.log`;</sub>
+ - `-s`: Auto-save your stats at the end. <sub>Default: false;</sub>
+ - `-a`: Words sorted in alphabetical order. <sub>Default: false;</sub>
+ - `-m`: Monochrome mode. <sub>Default: false;</sub>
+ - `-f`: Free typing mode. The timer will not start. <sub>Default: false;</sub>
 
 ***
 
