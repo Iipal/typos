@@ -36,6 +36,7 @@ void Print::render_all(const Typing &text) {
   Print::timer(Timer::get_remaining_seconds());
   Print::input_word(text.get_prev_word(), text.get_word(),
                     text.get_next_word());
+  box(stdscr, 0, 0);
 }
 
 void Print::text(const Typing &text) { Print::text(text, text.get_length()); }
@@ -82,8 +83,6 @@ void Print::text(const Typing &text, size_t n_words) {
   }
 
   Print::_text_y = text_y;
-
-  box(stdscr, 0, 0);
 }
 
 void Print::text_delimiter(void) {
@@ -176,8 +175,7 @@ void Print::stats(const TypingStatsData &data) {
   const int y = Print::get_stats_y();
 
   const char *msg1 = "YOU TIMED OUT";
-  const char *msg2 =
-      "Restart: `Enter` | Exit: `Ctrl+C` | Save Result: `Ctrl+S`";
+  const char *msg2 = "Restart: `Tab` | Exit: `Ctrl+C` | Save Result: `Ctrl+S`";
 
   Colorize::cmvprintw(COLORIZE_OK, y, Print::get_center_x(strlen(msg1) - 1),
                       msg1);

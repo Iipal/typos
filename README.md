@@ -59,7 +59,7 @@ Typing speed test in terminal written in C++ using ncurses.
 - Stats Screen:
   - <kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>D</kbd>, and <kbd>Esc</kbd>: Now closing the `typos`.
   - <kbd>Ctrl</kbd>+<kbd>S</kbd>: Saves your typing test result to `./typos.log` file. By appending new test data to the end of the file and with the current local date at the top of each result.
-  - <kbd>Enter</kbd>: Restart the test.
+  - <kbd>Tab</kbd>: Restart the test.
 
 > !! IMPORTANT !!; Because of reasons of handling the "Escape Sequences" the <kbd>Esc</kbd>-key by itself has a delay in 1 sec. My advice is to use <kbd>Ctrl</kbd>+<kbd>C</kbd>, and <kbd>Ctrl</kbd>+<kbd>D</kbd> keybindgds instead of <kbd>Esc</kbd> whatever it's possible. The <kbd>Esc</kbd> is not removed because for some peoples the <kbd>Esc</kbd>-key may be a more comfortable way to close the program.
 

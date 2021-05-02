@@ -96,7 +96,7 @@ void Timer::break_the_words(void) {
       break;
     }
 
-    case TypingKeys::KEY_NEW_LINE: {
+    case TypingKeys::KEY_TAB: {
       clean_lines();
       Timer::_typing->reset();
       Timer::_typing->reset_stats();
