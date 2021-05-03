@@ -1,7 +1,7 @@
 #include "typos.hpp"
 
 #pragma clang diagnostic ignored "-Wc99-designator"
-static const bool _valid_keys[KEY_MAX] = {
+static constexpr const bool _valid_keys[KEY_MAX] = {
     [TypingKeys::KEY_CTRL_C] = true,
     [TypingKeys::KEY_CTRL_D] = true,
     [TypingKeys::KEY_CTRL_BACKSPACE] = true,
@@ -112,13 +112,17 @@ static const bool _valid_keys[KEY_MAX] = {
     [TypingKeys::KEY_DEL] = true,
 };
 
+constexpr bool is_valid_input_key(const chtype input) {
+  return _valid_keys[input];
+}
+
 chtype TypingKeys::get_input(void) {
   chtype ch = 0;
 
   curs_set(1);
 
   while ((ch = getch())) {
-    if (~0u != ch && TypingKeys::is_valid_input_key(ch)) {
+    if (~0u != ch && is_valid_input_key(ch)) {
       break;
     }
     napms(25);
@@ -128,5 +132,3 @@ chtype TypingKeys::get_input(void) {
 
   return ch;
 }
-
-bool TypingKeys::is_valid_input_key(chtype input) { return _valid_keys[input]; }

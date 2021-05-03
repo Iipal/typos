@@ -118,6 +118,4 @@ const chtype KEY_ARROW_RIGHT = KEY_RIGHT;
 const chtype KEY_DEL = KEY_BACKSPACE;
 
 chtype get_input(void);
-bool is_valid_input_key(chtype input);
-
 }; // namespace TypingKeys
