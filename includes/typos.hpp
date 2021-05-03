@@ -10,6 +10,9 @@
 #include <exception>
 
 #include "Colorize.hpp"
+
+using namespace Colorize;
+
 #include "TypingKeys.hpp"
 #include "TypingChar.hpp"
 #include "TypingWord.hpp"
@@ -19,6 +22,7 @@
 #include "Timer.hpp"
 #include "Flags.hpp"
 #include "Words.hpp"
+
 
 static inline void _Noreturn finish(int sig) {
   (void)sig;

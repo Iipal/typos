@@ -81,8 +81,8 @@ void Timer::break_the_words(void) {
       snprintf(buff, sizeof(buff) - 1, "SAVED TO %s", Flags::save_path.c_str());
 
       is_saved = true;
-      Colorize::cmvprintw(COLORIZE_INFO_INVERT, Print::get_input_y(),
-                          Print::get_center_x(strlen(buff)), buff);
+      cmvprintw(COLORIZE_INFO_INVERT, Print::get_input_y(),
+                Print::get_center_x(strlen(buff)), buff);
     }
   };
 

@@ -5,7 +5,7 @@ static inline bool welcome_screen(void) {
   const int x = Print::get_center_x(msg.length());
 
   box(stdscr, 0, 0);
-  Colorize::cmvprintw(COLORIZE_OK, 1, x, msg.c_str());
+  cmvprintw(COLORIZE_OK, 1, x, msg.c_str());
 
   int input = TypingKeys::get_input();
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   raw();
   keypad(stdscr, true);
 
-  Colorize::init_colors();
+  init_colors();
 
   int input = 0;
   bool is_input_ok = true;
