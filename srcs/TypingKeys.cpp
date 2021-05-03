@@ -1,27 +1,7 @@
 #include "typos.hpp"
 
-chtype TypingKeys::get_input(void) {
-  chtype ch = 0;
-
-  curs_set(1);
-
-  while ((ch = getch())) {
-    if (~0u != ch && TypingKeys::is_valid_input_key(ch)) {
-      break;
-    }
-    napms(25);
-  }
-
-  curs_set(0);
-
-  return ch;
-}
-
-bool TypingKeys::is_valid_input_key(chtype input) { return _valid_keys[input]; }
-
 #pragma clang diagnostic ignored "-Wc99-designator"
-
-const bool TypingKeys::_valid_keys[KEY_MAX] = {
+static const bool _valid_keys[KEY_MAX] = {
     [TypingKeys::KEY_CTRL_C] = true,
     [TypingKeys::KEY_CTRL_D] = true,
     [TypingKeys::KEY_CTRL_BACKSPACE] = true,
@@ -131,3 +111,22 @@ const bool TypingKeys::_valid_keys[KEY_MAX] = {
     [TypingKeys::KEY_ARROW_RIGHT] = true,
     [TypingKeys::KEY_DEL] = true,
 };
+
+chtype TypingKeys::get_input(void) {
+  chtype ch = 0;
+
+  curs_set(1);
+
+  while ((ch = getch())) {
+    if (~0u != ch && TypingKeys::is_valid_input_key(ch)) {
+      break;
+    }
+    napms(25);
+  }
+
+  curs_set(0);
+
+  return ch;
+}
+
+bool TypingKeys::is_valid_input_key(chtype input) { return _valid_keys[input]; }
