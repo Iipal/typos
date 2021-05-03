@@ -1,11 +1,12 @@
 #include "typos.hpp"
 
-Typing::Typing(const std::vector<std::string> strings, size_t strings_length)
+Typing::Typing(const std::vector<std::string_view> strings,
+               size_t strings_length)
     : TypingStats(), length(strings_length), current_word_pos(0) {
   this->_new_words(strings, strings_length);
 }
 
-void Typing::_new_words(const std::vector<std::string> strings,
+void Typing::_new_words(const std::vector<std::string_view> strings,
                         size_t strings_length) {
   try {
     this->words = new TypingWord *[strings_length + 1];

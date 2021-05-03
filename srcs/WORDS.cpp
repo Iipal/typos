@@ -2,7 +2,7 @@
 #include <vector>
 
 #define WORDS_ENG_LENGTH 1000
-std::vector<std::string> WORDS_ENG{
+std::array<std::string_view, WORDS_ENG_LENGTH> WORDS_ENG{
     "a",
     "ability",
     "able",

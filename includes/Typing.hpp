@@ -4,7 +4,7 @@
 class Typing : public TypingStats {
 public:
   Typing();
-  Typing(const std::vector<std::string> strings, size_t strings_length);
+  Typing(const std::vector<std::string_view> strings, size_t strings_length);
   virtual ~Typing();
 
   void iterate(void);
@@ -40,7 +40,7 @@ private:
   size_t length;
   size_t current_word_pos;
 
-  void _new_words(const std::vector<std::string> strings,
+  void _new_words(const std::vector<std::string_view> strings,
                   size_t strings_length);
   void _delete_words(void);
 };

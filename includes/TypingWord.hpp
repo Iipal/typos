@@ -4,7 +4,7 @@
 class TypingWord {
 public:
   TypingWord();
-  TypingWord(int y, int x, std::string str);
+  TypingWord(int y, int x, std::string_view str);
   virtual ~TypingWord();
 
   bool is_ok(void);

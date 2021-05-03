@@ -1,7 +1,7 @@
 #include "typos.hpp"
 
 TypingWord::TypingWord() {}
-TypingWord::TypingWord(int y, int x, std::string str)
+TypingWord::TypingWord(int y, int x, std::string_view str)
     : pos(0), length(str.length()), color(COLORIZE_DEFAULT) {
 
   const size_t word_length = str.length();
