@@ -7,50 +7,6 @@
 #include "../includes/typos.hpp"
 #include <chrono>
 
-constexpr auto KEY_CTRL_C         = 0x3;
-constexpr auto KEY_CTRL_D         = 0x4;
-constexpr auto KEY_CTRL_BACKSPACE = 0x8;
-constexpr auto KEY_TAB            = 0x9;
-constexpr auto KEY_NEW_LINE       = 0x0A;
-constexpr auto KEY_CTRL_R         = 0x12;
-constexpr auto KEY_CTRL_S         = 0x13;
-constexpr auto KEY_ESC            = 0x1B;
-
-typedef bool (*__key_handler_t)(void * const);
-auto __default_close_key_callback = [](void * const __data) constexpr -> bool {
-  (void)__data;
-  return true;
-};
-auto __default_key_callback = [](void * const __data) constexpr -> bool {
-  (void)__data;
-  return false;
-};
-
-template <typename __mkey, typename __mvalue, std::size_t __msize> struct Map {
-  std::array<std::pair<__mkey, __mvalue>, __msize> __mdata;
-
-  [[nodiscard]] constexpr __mvalue at(const __mkey & key) const {
-    const auto itr = std::find_if(std::begin(__mdata),
-                                  std::end(__mdata),
-                                  [&key](const auto & v) { return v.first == key; });
-
-    if (itr != std::end(__mdata)) {
-      return itr->second;
-    } else {
-      return __default_key_callback;
-    }
-  }
-};
-
-static constexpr std::array<std::pair<__key_t, __key_handler_t>, 2> __key_handlers_arr{
-    {{KEY_CTRL_C, __default_close_key_callback},
-     {KEY_CTRL_D, __default_close_key_callback}}};
-
-static constexpr auto __key_handlers =
-    Map<__key_t, __key_handler_t, __key_handlers_arr.size()>{{__key_handlers_arr}};
-
-static constexpr bool __run_key_handler(__key_t k) { return __key_handlers.at(k)(NULL); }
-
 int main(int argc, char * argv[]) {
   std::srand(std::time(0));
 
@@ -204,14 +160,11 @@ int main(int argc, char * argv[]) {
             << " iteration of only printable characters = " << std::endl
             << "  "
             << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count()
-            << "[ns]" << std::endl
-            << "  "
+            << "[ns]  "
             << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
-            << "[µs]" << std::endl
-            << "  "
+            << "[µs]  "
             << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
-            << "[ms]" << std::endl
-            << "  "
+            << "[ms]  "
             << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count()
             << "[s]" << std::endl;
 }
