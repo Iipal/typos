@@ -1,8 +1,8 @@
 #include <string>
-#include <vector>
+#include <array>
 
 #define WORDS_ENG_LENGTH 1000
-std::array<std::string_view, WORDS_ENG_LENGTH> WORDS_ENG{
+static constexpr std::array<std::string_view, WORDS_ENG_LENGTH> WORDS_ENG{
     "a",
     "ability",
     "able",

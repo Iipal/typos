@@ -38,6 +38,7 @@ IFLAGS += $(addprefix -I,$(shell find $(foreach d,$(HEADER_DEPS),$(abspath $d)) 
 endif
 
 LFLAGS += -lncurses
+DEPENDECIES := clang libncurses-dev
 
 # All submodules or additional libs must to be placed in to 'libs' folder
 #  and has it's own folder and Makefile with the same rules as this.
@@ -48,7 +49,7 @@ endif
 
 # Compiler settings.
 CC                    := clang++
-CFLAGS                := -Wall -Wextra -Werror -Wunused -MMD -std=c++17
+CFLAGS                := -Wall -Wextra -Werror -Wunused -MMD -std=c++20
 CFLAGS_PEDANTIC       := -Wpedantic
 CFLAGS_DEBUG          := -g3
 CFLAGS_SANITIZE       := $(CFLAGS_DEBUG) -fsanitize=address -static-libsan

@@ -1,19 +1,23 @@
-#include "typos.hpp"
+#include "Typing.hpp"
+#include "Colorize.hpp"
+#include "Flags.hpp"
+#include "Words.hpp"
+#include "TypingKeys.hpp"
+#include "Print.hpp"
 
-Typing::Typing(const std::vector<std::string_view> strings,
-               size_t strings_length)
+Typing::Typing(const std::vector<std::string_view> strings, size_t strings_length)
     : TypingStats(), length(strings_length), current_word_pos(0) {
   this->_new_words(strings, strings_length);
 }
 
 void Typing::_new_words(const std::vector<std::string_view> strings,
-                        size_t strings_length) {
+                        size_t                              strings_length) {
   try {
     this->words = new TypingWord *[strings_length + 1];
 
     const size_t max_x = stdscr->_maxx - 2;
-    int y = 1;
-    int x = 0;
+    int          y     = 1;
+    int          x     = 0;
     for (size_t i = 0; strings_length > i; ++i) {
       if (x + strings[i].length() > max_x) {
         ++y;
@@ -26,7 +30,7 @@ void Typing::_new_words(const std::vector<std::string_view> strings,
     }
 
     this->words[strings_length] = NULL;
-  } catch (std::exception &e) {
+  } catch (std::exception & e) {
     endwin();
     std::cerr << "Allocation failed: " << e.what() << std::endl;
     exit(EXIT_FAILURE);
@@ -47,12 +51,12 @@ void Typing::_delete_words(void) {
 void Typing::iterate(void) {
   const bool is_accessible_at_word =
       !!this->words && !!this->words[this->current_word_pos];
-  TypingWord *word = NULL;
-  bool is_accessible_at_char = false;
+  TypingWord * word                  = NULL;
+  bool         is_accessible_at_char = false;
 
   if (is_accessible_at_word) {
-    word = this->words[this->current_word_pos];
-    is_accessible_at_char = !!word && !!word->get_char_at().get_char();
+    word                  = this->words[this->current_word_pos];
+    is_accessible_at_char = !!word && !!word->get_char_at()->ch();
   }
 
   if (is_accessible_at_word && !is_accessible_at_char) {
@@ -74,43 +78,43 @@ void Typing::iterate(void) {
 }
 
 void Typing::backspace(void) {
-  TypingWord *word = this->words[this->current_word_pos];
-  const chtype ch = word->get_char_at();
+  TypingWord * word = this->words[this->current_word_pos];
+  const key_t  ch   = word->get_char_at()->ch();
 
   if (!word || (!word->get_current_pos() && this->current_word_pos)) {
     --this->current_word_pos;
     Print::clean_input();
   } else {
     if (!ch) {
-      word->set_color_at(COLORIZE_DEFAULT);
+      word->set_color_at(Colorize::COLORIZE_DEFAULT);
     }
 
     word->dec_current_pos();
-    if (word->get_color_at(word->get_current_pos()) != COLORIZE_OK) {
+    if (word->get_color_at(word->get_current_pos()) != Colorize::COLORIZE_OK) {
       this->dec_typos();
     }
-    word->set_color_at(COLORIZE_DEFAULT);
+    word->set_color_at(Colorize::COLORIZE_DEFAULT);
 
     bool is_word_ok_now = word->is_ok();
     if (is_word_ok_now) {
-      word->set_color(COLORIZE_OK);
+      word->set_color(Colorize::COLORIZE_OK);
     }
   }
 }
 
 void Typing::reset_word() {
-  TypingWord *word = this->get_word();
+  TypingWord * word     = this->get_word();
   const size_t word_pos = word->get_current_pos();
 
-  auto clear_word = [this](TypingWord *_w) {
+  auto clear_word = [this](TypingWord * _w) {
     const size_t _w_pos = _w->get_current_pos();
     for (size_t i = 0; _w_pos >= i; ++i) {
-      const color_t ch_clr = _w->get_char_at(i);
-      if (COLORIZE_ERROR == ch_clr || COLORIZE_WARN == ch_clr) {
+      const Colorize::color_t ch_clr = _w->get_char_at(i)->clr();
+      if (Colorize::COLORIZE_ERROR == ch_clr || Colorize::COLORIZE_WARN == ch_clr) {
         this->dec_typos();
       }
 
-      _w->set_color_at(COLORIZE_DEFAULT, i);
+      _w->set_color_at(Colorize::COLORIZE_DEFAULT, i);
       Print::clear_current_char(_w->get_char_at(i));
     }
     _w->set_pos(0);
@@ -128,14 +132,10 @@ void Typing::reset_word() {
 }
 
 void Typing::move_to_next_ch(void) {
-  TypingWord *word = this->get_word();
-  const TypingChar ch = word->get_char_at();
+  TypingWord * word = this->get_word();
 
-  const size_t word_pos = word->get_current_pos();
-  const size_t word_length = word->get_length();
-
-  if (ch.get_color() != COLORIZE_DEFAULT) {
-    if (word_pos >= word_length) {
+  if (word->get_color_at() != Colorize::COLORIZE_DEFAULT) {
+    if (word->get_current_pos() >= word->get_length()) {
       Print::clean_input();
       ++this->current_word_pos;
     } else {
@@ -145,12 +145,12 @@ void Typing::move_to_next_ch(void) {
 }
 
 void Typing::move_to_prev_ch(void) {
-  TypingWord *word = this->get_word();
-  const TypingChar ch = word->get_char_at();
-
+  TypingWord * word     = this->get_word();
   const size_t word_pos = word->get_current_pos();
-  const int chx = ch.get_screen_x();
-  const int chy = ch.get_screen_y();
+
+  const TypingChar * ch  = word->get_char_at();
+  const int          chx = ch->x();
+  const int          chy = ch->y();
 
   if (1 == chx && chy > 1) {
     Print::clean_input();
@@ -166,23 +166,23 @@ void Typing::move_to_prev_ch(void) {
 }
 
 bool Typing::validate_input(int input) {
-  TypingWord *current_word = this->words[this->current_word_pos];
+  TypingWord * current_word = this->words[this->current_word_pos];
   return this->validate_input(input, current_word);
 }
-bool Typing::validate_input(int input, TypingWord *const word) {
+bool Typing::validate_input(int input, TypingWord * const word) {
   if (!word) {
     return true;
   }
 
-  const chtype ch = word->get_char_at();
-  bool is_ok = true;
+  const key_t ch    = word->get_char_at()->ch();
+  bool        is_ok = true;
 
-  color_t clr = COLORIZE_OK;
+  Colorize::color_t clr = Colorize::COLORIZE_OK;
   is_ok =
-      ((int)ch == input || (!(int)ch && (input == TypingKeys::KEY_SPACE ||
-                                         input == TypingKeys::KEY_NEW_LINE)));
+      (ch == input ||
+       (!ch && (input == TypingKeys::KEY_SPACE || input == TypingKeys::KEY_NEW_LINE)));
   if (!is_ok) {
-    clr = COLORIZE_ERROR;
+    clr = Colorize::COLORIZE_ERROR;
   }
   word->set_color(clr);
   word->set_color_at(clr);
@@ -199,13 +199,13 @@ void Typing::reset(void) {
   Print::clean_input();
   this->current_word_pos = 0;
   for (size_t i = 0; this->words[i]; ++i) {
-    TypingWord *word = this->words[i];
+    TypingWord * word        = this->words[i];
     const size_t word_length = word->get_length();
 
     word->set_pos(0);
-    word->set_color(COLORIZE_DEFAULT);
+    word->set_color(Colorize::COLORIZE_DEFAULT);
     for (size_t i = 0; word_length > i; ++i) {
-      word->set_color_at(COLORIZE_DEFAULT, i);
+      word->set_color_at(Colorize::COLORIZE_DEFAULT, i);
     }
   }
 }
@@ -215,17 +215,17 @@ void Typing::new_words(void) {
   this->_new_words(Words::get_words(Flags::max_words), Flags::max_words);
 }
 
-TypingWord **Typing::get_words(void) const { return this->words; }
+TypingWord ** Typing::get_words(void) const { return this->words; }
 
-TypingWord *Typing::get_word(void) const {
+TypingWord * Typing::get_word(void) const {
   return this->get_word(this->current_word_pos);
 }
-TypingWord *Typing::get_word(size_t at_pos) const {
-  TypingWord *out = this->words[at_pos];
+TypingWord * Typing::get_word(size_t at_pos) const {
+  TypingWord * out = this->words[at_pos];
   return out;
 }
-TypingWord *Typing::get_prev_word(void) const {
-  TypingWord *out = NULL;
+TypingWord * Typing::get_prev_word(void) const {
+  TypingWord * out = NULL;
 
   if (this->current_word_pos) {
     out = this->words[this->current_word_pos - 1];
@@ -233,8 +233,8 @@ TypingWord *Typing::get_prev_word(void) const {
 
   return out;
 }
-TypingWord *Typing::get_next_word(void) const {
-  TypingWord *out = NULL;
+TypingWord * Typing::get_next_word(void) const {
+  TypingWord * out = NULL;
 
   if (this->length > this->current_word_pos + 1) {
     out = this->words[this->current_word_pos + 1];
@@ -243,17 +243,32 @@ TypingWord *Typing::get_next_word(void) const {
   return out;
 }
 
-TypingChar Typing::get_char_at(void) const {
-  return this->get_word()->get_char_at();
-};
-TypingChar Typing::get_char_at(size_t ch_pos) const {
+TypingChar * Typing::get_char_at(void) const { return this->get_word()->get_char_at(); };
+TypingChar * Typing::get_char_at(size_t ch_pos) const {
   return this->get_char_at(ch_pos, this->current_word_pos);
 }
-TypingChar Typing::get_char_at(size_t ch_pos, size_t w_pos) const {
+TypingChar * Typing::get_char_at(size_t ch_pos, size_t w_pos) const {
   return this->get_word(w_pos)->get_char_at(ch_pos);
 }
 
 size_t Typing::get_length(void) const { return this->length; }
-size_t Typing::get_current_word_pos(void) const {
-  return this->current_word_pos;
+size_t Typing::get_current_word_pos(void) const { return this->current_word_pos; }
+
+void Typing::run(void) {
+  Print::render_all(this);
+
+  TypingKeys::key_t k    = 0;
+  bool              stop = false;
+
+  while (!stop) {
+    Print::current_char(this->get_char_at());
+    Print::input_word(*this);
+
+    k    = TypingKeys::get_input();
+    stop = TypingKeys::procced_input(k, this);
+
+#ifdef TYPOS_DEBUG
+    Print::input_status(*this, this->validate_input(k), k);
+#endif
+  }
 }

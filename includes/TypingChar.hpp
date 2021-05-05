@@ -1,26 +1,40 @@
 #pragma once
-#include "typos.hpp"
+#include "TypingKeys.hpp"
+#include "Colorize.hpp"
 
 class TypingChar {
 public:
-  TypingChar();
-  TypingChar(int y, int x, chtype ch);
-  virtual ~TypingChar();
+  constexpr TypingChar() : _y(0), _x(0), _ch(0), _clr(Colorize::COLORIZE_DEFAULT) {}
+  constexpr TypingChar(const int & y, const int & x, const TypingKeys::key_t & ch)
+      : _y(y), _x(x), _ch(ch), _clr(Colorize::COLORIZE_DEFAULT) {
+    ;
+  }
 
-  operator chtype() const;
-  operator char() const;
-  operator color_t() const;
+  constexpr int         get_y(void) { return _y; };
+  constexpr int         y(void) { return get_y(); };
+  constexpr int const & get_y(void) const { return _y; };
+  constexpr int const & y(void) const { return get_y(); };
 
-  int get_screen_y(void) const;
-  int get_screen_x(void) const;
-  chtype get_char(void) const;
+  constexpr int         get_x(void) { return _x; };
+  constexpr int         x(void) { return get_x(); };
+  constexpr int const & get_x(void) const { return _x; };
+  constexpr int const & x(void) const { return get_x(); };
 
-  color_t get_color(void) const;
-  void set_color(color_t clr);
+  constexpr TypingKeys::key_t         get_char(void) { return _ch; };
+  constexpr TypingKeys::key_t         ch(void) { return get_char(); };
+  constexpr TypingKeys::key_t const & get_char(void) const { return _ch; };
+  constexpr TypingKeys::key_t const & ch(void) const { return get_char(); };
 
-private:
-  int screen_y;
-  int screen_x;
-  chtype ch;
-  color_t clr;
+  constexpr Colorize::color_t         get_color(void) { return _clr; };
+  constexpr Colorize::color_t         clr(void) { return get_color(); };
+  constexpr Colorize::color_t const & get_color(void) const { return _clr; };
+  constexpr Colorize::color_t const & clr(void) const { return get_color(); };
+
+  void set_color(const Colorize::color_t & clr) { _clr = clr; };
+
+protected:
+  const int               _y;
+  const int               _x;
+  const TypingKeys::key_t _ch;
+  Colorize::color_t       _clr;
 };

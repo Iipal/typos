@@ -1,25 +1,27 @@
 #pragma once
-#include "typos.hpp"
+#include "Typing.hpp"
 
 class Print {
 public:
-  static void current_char(const TypingChar &ch);
-  static void current_char(const TypingChar &ch, unsigned attrs);
-  static void clear_current_char(const TypingChar &ch);
+  static void current_char(const TypingChar * const ch);
+  static void current_char(const TypingChar * const ch, unsigned attrs);
+  static void clear_current_char(const TypingChar * const ch);
 
-  static void render_all(const Typing &text);
+  static void render_all(const Typing * const text);
+  static void render_all(const Typing & text);
 
-  static void text(const Typing &text);
-  static void text(const Typing &text, size_t n_words);
+  static void text(const Typing & text);
+  static void text(const Typing * const text, const size_t n_words);
   static void text_delimiter(void);
 
   static void timer(int seconds);
-  static void input_word(const Typing &text);
-  static void input_word(const TypingWord *const prev,
-                         const TypingWord *const word,
-                         const TypingWord *const next);
+  static void input_word(const Typing & text);
+  static void input_word(const Typing * const text);
+  static void input_word(const TypingWord * const prev,
+                         const TypingWord * const word,
+                         const TypingWord * const next);
 
-  static void stats(const TypingStatsData &data);
+  static void stats(const TypingStatsData & data);
 
   static void clean_line(int y);
   static void clean_line(int y, int x);
@@ -42,9 +44,8 @@ public:
   static int get_center_x(size_t text_len);
 
 #ifdef TYPOS_DEBUG
-  static void input_status(const Typing &text, const bool is_ok,
-                           const int input);
-  static void typing_status(const Typing &text);
+  static void input_status(const Typing & text, const bool is_ok, const int input);
+  static void typing_status(const Typing & text);
 
   static int get_input_status_y(void);
   static int get_input_status_x(void);
@@ -54,17 +55,17 @@ private:
   Print();
 
   static const int _text_y_default = 1;
-  static int _text_y;
-  static int _text_x;
+  static int       _text_y;
+  static int       _text_x;
 
   static const int _input_shift_y = 2;
   static const int _timer_shift_y = _input_shift_y;
-  static const int _timer_x = 5;
+  static const int _timer_x       = 5;
 
   static const int _stats_shift_y = 0;
 
 #ifdef TYPOS_DEBUG
   static const int _input_status_shift_y = 2;
-  static const int _input_status_x = 1;
+  static const int _input_status_x       = 1;
 #endif
 };

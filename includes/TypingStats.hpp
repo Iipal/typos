@@ -1,4 +1,6 @@
 #pragma once
+#include "Colorize.hpp"
+#include "typos.hpp"
 
 typedef struct s_typing_stats_data {
   struct {
@@ -18,9 +20,9 @@ typedef struct s_typing_stats_data {
 } TypingStatsData;
 
 struct s_typing_stats_data_fmt {
-  const char *fmt;
-  float value;
-  color_t clr;
+  const char *      fmt;
+  float             value;
+  Colorize::color_t clr;
 };
 
 typedef std::pair<const char *, s_typing_stats_data_fmt> TypingStatsDataFmt;
@@ -56,8 +58,8 @@ public:
 
   TypingStatsData get_stats_data(void) const;
 
-  static TypingStatsDataFmt *get_stats_data_fmt(const TypingStatsData &data);
-  static void save_stats(const TypingStatsDataFmt *const fmt);
+  static TypingStatsDataFmt * get_stats_data_fmt(const TypingStatsData & data);
+  static void                 save_stats(const TypingStatsDataFmt * const fmt);
 
 private:
   int _total_typos;
