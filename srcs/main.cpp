@@ -54,5 +54,5 @@ int main(int argc, char * argv[]) {
 
   test_typing.run();
 
-  finish(0);
+  endwin();
 }

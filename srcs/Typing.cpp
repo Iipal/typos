@@ -1,9 +1,9 @@
 #include "Typing.hpp"
 #include "Colorize.hpp"
 #include "Flags.hpp"
-#include "Words.hpp"
-#include "TypingKeys.hpp"
 #include "Print.hpp"
+#include "TypingKeys.hpp"
+#include "Words.hpp"
 
 Typing::Typing(const std::vector<std::string_view> strings, size_t strings_length)
     : TypingStats(), length(strings_length), current_word_pos(0) {
@@ -262,7 +262,7 @@ void Typing::run(void) {
 
   while (!stop) {
     Print::current_char(this->get_char_at());
-    Print::input_word(*this);
+    Print::input_word(this);
 
     k    = TypingKeys::get_input();
     stop = TypingKeys::procced_input(k, this);

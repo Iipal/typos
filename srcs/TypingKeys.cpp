@@ -22,7 +22,7 @@ template <typename __mkey, typename __mvalue, std::size_t __msize> struct Map {
                                   std::end(__mdata),
                                   [&key](const auto & v) { return v.first == key; });
 
-    return itr != std::end(__mdata) ? itr->second : __kh_default;
+    return itr != std::end(__mdata) && itr->first == key ? itr->second : __kh_default;
   }
 };
 
