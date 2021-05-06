@@ -1,5 +1,6 @@
 #include "Colorize.hpp"
 #include "Flags.hpp"
+#include "Logger.hpp"
 #include "typos.hpp"
 
 int __default_on(Colorize::color_t c, unsigned attrs) {
@@ -45,7 +46,13 @@ int _color_off(Colorize::color_t c, unsigned attrs) {
 }
 
 void Colorize::init_colors(void) {
+#if LOGGER_IS_DEFINED
+  LOGGER_WRITE("Initialize ncurses colors");
+#endif
   if (Flags::is_monochrome) {
+#if LOGGER_IS_DEFINED
+    LOGGER_WRITE("Monochrome mode activated");
+#endif
     return;
   }
 
@@ -57,6 +64,10 @@ void Colorize::init_colors(void) {
       _update_pair(Colorize::COLORIZE_ERROR, COLOR_RED, COLOR_BLACK);
       _update_pair(Colorize::COLORIZE_INFO, COLOR_CYAN, COLOR_BLACK);
       _update_pair(Colorize::COLORIZE_INFO_INVERT, COLOR_WHITE, COLOR_MAGENTA);
+
+#if LOGGER_IS_DEFINED
+      LOGGER_WRITE("Ncurses colors initted successfully");
+#endif
     } else {
       std::cerr << "Cannot start colours" << std::endl;
       finish(0);

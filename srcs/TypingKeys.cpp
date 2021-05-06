@@ -1,5 +1,6 @@
 #include "TypingKeys.hpp"
 #include "Flags.hpp"
+#include "Logger.hpp"
 #include "Print.hpp"
 #include "Timer.hpp"
 #include "typos.hpp"
@@ -221,5 +222,9 @@ key_t TypingKeys::get_input(void) {
   return ch;
 }
 bool TypingKeys::procced_input(key_t k, void * t) {
+#if LOGGER_IS_DEFINED
+  LOGGER_WRITE("Processing key `" << k << "`;");
+#endif
+
   return __key_handlers.at(k)(k, (Typing *)t);
 }

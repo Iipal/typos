@@ -1,9 +1,10 @@
-#include "typos.hpp"
 #include "Timer.hpp"
+#include "Colorize.hpp"
 #include "Flags.hpp"
+#include "Logger.hpp"
 #include "Print.hpp"
 #include "Typing.hpp"
-#include "Colorize.hpp"
+#include "typos.hpp"
 
 int      Timer::_remaining_seconds = Timer::SECONDS_DEFAULT;
 int      Timer::_elapsed_seconds   = 0;
@@ -22,6 +23,9 @@ void Timer::init(int seconds, Typing * typing) {
   }
 
   if (Flags::is_free_mode) {
+#if LOGGER_IS_DEFINED
+    LOGGER_WRITE("Free typing mode");
+#endif
     return;
   }
 
@@ -39,16 +43,29 @@ void Timer::init(int seconds, Typing * typing) {
   val.it_value.tv_usec = 0;
   val.it_interval      = val.it_value;
   setitimer(ITIMER_REAL, &val, NULL);
+
+#if LOGGER_IS_DEFINED
+  LOGGER_WRITE("Timer set for `" << _remaining_seconds << "`");
+#endif
 }
 
 void Timer::timer_handler(int signo) {
   (void)signo;
   if (!Timer::_remaining_seconds) {
+#if LOGGER_IS_DEFINED
+    LOGGER_WRITE("Timer expired;");
+#endif
     Timer::break_the_words();
     return;
   } else {
     --Timer::_remaining_seconds;
     ++Timer::_elapsed_seconds;
+
+#if LOGGER_IS_DEFINED
+    LOGGER_WRITE("Timer _remaining_seconds: `"
+                 << _remaining_seconds << "`; _elapsed_seconds: `" << _elapsed_seconds
+                 << "`;");
+#endif
   }
 
   Print::timer(Timer::_remaining_seconds);
@@ -74,6 +91,10 @@ void Timer::break_the_words(void) {
   bool is_saved   = !Flags::stats_fmt.length();
   auto save_stats = [&is_saved]() {
     if (!is_saved) {
+#if LOGGER_IS_DEFINED
+      LOGGER_WRITE("Saving stats to `" << Flags::save_path << "`;");
+#endif
+
       TypingStatsDataFmt * fmt =
           TypingStats::get_stats_data_fmt(Timer::_typing->get_stats_data());
       TypingStats::save_stats(fmt);

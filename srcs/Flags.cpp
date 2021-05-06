@@ -1,4 +1,5 @@
 #include "Flags.hpp"
+#include "Logger.hpp"
 #include "Timer.hpp"
 #include <err.h>
 #include <getopt.h>
@@ -51,9 +52,9 @@
   "                 - `a`: Accuracy with corrected typos.\n" \
   "                 - `A`: Accuracy with all typos.\n"
 
-#define FLAG_S_DEFAULT "./typos.log"
+#define FLAG_S_DEFAULT "./typos.stats.log"
 #define FLAG_S_DESC \
-  "Full path to file where your stats will be saved. Default: `./typos.log`;"
+  "Full path to file where your stats will be saved. Default: `./typos.stats.log`;"
 
 #define FLAG_s_DEFAULT false
 #define FLAG_s_DESC    "Auto-save your stats at the end. Default: false;"
@@ -131,8 +132,17 @@ static inline std::string flag_stats_fmt_arg_parse(const char * arg) {
 }
 
 void Flags::parse(int argc, char * argv[]) {
+#if LOGGER_IS_DEFINED
+  LOGGER_WRITE("argc: `" << argc << "`; argv: `" << argv << "`;");
+#endif
+
   int c;
   while (-1 != (c = getopt(argc, argv, FLAGS_OPT))) {
+#if LOGGER_IS_DEFINED
+    LOGGER_WRITE("opt: `" << (char)c << "`; optarg: `" << (optarg ? optarg : "nullptr")
+                          << "`;");
+#endif
+
     switch (c) {
     case FLAG_w:
       Flags::max_words = flag_positive_integer_arg_parse(

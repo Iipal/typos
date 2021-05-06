@@ -26,7 +26,7 @@ define compilation
 $(CC) $(addprefix -D,$(DEFINES)) \
 	$(CFLAGS) $(CFLAGS_OPTIONAL) $(IFLAGS) \
 	-c $$1 -o $$2
-$(ECHO) " | $$2: $(MSG_SUCCESS)"
+printf " | %-$(SRC_MAX_LENGTH)s: $(MSG_SUCCESS)\n" $$1
 endef
 
 -include $(OBJS:.o=.d)

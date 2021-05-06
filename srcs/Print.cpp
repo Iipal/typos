@@ -1,6 +1,7 @@
 #include "Print.hpp"
 #include "Colorize.hpp"
 #include "Flags.hpp"
+#include "Logger.hpp"
 #include "Timer.hpp"
 #include "typos.hpp"
 
@@ -10,9 +11,9 @@ int Print::_text_y = Print::_text_y_default;
 int Print::_text_x = 1;
 
 void Print::current_char(const TypingChar * const ch, unsigned attrs) {
-  const auto   y   = ch->y();
-  const auto   x   = ch->x();
-  const chtype _ch = !ch->ch() ? TypingKeys::KEY_SPACE : ch->ch();
+  const auto  y   = ch->y();
+  const auto  x   = ch->x();
+  const key_t _ch = !ch->ch() ? TypingKeys::KEY_SPACE : ch->ch();
 
   unsigned _attrs = attrs;
   if (ch->get_color() == COLORIZE_ERROR) {
@@ -27,9 +28,9 @@ void Print::current_char(const TypingChar * const ch) {
 }
 
 void Print::clear_current_char(const TypingChar * const ch) {
-  const auto   y   = ch->y();
-  const auto   x   = ch->x();
-  const chtype _ch = !ch->ch() ? TypingKeys::KEY_SPACE : ch->ch();
+  const auto  y   = ch->y();
+  const auto  x   = ch->x();
+  const key_t _ch = !ch->ch() ? TypingKeys::KEY_SPACE : ch->ch();
 
   cmvaddch(COLORIZE_DEFAULT, y, x, _ch);
 }
@@ -191,6 +192,10 @@ void Print::stats(const TypingStatsData & data) {
     snprintf(fmt_buff, sizeof(fmt_buff) - 1, "%%10s | %s", fmt[i].second.fmt);
     cmvprintw(
         fmt[i].second.clr, data_y++, data_x, fmt_buff, fmt[i].first, fmt[i].second.value);
+
+#if LOGGER_IS_DEFINED
+    LOGGER_WRITE("Stats " << fmt[i].first << ": `" << fmt[i].second.value << "`;");
+#endif
   }
 
   delete[] fmt;
@@ -228,7 +233,7 @@ int Print::get_center_x(size_t text_len) { return stdscr->_maxx / 2 - text_len /
 
 void Print::input_status(const Typing & text, const bool is_ok, const int input) {
   const TypingWord * const word = text.get_word();
-  const chtype             ch   = word ? (chtype)word->get_char_at() : 0;
+  const key_t              ch   = word ? word->get_char_at()->ch() : 0;
 
   int y = Print::get_input_status_y();
   int x = Print::get_input_status_x();

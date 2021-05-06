@@ -3,7 +3,7 @@
 NAME := $(notdir $(CURDIR))
 NPWD := $(CURDIR)/$(NAME)
 
-EXCLUDE := srcs/WORDS.cpp
+EXCLUDE := srcs/WORDS.cpp $(wildcard srcs/__*_test*)
 
 # all source code .c files must to places in to "srcs" folder(or sub-dirs) only.
 ifneq (,$(wildcard ./srcs))
@@ -12,6 +12,15 @@ SRCS := $(shell find srcs -name "*.cpp")
   SRCS := $(filter-out $(EXCLUDE), $(SRCS))
  endif
 SRCS := $(sort $(SRCS))
+
+SRC_MAX_LENGTH := 23
+ ifneq (,$(SRCS))
+  SRC_MAX_LENGTH := $(shell echo $(SRCS) | tr ' ' '\n' | awk 'length>max{max=length}END{print max+1}')
+  ifeq ($(shell test 23 -gt $(SRC_MAX_LENGTH); echo $$?),0)
+    SRC_MAX_LENGTH:=23
+  endif
+ endif
+
 OBJS := $(SRCS:.cpp=.o)
 ASMS := # reversed for 'assembly' and 'assembly_all' rules where ASMS:=$(OBJS:%.o=%.S) and OBJS:= sets to nothing
 else
